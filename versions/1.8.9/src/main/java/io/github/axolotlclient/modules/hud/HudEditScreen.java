@@ -223,8 +223,8 @@ public class HudEditScreen extends Screen {
 		gfx.br$fillRectRound(box.x, box.y, box.w, box.h, MenuTheme.PANEL, MenuTheme.PANEL_RADIUS);
 
 		textRenderer.draw(I18n.translate("menu.client.title"), box.innerX, box.y + 5, MenuTheme.TEXT);
-		drawHeaderButton(box.x + box.w - 30, box.y + 3, "-", mouseX, mouseY);
-		drawHeaderButton(box.x + box.w - 16, box.y + 3, "x", mouseX, mouseY);
+		drawHeaderButton(gfx, box.x + box.w - 38, box.y + 4, "-", mouseX, mouseY);
+		drawHeaderButton(gfx, box.x + box.w - 22, box.y + 4, "x", mouseX, mouseY);
 
 		int tabW = tabWidth(box.innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
@@ -425,9 +425,10 @@ public class HudEditScreen extends Screen {
 		drawCentered(trim(text, w - 4), x + w / 2, y + 4, active ? 0xFF0B0D12 : MenuTheme.TEXT);
 	}
 
-	private void drawHeaderButton(int x, int y, String glyph, int mouseX, int mouseY) {
-		int color = hovered(x, y, 12, 12, mouseX, mouseY) ? MenuTheme.TEXT : MenuTheme.TEXT_MUTED;
-		textRenderer.draw(glyph, x, y + 2, color);
+	private void drawHeaderButton(AxoRenderContext gfx, int x, int y, String glyph, int mouseX, int mouseY) {
+		boolean hover = hovered(x, y, 12, 12, mouseX, mouseY);
+		gfx.br$fillRectRound(x, y, 12, 12, hover ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER, 3f);
+		drawCentered(glyph, x + 6, y + 2, hover ? MenuTheme.TEXT : MenuTheme.TEXT_MUTED);
 	}
 
 	private void renderTooltip(int mouseX, int mouseY) {
@@ -487,11 +488,11 @@ public class HudEditScreen extends Screen {
 			collapsed = false;
 			return;
 		}
-		if (hovered(box.x + box.w - 16, box.y + 3, 12, 12, mouseX, mouseY)) {
+		if (hovered(box.x + box.w - 22, box.y + 4, 12, 12, mouseX, mouseY)) {
 			closeMenu();
 			return;
 		}
-		if (hovered(box.x + box.w - 30, box.y + 3, 12, 12, mouseX, mouseY)) {
+		if (hovered(box.x + box.w - 38, box.y + 4, 12, 12, mouseX, mouseY)) {
 			collapsed = true;
 			return;
 		}

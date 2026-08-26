@@ -2,7 +2,7 @@
 
 Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod), focused on **Minecraft 1.8.9 (Ornithe)** and Hypixel.
 
-You can find the optimized Hypixel configurations [here](https://archive.org/details/dsns-prismmc). Drag the `1.8.9 Pink.zip` file into Prism Launcher to run.
+You can find the optimized Hypixel configurations [here](https://github.com/dsnsgithub/AxolotlClient-Fork/releases). Drag the `1.8.9 Pink.zip` file into Prism Launcher to run.
 
 <img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 

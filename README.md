@@ -1,10 +1,9 @@
 # AxolotlClient-Fork
 
-Fork of https://codeberg.org/AxolotlClient/AxolotlClient-mod, focused on **Minecraft 1.8.9 (Ornithe)**.
+Fork of https://codeberg.org/AxolotlClient/AxolotlClient-mod, focused on **Minecraft 1.8.9 (Ornithe)** and Hypixel.
 
 Open the client menu in-game with **Right Shift**.
 
-**Old Animations** (1.7.10 visuals) is built in. Its options live on the **1.7** tab of the same menu. Do not install the standalone [OldAnimations](https://modrinth.com/mod/oldanimations) jar alongside this client.
 
 To build:
 
@@ -12,14 +11,16 @@ To build:
 ./gradlew build
 ```
 
-
 ---
 
+<details>
 
+<summary>
+Licensing (from AxolotlClient)
+</summary>
 
-### Licensing (from AxolotlClient)
-
-- This mod is licensed under the LGPL-3.0 License.
+This mod is licensed under the LGPL-3.0 License.
+For more information see the [LICENSE](LICENSE) file.
 
 ```
 AxolotlClient-mod
@@ -39,5 +40,4 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ```
-
-- For more information see the [LICENSE](LICENSE) file.
+</details>

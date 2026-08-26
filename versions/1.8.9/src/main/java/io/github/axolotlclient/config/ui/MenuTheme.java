@@ -61,13 +61,13 @@ public final class MenuTheme {
 	public static final int SECTION_H = 14;
 	public static final int FOOTER_H = 20;
 	public static final int PAD = 8;
-	public static final int TILE_GAP = 4;
+	public static final int TILE_GAP = 6;
 	public static final int COLS = 2;
 	public static final int TOGGLE_W = 22;
 	public static final int TOGGLE_H = 11;
 	public static final int TOGGLE_INSET = 8;
 	public static final int ICON_SIZE = 16;
-	public static final int ICON_TEXT_GAP = 11;
+	public static final int ICON_TEXT_GAP = 14;
 	public static final int CONTROL_W = 78;
 	public static final int HEADER_BTN = 12;
 	public static final int HEADER_BTN_INSET = 14;

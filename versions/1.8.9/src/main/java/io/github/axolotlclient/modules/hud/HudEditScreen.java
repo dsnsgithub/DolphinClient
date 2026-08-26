@@ -222,9 +222,11 @@ public class HudEditScreen extends Screen {
 
 		gfx.br$fillRectRound(box.x, box.y, box.w, box.h, MenuTheme.PANEL, MenuTheme.PANEL_RADIUS);
 
-		textRenderer.draw(I18n.translate("menu.client.title"), box.innerX, box.y + 5, MenuTheme.TEXT);
-		drawHeaderButton(gfx, box.x + box.w - 38, box.y + 4, "-", mouseX, mouseY);
-		drawHeaderButton(gfx, box.x + box.w - 22, box.y + 4, "x", mouseX, mouseY);
+		String title = I18n.translate("menu.client.title");
+		textRenderer.draw(title, box.innerX, box.y + 5, MenuTheme.TEXT);
+		int controlX = box.innerX + textRenderer.getWidth(title) + 6;
+		drawHeaderButton(gfx, controlX, box.y + 3, "-", mouseX, mouseY);
+		drawHeaderButton(gfx, controlX + 14, box.y + 3, "x", mouseX, mouseY);
 
 		int tabW = tabWidth(box.innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
@@ -488,11 +490,12 @@ public class HudEditScreen extends Screen {
 			collapsed = false;
 			return;
 		}
-		if (hovered(box.x + box.w - 22, box.y + 4, 12, 12, mouseX, mouseY)) {
+		int controlX = box.innerX + textRenderer.getWidth(I18n.translate("menu.client.title")) + 6;
+		if (hovered(controlX + 14, box.y + 3, 12, 12, mouseX, mouseY)) {
 			closeMenu();
 			return;
 		}
-		if (hovered(box.x + box.w - 38, box.y + 4, 12, 12, mouseX, mouseY)) {
+		if (hovered(controlX, box.y + 3, 12, 12, mouseX, mouseY)) {
 			collapsed = true;
 			return;
 		}

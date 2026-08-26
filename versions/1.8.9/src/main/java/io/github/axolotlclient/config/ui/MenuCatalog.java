@@ -96,7 +96,7 @@ public final class MenuCatalog {
 		}
 
 		public String displayName() {
-			return label(nameKey);
+			return stripRedundantHud(label(nameKey));
 		}
 
 		public boolean matches(String query) {
@@ -256,7 +256,24 @@ public final class MenuCatalog {
 
 	public static String label(String key) {
 		String translated = I18n.translate(key);
-		return translated == null || translated.isEmpty() ? key : translated;
+		if (translated == null || translated.isEmpty()) {
+			translated = key;
+		}
+		return polish(translated);
+	}
+
+	static String polish(String text) {
+		if (text == null || text.isEmpty()) {
+			return "";
+		}
+		return text.replace("Hud", "HUD");
+	}
+
+	static String stripRedundantHud(String name) {
+		if (name.endsWith(" HUD") && name.length() > 4) {
+			return name.substring(0, name.length() - 4).trim();
+		}
+		return name;
 	}
 
 	static boolean contains(String value, String query) {

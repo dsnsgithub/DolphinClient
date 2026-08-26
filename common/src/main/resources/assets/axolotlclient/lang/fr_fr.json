@@ -280,6 +280,7 @@
 	"menu.client.edit": "Modifier",
 	"menu.client.expand": ">",
 	"menu.client.snap": "Aligner",
+	"menu.client.back": "Retour",
 	"menublur": "Flou de Menu",
 	"minimal": "Minimal",
 	"minimalViewBob": "Mouvement de Tête Minimal",

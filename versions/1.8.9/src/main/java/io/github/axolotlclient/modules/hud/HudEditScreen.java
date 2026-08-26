@@ -223,8 +223,8 @@ public class HudEditScreen extends Screen {
 		gfx.br$fillRectRound(box.x, box.y, box.w, box.h, MenuTheme.PANEL, MenuTheme.PANEL_RADIUS);
 
 		textRenderer.draw(I18n.translate("menu.client.title"), box.innerX, box.y + 5, MenuTheme.TEXT);
-		drawHeaderButton(box.x + box.w - 30, box.y + 3, "–", mouseX, mouseY);
-		drawHeaderButton(box.x + box.w - 16, box.y + 3, "×", mouseX, mouseY);
+		drawHeaderButton(box.x + box.w - 30, box.y + 3, "-", mouseX, mouseY);
+		drawHeaderButton(box.x + box.w - 16, box.y + 3, "x", mouseX, mouseY);
 
 		int tabW = tabWidth(box.innerW);
 		for (int i = 0; i < Tab.values().length; i++) {

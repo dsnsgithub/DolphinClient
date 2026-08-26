@@ -233,7 +233,7 @@ public class HudEditScreen extends Screen {
 			boolean active = tab == t;
 			int color = active ? MenuTheme.ACCENT : (hovered(tx, cursorY, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY) ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER);
 			gfx.br$fillRectRound(tx, cursorY, tabW - 1, MenuTheme.TAB_H, color, 3f);
-			drawCentered(I18n.translate("menu.client.tab." + t.name().toLowerCase(Locale.ROOT)), tx + (tabW - 1) / 2, cursorY + 5, active ? 0xFF0B0D12 : MenuTheme.TEXT);
+			drawCentered(I18n.translate("menu.client.tab." + t.name().toLowerCase(Locale.ROOT)), tx + (tabW - 1) / 2, cursorY + 5, MenuTheme.TEXT);
 		}
 		cursorY += MenuTheme.TAB_H + 4;
 
@@ -272,7 +272,7 @@ public class HudEditScreen extends Screen {
 
 		int footerY = y + h - MenuTheme.FOOTER_H + 2;
 		boolean snapOn = HudManager.getInstance().isSnappingEnabled();
-		drawFooterButton(gfx, innerX, footerY, 52, snapOn ? I18n.translate("hud.snapping") + ": " + I18n.translate("options.on") : I18n.translate("hud.snapping") + ": " + I18n.translate("options.off"), snapOn, mouseX, mouseY);
+		drawFooterButton(gfx, innerX, footerY, 40, I18n.translate("menu.client.snap"), snapOn, mouseX, mouseY);
 		drawFooterButton(gfx, innerX + innerW - 48, footerY, 48, I18n.translate("close"), false, mouseX, mouseY);
 
 		this.hoverTooltip = tooltip;
@@ -493,7 +493,7 @@ public class HudEditScreen extends Screen {
 		int listTop = cursorY;
 		int listBottom = y + h - MenuTheme.FOOTER_H - 4;
 		int footerY = y + h - MenuTheme.FOOTER_H + 2;
-		if (hovered(innerX, footerY, 52, 16, mouseX, mouseY)) {
+		if (hovered(innerX, footerY, 40, 16, mouseX, mouseY)) {
 			HudManager.getInstance().toggleSnapping();
 			return;
 		}
@@ -908,9 +908,13 @@ public class HudEditScreen extends Screen {
 		String query = search.toString().toLowerCase(Locale.ROOT).trim();
 		List<Module> visible = new ArrayList<>();
 		for (Module module : modules) {
-			if (module.getTab() == tab && module.matches(query)) {
-				visible.add(module);
+			if (!module.matches(query)) {
+				continue;
 			}
+			if (query.isEmpty() && module.getTab() != tab) {
+				continue;
+			}
+			visible.add(module);
 		}
 		return visible;
 	}

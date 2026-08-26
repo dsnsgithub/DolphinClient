@@ -4,6 +4,11 @@ Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/A
 
 Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClient-Fork/releases), then drag it into Prism Launcher to run.
 
+Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
+- ~3000 fps in Housing (/visit DSNS) => compared to 800 FPS on Lunar Client
+- 500-1000 fps in Duels Lobby => compared to 100-300 FPS on Lunar Client
+- ~1000 fps in Housing lobby => Compared to 300 FPS on Lunar Client
+
 <img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 
 

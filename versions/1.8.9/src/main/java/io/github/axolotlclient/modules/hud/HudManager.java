@@ -47,6 +47,11 @@ public class HudManager extends HudManagerCommon {
 
 	@Override
 	protected void openScreen() {
+		var current = Minecraft.getInstance().screen;
+		if (current instanceof HudEditScreen menu) {
+			menu.closeMenu();
+			return;
+		}
 		Minecraft.getInstance().openScreen(new HudEditScreen());
 	}
 

@@ -1,5 +1,7 @@
 classTweaker v1 named
 
+accessible class net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionFace
+
 accessible field net/minecraft/client/sound/system/SoundEngine system Lnet/minecraft/client/sound/system/SoundEngine$System;
 
 transitive-inject-interface net/minecraft/resource/Identifier io/github/axolotlclient/bridge/util/AxoIdentifier

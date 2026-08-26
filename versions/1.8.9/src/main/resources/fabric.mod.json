@@ -11,7 +11,8 @@
 		"YakisikliBaran",
 		"DragonEggBedrockBreaking",
 		"TheKodeToad",
-		"CornetPanique86"
+		"CornetPanique86",
+		"Mixces"
 	],
 	"contact": {
 		"homepage": "https://axolotlclient.com/",
@@ -30,7 +31,11 @@
 	"mixins": [
 		"axolotlclient.mixins.json",
 		"axolotlclient-bridge.mixins.json",
-		"axolotlclient.e4mc.mixins.json"
+		"axolotlclient.e4mc.mixins.json",
+		"oldanimations.mixins.json"
+	],
+	"provides": [
+		"axolotlclient-oldanimations"
 	],
 	"custom": {
 		"axolotlclient:bridge_impl_version": "V1_8"

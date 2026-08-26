@@ -71,6 +71,7 @@ subprojects {
 	license {
 		rule(rootProject.file("HEADER"))
 		include("**/*.java")
+		exclude("**/oldanimations/**")
 	}
 
 	tasks.register("collectBuilds") {

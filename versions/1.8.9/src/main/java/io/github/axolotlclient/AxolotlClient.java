@@ -40,6 +40,7 @@ import io.github.axolotlclient.modules.screenshotUtils.ScreenshotUtils;
 import io.github.axolotlclient.modules.scrollableTooltips.ScrollableTooltips;
 import io.github.axolotlclient.modules.sky.SkyResourceManager;
 import io.github.axolotlclient.modules.unfocusedFpsLimiter.UnfocusedFpsLimiter;
+import io.github.axolotlclient.oldanimations.OldAnimations;
 import io.github.axolotlclient.util.FeatureDisabler;
 import io.github.axolotlclient.util.FeatureDisablerCommon;
 import io.github.axolotlclient.util.notifications.Notifications;
@@ -59,6 +60,7 @@ public class AxolotlClient extends AxolotlClientCommon {
 		registerModule(ScreenshotUtils.getInstance());
 		registerModule(UnfocusedFpsLimiter.getInstance());
 		registerModule(Auth.getInstance());
+		registerModule(new OldAnimations());
 	}
 
 	private void addExternalModules() {

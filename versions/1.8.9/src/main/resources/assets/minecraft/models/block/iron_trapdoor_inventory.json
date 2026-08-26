@@ -1,0 +1,6 @@
+{
+    "parent": "block/trapdoor_inventory",
+    "textures": {
+        "texture": "blocks/iron_trapdoor"
+    }
+}

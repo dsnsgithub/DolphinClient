@@ -23,17 +23,17 @@
 package io.github.axolotlclient.config.ui;
 
 /**
- * Lunar-inspired palette for the Right Shift client menu.
+ * Compact Lunar-inspired palette for the centered Right Shift menu.
  */
 public final class MenuTheme {
 	private MenuTheme() {
 	}
 
-	public static final int OVERLAY = 0xB00B0D12;
-	public static final int PANEL = 0xF2141720;
-	public static final int PANEL_INNER = 0xFF1B1F2A;
-	public static final int PANEL_HOVER = 0xFF252A38;
-	public static final int PANEL_SELECTED = 0xFF1E2C45;
+	public static final int OVERLAY = 0x99080A10;
+	public static final int PANEL = 0xF216161C;
+	public static final int PANEL_INNER = 0xFF1E1E24;
+	public static final int PANEL_HOVER = 0xFF2A2A32;
+	public static final int PANEL_SELECTED = 0xFF1C2838;
 	public static final int ACCENT = 0xFF4C9DFF;
 	public static final int ACCENT_SOFT = 0x554C9DFF;
 	public static final int TEXT = 0xFFE8EDF5;
@@ -43,20 +43,28 @@ public final class MenuTheme {
 	public static final int TOGGLE_OFF = 0xFF3A4152;
 	public static final int SLIDER_TRACK = 0xFF2A3140;
 	public static final int DANGER = 0xFFE85D6A;
-	public static final int OUTLINE = 0xFF2E3545;
-	public static final int SCROLLBAR = 0xFF4C9DFF;
+	public static final int OUTLINE = 0x18FFFFFF;
+	public static final int SCROLLBAR = 0x884C9DFF;
 
-	public static final float PANEL_RADIUS = 6f;
+	public static final float PANEL_RADIUS = 8f;
 	public static final float CONTROL_RADIUS = 3.5f;
 
-	public static final int HEADER_H = 22;
-	public static final int SEARCH_H = 18;
-	public static final int TAB_H = 18;
-	public static final int MODULE_H = 20;
-	public static final int OPTION_H = 16;
-	public static final int SECTION_H = 14;
-	public static final int FOOTER_H = 24;
-	public static final int PAD = 6;
-	public static final int TOGGLE_W = 26;
-	public static final int TOGGLE_H = 12;
+	public static final int MAX_PANEL_W = 348;
+	public static final int MAX_PANEL_H = 208;
+	public static final int MIN_PANEL_W = 280;
+	public static final int MIN_PANEL_H = 168;
+	public static final int HEADER_H = 16;
+	public static final int SEARCH_H = 14;
+	public static final int TAB_H = 14;
+	public static final int MODULE_H = 24;
+	public static final int OPTION_H = 15;
+	public static final int SECTION_H = 13;
+	public static final int FOOTER_H = 20;
+	public static final int PAD = 8;
+	public static final int TILE_GAP = 3;
+	public static final int COLS = 2;
+	public static final int TOGGLE_W = 22;
+	public static final int TOGGLE_H = 11;
+	public static final int COLLAPSED_W = 96;
+	public static final int COLLAPSED_H = 16;
 }

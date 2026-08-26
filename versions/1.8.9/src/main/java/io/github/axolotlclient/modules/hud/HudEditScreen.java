@@ -54,6 +54,7 @@ import io.github.axolotlclient.modules.hud.gui.component.HudEntry;
 import io.github.axolotlclient.modules.hud.gui.component.Positionable;
 import io.github.axolotlclient.modules.hud.snapping.SnappingHelper;
 import io.github.axolotlclient.modules.hud.util.DrawPosition;
+import io.github.axolotlclient.modules.hud.util.ItemUtil;
 import io.github.axolotlclient.util.CursorType;
 import io.github.axolotlclient.util.CursorTypes;
 import io.github.axolotlclient.util.DrawUtil;
@@ -69,8 +70,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 /**
- * Lunar-style client menu: HUD layout canvas plus a single searchable module
- * list with inline settings. Opened with Right Shift.
+ * Compact centered client menu: HUD layout canvas plus a searchable module
+ * grid with icons and inline settings. Opened with Right Shift.
  */
 public class HudEditScreen extends Screen {
 
@@ -89,7 +90,7 @@ public class HudEditScreen extends Screen {
 	private int listScroll;
 	private int mouseX, mouseY;
 	private int caretTicks;
-	private static final int TAB_COLS = 2;
+	private static final int TAB_COLS = 4;
 
 	private HudEntry current;
 	private DrawPosition offset;
@@ -156,7 +157,7 @@ public class HudEditScreen extends Screen {
 		if (current != null && mode != ModificationMode.NONE) {
 			current.setHovered(true);
 			entry = Optional.of(current);
-		} else if (!inSidebar(mouseX, mouseY)) {
+		} else if (!inPanel(mouseX, mouseY)) {
 			entry = HudManager.getInstance().getEntryXY(mouseX, mouseY);
 			entry.ifPresent(hud -> hud.setHovered(true));
 		} else {
@@ -170,7 +171,7 @@ public class HudEditScreen extends Screen {
 		HudManager.getInstance().renderPlaceholder(graphics, delta);
 		if (entry.isPresent()) {
 			var bounds = entry.get().getTrueBounds();
-			if (mode == ModificationMode.NONE && bounds.isMouseOver(mouseX, mouseY) && !inSidebar(mouseX, mouseY)) {
+			if (mode == ModificationMode.NONE && bounds.isMouseOver(mouseX, mouseY) && !inPanel(mouseX, mouseY)) {
 				var supportsScaling = entry.get().supportsScaling();
 				var tolerance = HudManagerCommon.HUD_RESCALE_GRAB_TOLERANCE;
 				var toleranceSquared = tolerance * tolerance;
@@ -189,7 +190,7 @@ public class HudEditScreen extends Screen {
 				pending.type.select();
 				this.pendingMode = pending;
 			}
-		} else if (current == null && !inSidebar(mouseX, mouseY)) {
+		} else if (current == null && !inPanel(mouseX, mouseY)) {
 			CursorType.DEFAULT.select();
 			pendingMode = ModificationMode.NONE;
 			mode = ModificationMode.NONE;
@@ -203,103 +204,123 @@ public class HudEditScreen extends Screen {
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
 
-		renderSidebar(graphics, mouseX, mouseY);
+		renderPanel(graphics, mouseX, mouseY);
 		renderTooltip(mouseX, mouseY);
 	}
 
-	private void renderSidebar(AxoRenderContext gfx, int mouseX, int mouseY) {
-		int x = MenuTheme.PAD;
-		int y = MenuTheme.PAD;
-		int w = sidebarWidth();
-		int h = height - MenuTheme.PAD * 2;
-		gfx.br$fillRectRound(x, y, w, h, MenuTheme.PANEL, MenuTheme.PANEL_RADIUS);
-		gfx.br$outlineRectRound(x, y, w, h, MenuTheme.OUTLINE, MenuTheme.PANEL_RADIUS);
-
+	private void renderPanel(AxoRenderContext gfx, int mouseX, int mouseY) {
+		PanelLayout box = layout();
 		if (collapsed) {
-			drawCentered(I18n.translate("menu.client.expand"), x + w / 2, y + h / 2 - 4, MenuTheme.TEXT_MUTED);
+			int w = MenuTheme.COLLAPSED_W;
+			int h = MenuTheme.COLLAPSED_H;
+			int x = (width - w) / 2;
+			int y = 8;
+			gfx.br$fillRectRound(x, y, w, h, MenuTheme.PANEL, MenuTheme.PANEL_RADIUS);
+			drawCentered(I18n.translate("menu.client.title"), x + w / 2, y + 4, MenuTheme.TEXT_MUTED);
 			return;
 		}
 
-		int innerX = x + MenuTheme.PAD;
-		int innerW = w - MenuTheme.PAD * 2;
-		int cursorY = y + 5;
-		textRenderer.draw(I18n.translate("menu.client.title"), innerX, cursorY, MenuTheme.TEXT);
-		drawCollapseAffordance(x + w - 16, y + 4, mouseX, mouseY);
-		cursorY += MenuTheme.HEADER_H - 4;
+		gfx.br$fillRectRound(box.x, box.y, box.w, box.h, MenuTheme.PANEL, MenuTheme.PANEL_RADIUS);
 
-		int tabW = tabWidth(innerW);
+		textRenderer.draw(I18n.translate("menu.client.title"), box.innerX, box.y + 5, MenuTheme.TEXT);
+		drawHeaderButton(box.x + box.w - 30, box.y + 3, "–", mouseX, mouseY);
+		drawHeaderButton(box.x + box.w - 16, box.y + 3, "×", mouseX, mouseY);
+
+		int tabW = tabWidth(box.innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
 			Tab t = Tab.values()[i];
-			int tx = tabX(innerX, innerW, i);
-			int ty = tabY(cursorY, i);
+			int tx = tabX(box.innerX, box.innerW, i);
+			int ty = tabY(box.tabsY, i);
 			boolean active = tab == t;
 			int color = active ? MenuTheme.ACCENT : (hovered(tx, ty, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY) ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER);
 			gfx.br$fillRectRound(tx, ty, tabW - 1, MenuTheme.TAB_H, color, 3f);
-			drawCentered(I18n.translate("menu.client.tab." + t.name().toLowerCase(Locale.ROOT)), tx + (tabW - 1) / 2, ty + 5, MenuTheme.TEXT);
+			drawCentered(I18n.translate("menu.client.tab." + t.name().toLowerCase(Locale.ROOT)), tx + (tabW - 1) / 2, ty + 3, MenuTheme.TEXT);
 		}
-		cursorY += tabsBlockHeight() + 4;
 
 		int searchColor = searchFocused ? MenuTheme.PANEL_SELECTED : MenuTheme.PANEL_INNER;
-		gfx.br$fillRectRound(innerX, cursorY, innerW, MenuTheme.SEARCH_H, searchColor, 3f);
+		gfx.br$fillRectRound(box.innerX, box.searchY, box.innerW, MenuTheme.SEARCH_H, searchColor, 3f);
 		String searchText = search.isEmpty() && !searchFocused ? I18n.translate("menu.client.search") : search.toString();
 		int searchTextColor = search.isEmpty() && !searchFocused ? MenuTheme.TEXT_DIM : MenuTheme.TEXT;
-		textRenderer.draw(trim(searchText, innerW - 10), innerX + 5, cursorY + 5, searchTextColor);
+		textRenderer.draw(trim(searchText, box.innerW - 10), box.innerX + 5, box.searchY + 3, searchTextColor);
 		if (searchFocused && (caretTicks / 6) % 2 == 0) {
-			int caret = innerX + 5 + textRenderer.getWidth(trim(search.toString(), innerW - 10));
-			fill(caret, cursorY + 4, caret + 1, cursorY + MenuTheme.SEARCH_H - 4, MenuTheme.ACCENT);
+			int caret = box.innerX + 5 + textRenderer.getWidth(trim(search.toString(), box.innerW - 10));
+			fill(caret, box.searchY + 3, caret + 1, box.searchY + MenuTheme.SEARCH_H - 3, MenuTheme.ACCENT);
 		}
-		cursorY += MenuTheme.SEARCH_H + 4;
 
-		int listTop = cursorY;
-		int listBottom = y + h - MenuTheme.FOOTER_H - 4;
-		int listH = Math.max(1, listBottom - listTop);
-		DrawUtil.enableScissor(innerX, listTop, innerX + innerW, listBottom);
-		int drawY = listTop - listScroll;
+		DrawUtil.enableScissor(box.innerX, box.listTop, box.innerX + box.innerW, box.listBottom);
 		String tooltip = null;
-		for (Module module : visibleModules()) {
-			int moduleH = moduleHeight(module);
-			if (drawY + moduleH >= listTop && drawY <= listBottom) {
-				tooltip = renderModule(gfx, module, innerX, drawY, innerW, mouseX, mouseY, tooltip);
-			}
-			drawY += moduleH + 2;
+		Module selected = findModule(selectedId);
+		if (selected != null) {
+			tooltip = renderDetail(gfx, selected, box, mouseX, mouseY, tooltip);
+		} else {
+			tooltip = renderGrid(gfx, box, mouseX, mouseY, tooltip);
 		}
 		DrawUtil.disableScissor();
 
 		int contentH = contentHeight();
+		int listH = Math.max(1, box.listBottom - box.listTop);
 		if (contentH > listH) {
-			int barH = Math.max(16, listH * listH / contentH);
-			int barY = listTop + (int) ((listH - barH) * (listScroll / (float) Math.max(1, contentH - listH)));
-			gfx.br$fillRectRound(x + w - 5, barY, 3, barH, MenuTheme.SCROLLBAR, 1.5f);
+			int barH = Math.max(12, listH * listH / contentH);
+			int barY = box.listTop + (int) ((listH - barH) * (listScroll / (float) Math.max(1, contentH - listH)));
+			gfx.br$fillRectRound(box.x + box.w - 5, barY, 2, barH, MenuTheme.SCROLLBAR, 1.5f);
 		}
 
-		int footerY = y + h - MenuTheme.FOOTER_H + 2;
 		boolean snapOn = HudManager.getInstance().isSnappingEnabled();
-		drawFooterButton(gfx, innerX, footerY, 40, I18n.translate("menu.client.snap"), snapOn, mouseX, mouseY);
-		drawFooterButton(gfx, innerX + innerW - 48, footerY, 48, I18n.translate("close"), false, mouseX, mouseY);
+		drawFooterButton(gfx, box.innerX, box.footerY, 40, I18n.translate("menu.client.snap"), snapOn, mouseX, mouseY);
 
 		this.hoverTooltip = tooltip;
 	}
 
-	private String hoverTooltip;
+	private String renderGrid(AxoRenderContext gfx, PanelLayout box, int mouseX, int mouseY, String tooltip) {
+		List<Module> visible = visibleModules();
+		int tileW = tileWidth(box.innerW);
+		for (int i = 0; i < visible.size(); i++) {
+			int col = i % MenuTheme.COLS;
+			int row = i / MenuTheme.COLS;
+			int x = box.innerX + col * (tileW + MenuTheme.TILE_GAP);
+			int y = box.listTop + row * (MenuTheme.MODULE_H + MenuTheme.TILE_GAP) - listScroll;
+			if (y + MenuTheme.MODULE_H < box.listTop || y > box.listBottom) {
+				continue;
+			}
+			tooltip = renderModuleTile(gfx, visible.get(i), x, y, tileW, mouseX, mouseY, tooltip);
+		}
+		return tooltip;
+	}
 
-	private String renderModule(AxoRenderContext gfx, Module module, int x, int y, int w, int mouseX, int mouseY, String tooltip) {
+	private String renderDetail(AxoRenderContext gfx, Module module, PanelLayout box, int mouseX, int mouseY, String tooltip) {
+		int y = box.listTop - listScroll;
+		boolean backHover = hovered(box.innerX, y, 44, MenuTheme.MODULE_H, mouseX, mouseY);
+		gfx.br$fillRectRound(box.innerX, y, 44, MenuTheme.MODULE_H, backHover ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER, 4f);
+		drawCentered(I18n.translate("menu.client.back"), box.innerX + 22, y + 8, MenuTheme.TEXT);
+		renderModuleTile(gfx, module, box.innerX + 48, y, box.innerW - 48, mouseX, mouseY, tooltip);
+		y += MenuTheme.MODULE_H + 4;
+		return renderNodes(gfx, module.getNodes(), box.innerX, y, box.innerW, mouseX, mouseY, tooltip, 0);
+	}
+
+	private String renderModuleTile(AxoRenderContext gfx, Module module, int x, int y, int w, int mouseX, int mouseY, String tooltip) {
 		boolean selected = module.getId().equals(selectedId);
 		int h = MenuTheme.MODULE_H;
 		int bg = selected ? MenuTheme.PANEL_SELECTED : (hovered(x, y, w, h, mouseX, mouseY) ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER);
 		gfx.br$fillRectRound(x, y, w, h, bg, 4f);
-		if (selected) {
-			fill(x, y + 2, x + 2, y + h - 2, MenuTheme.ACCENT);
+		if (module.getEnabled() != null && module.getEnabled().get()) {
+			fill(x + 1, y + 6, x + 3, y + h - 6, MenuTheme.ACCENT);
 		}
-		textRenderer.draw(trim(module.displayName(), w - (module.getEnabled() != null ? 40 : 16)), x + 6, y + 6, MenuTheme.TEXT);
+		GlStateManager.color4f(1f, 1f, 1f, 1f);
+		ItemUtil.renderGuiItemModel(ModsMenuIcons.forKey(module.getNameKey()), x + 3, y + (h - 16) / 2);
+		GlStateManager.color4f(1f, 1f, 1f, 1f);
+		GlStateManager.disableLighting();
+		GlStateManager.enableBlend();
+		GlStateManager.enableTexture();
+		int textLeft = x + 21;
+		int textRight = w - (module.getEnabled() != null ? MenuTheme.TOGGLE_W + 10 : 6);
+		textRenderer.draw(trim(module.displayName(), textRight - 21), textLeft, y + 8, MenuTheme.TEXT);
 		if (module.getEnabled() != null) {
-			drawToggle(gfx, x + w - MenuTheme.TOGGLE_W - 6, y + (h - MenuTheme.TOGGLE_H) / 2, module.getEnabled().get(), MenuCatalog.isForcedOff(module.getEnabled()));
-		}
-		if (selected) {
-			int optY = y + h + 2;
-			tooltip = renderNodes(gfx, module.getNodes(), x + 4, optY, w - 8, mouseX, mouseY, tooltip, 0);
+			drawToggle(gfx, x + w - MenuTheme.TOGGLE_W - 5, y + (h - MenuTheme.TOGGLE_H) / 2, module.getEnabled().get(), MenuCatalog.isForcedOff(module.getEnabled()));
 		}
 		return tooltip;
 	}
+
+	private String hoverTooltip;
 
 	private String renderNodes(AxoRenderContext gfx, List<Node> nodes, int x, int y, int w, int mouseX, int mouseY, String tooltip, int depth) {
 		int cursor = y;
@@ -404,9 +425,9 @@ public class HudEditScreen extends Screen {
 		drawCentered(trim(text, w - 4), x + w / 2, y + 4, active ? 0xFF0B0D12 : MenuTheme.TEXT);
 	}
 
-	private void drawCollapseAffordance(int x, int y, int mouseX, int mouseY) {
+	private void drawHeaderButton(int x, int y, String glyph, int mouseX, int mouseY) {
 		int color = hovered(x, y, 12, 12, mouseX, mouseY) ? MenuTheme.TEXT : MenuTheme.TEXT_MUTED;
-		textRenderer.draw("<", x, y + 2, color);
+		textRenderer.draw(glyph, x, y + 2, color);
 	}
 
 	private void renderTooltip(int mouseX, int mouseY) {
@@ -433,9 +454,9 @@ public class HudEditScreen extends Screen {
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int button) {
 		searchFocused = false;
-		if (inSidebar(mouseX, mouseY)) {
+		if (inPanel(mouseX, mouseY)) {
 			if (button == 0) {
-				handleSidebarClick(mouseX, mouseY);
+				handlePanelClick(mouseX, mouseY);
 			}
 			return;
 		}
@@ -460,71 +481,89 @@ public class HudEditScreen extends Screen {
 		}
 	}
 
-	private void handleSidebarClick(int mouseX, int mouseY) {
-		int x = MenuTheme.PAD;
-		int y = MenuTheme.PAD;
-		int w = sidebarWidth();
-		int h = height - MenuTheme.PAD * 2;
+	private void handlePanelClick(int mouseX, int mouseY) {
+		PanelLayout box = layout();
 		if (collapsed) {
 			collapsed = false;
 			return;
 		}
-		if (hovered(x + w - 16, y + 4, 12, 12, mouseX, mouseY)) {
+		if (hovered(box.x + box.w - 16, box.y + 3, 12, 12, mouseX, mouseY)) {
+			closeMenu();
+			return;
+		}
+		if (hovered(box.x + box.w - 30, box.y + 3, 12, 12, mouseX, mouseY)) {
 			collapsed = true;
 			return;
 		}
-		int innerX = x + MenuTheme.PAD;
-		int innerW = w - MenuTheme.PAD * 2;
-		int cursorY = y + 5 + MenuTheme.HEADER_H - 4;
-		int tabW = tabWidth(innerW);
+		int tabW = tabWidth(box.innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
-			int tx = tabX(innerX, innerW, i);
-			int ty = tabY(cursorY, i);
+			int tx = tabX(box.innerX, box.innerW, i);
+			int ty = tabY(box.tabsY, i);
 			if (hovered(tx, ty, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY)) {
 				tab = Tab.values()[i];
+				selectedId = null;
 				listScroll = 0;
 				return;
 			}
 		}
-		cursorY += tabsBlockHeight() + 4;
-		if (hovered(innerX, cursorY, innerW, MenuTheme.SEARCH_H, mouseX, mouseY)) {
+		if (hovered(box.innerX, box.searchY, box.innerW, MenuTheme.SEARCH_H, mouseX, mouseY)) {
 			searchFocused = true;
 			editingOptionName = null;
 			return;
 		}
-		cursorY += MenuTheme.SEARCH_H + 4;
-		int listTop = cursorY;
-		int listBottom = y + h - MenuTheme.FOOTER_H - 4;
-		int footerY = y + h - MenuTheme.FOOTER_H + 2;
-		if (hovered(innerX, footerY, 40, 16, mouseX, mouseY)) {
+		if (hovered(box.innerX, box.footerY, 40, 16, mouseX, mouseY)) {
 			HudManager.getInstance().toggleSnapping();
 			return;
 		}
-		if (hovered(innerX + innerW - 48, footerY, 48, 16, mouseX, mouseY)) {
-			closeMenu();
+
+		if (mouseY < box.listTop || mouseY > box.listBottom) {
 			return;
 		}
 
-		int drawY = listTop - listScroll;
-		for (Module module : visibleModules()) {
-			int moduleH = moduleHeight(module);
-			if (mouseY >= listTop && mouseY <= listBottom && hovered(innerX, drawY, innerW, MenuTheme.MODULE_H, mouseX, mouseY)) {
-				if (module.getEnabled() != null && hovered(innerX + innerW - MenuTheme.TOGGLE_W - 6, drawY + 4, MenuTheme.TOGGLE_W, MenuTheme.TOGGLE_H, mouseX, mouseY)) {
-					if (!MenuCatalog.isForcedOff(module.getEnabled())) {
-						module.getEnabled().toggle();
-					}
-					return;
-				}
-				selectedId = selectedId != null && selectedId.equals(module.getId()) ? null : module.getId();
+		Module selected = findModule(selectedId);
+		if (selected != null) {
+			int y = box.listTop - listScroll;
+			if (hovered(box.innerX, y, 44, MenuTheme.MODULE_H, mouseX, mouseY)) {
+				selectedId = null;
+				listScroll = 0;
 				return;
 			}
-			if (module.getId().equals(selectedId) && mouseY >= listTop && mouseY <= listBottom) {
-				if (handleNodeClick(module.getNodes(), innerX + 4, drawY + MenuTheme.MODULE_H + 2, innerW - 8, mouseX, mouseY)) {
-					return;
-				}
+			int tileX = box.innerX + 48;
+			int tileW = box.innerW - 48;
+			if (hovered(tileX, y, tileW, MenuTheme.MODULE_H, mouseX, mouseY)) {
+				clickModuleToggle(selected, tileX, y, tileW, mouseX, mouseY);
+				return;
 			}
-			drawY += moduleH + 2;
+			handleNodeClick(selected.getNodes(), box.innerX, y + MenuTheme.MODULE_H + 4, box.innerW, mouseX, mouseY);
+			return;
 		}
+
+		List<Module> visible = visibleModules();
+		int tileW = tileWidth(box.innerW);
+		for (int i = 0; i < visible.size(); i++) {
+			int col = i % MenuTheme.COLS;
+			int row = i / MenuTheme.COLS;
+			int x = box.innerX + col * (tileW + MenuTheme.TILE_GAP);
+			int y = box.listTop + row * (MenuTheme.MODULE_H + MenuTheme.TILE_GAP) - listScroll;
+			if (hovered(x, y, tileW, MenuTheme.MODULE_H, mouseX, mouseY)) {
+				Module module = visible.get(i);
+				if (!clickModuleToggle(module, x, y, tileW, mouseX, mouseY)) {
+					selectedId = module.getId();
+					listScroll = 0;
+				}
+				return;
+			}
+		}
+	}
+
+	private boolean clickModuleToggle(Module module, int x, int y, int w, int mouseX, int mouseY) {
+		if (module.getEnabled() != null && hovered(x + w - MenuTheme.TOGGLE_W - 5, y + (MenuTheme.MODULE_H - MenuTheme.TOGGLE_H) / 2, MenuTheme.TOGGLE_W, MenuTheme.TOGGLE_H, mouseX, mouseY)) {
+			if (!MenuCatalog.isForcedOff(module.getEnabled())) {
+				module.getEnabled().toggle();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	private boolean handleNodeClick(List<Node> nodes, int x, int y, int w, int mouseX, int mouseY) {
@@ -706,7 +745,7 @@ public class HudEditScreen extends Screen {
 	public void handleMouse() {
 		super.handleMouse();
 		int wheel = Mouse.getEventDWheel();
-		if (wheel != 0 && inSidebar(mouseX, mouseY)) {
+		if (wheel != 0 && inPanel(mouseX, mouseY)) {
 			listScroll -= Integer.signum(wheel) * 14;
 			clampScroll();
 		}
@@ -810,15 +849,8 @@ public class HudEditScreen extends Screen {
 	}
 
 	private void ensureVisible(Module module) {
-		int y = 0;
-		for (Module m : visibleModules()) {
-			if (m.getId().equals(module.getId())) {
-				listScroll = Math.max(0, y - 20);
-				clampScroll();
-				return;
-			}
-			y += moduleHeight(m) + 2;
-		}
+		listScroll = 0;
+		clampScroll();
 	}
 
 	private void updateSnapState() {
@@ -954,27 +986,67 @@ public class HudEditScreen extends Screen {
 		return null;
 	}
 
-	private int sidebarWidth() {
+	private int tileWidth(int innerW) {
+		return (innerW - MenuTheme.TILE_GAP * (MenuTheme.COLS - 1)) / MenuTheme.COLS;
+	}
+
+	private PanelLayout layout() {
+		int w = panelWidth();
+		int h = panelHeight();
+		int x = (width - w) / 2;
+		int y = (height - h) / 2;
+		int innerX = x + MenuTheme.PAD;
+		int innerW = w - MenuTheme.PAD * 2;
+		int tabsY = y + 5 + MenuTheme.HEADER_H - 4;
+		int searchY = tabsY + tabsBlockHeight() + 4;
+		int listTop = searchY + MenuTheme.SEARCH_H + 4;
+		int footerY = y + h - MenuTheme.FOOTER_H + 2;
+		int listBottom = footerY - 4;
+		return new PanelLayout(x, y, w, h, innerX, innerW, tabsY, searchY, listTop, listBottom, footerY);
+	}
+
+	private int panelWidth() {
 		if (collapsed) {
-			return 18;
+			return MenuTheme.COLLAPSED_W;
 		}
-		return MathUtil.clamp(width * 42 / 100, 158, 248);
+		return Math.min(MenuTheme.MAX_PANEL_W, Math.max(MenuTheme.MIN_PANEL_W, width - 64));
 	}
 
-	private boolean inSidebar(int mouseX, int mouseY) {
-		int x = MenuTheme.PAD;
-		int y = MenuTheme.PAD;
-		int w = sidebarWidth();
-		int h = height - MenuTheme.PAD * 2;
-		return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
+	private int panelHeight() {
+		if (collapsed) {
+			return MenuTheme.COLLAPSED_H;
+		}
+		return Math.min(MenuTheme.MAX_PANEL_H, Math.max(MenuTheme.MIN_PANEL_H, height - 32));
 	}
 
-	private int moduleHeight(Module module) {
-		int h = MenuTheme.MODULE_H;
-		if (module.getId().equals(selectedId)) {
-			h += 2 + sectionHeight(module.getNodes(), 0);
+	private boolean inPanel(int mouseX, int mouseY) {
+		if (collapsed) {
+			int w = MenuTheme.COLLAPSED_W;
+			int h = MenuTheme.COLLAPSED_H;
+			int x = (width - w) / 2;
+			int y = 8;
+			return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
 		}
-		return h;
+		PanelLayout box = layout();
+		return mouseX >= box.x && mouseX <= box.x + box.w && mouseY >= box.y && mouseY <= box.y + box.h;
+	}
+
+	private int contentHeight() {
+		if (findModule(selectedId) != null) {
+			Module selected = findModule(selectedId);
+			return MenuTheme.MODULE_H + 4 + sectionHeight(selected.getNodes(), 0);
+		}
+		int rows = (int) Math.ceil(visibleModules().size() / (double) MenuTheme.COLS);
+		return Math.max(0, rows * (MenuTheme.MODULE_H + MenuTheme.TILE_GAP) - MenuTheme.TILE_GAP);
+	}
+
+	private void clampScroll() {
+		PanelLayout box = layout();
+		int listH = Math.max(1, box.listBottom - box.listTop);
+		listScroll = MathUtil.clamp(listScroll, 0, Math.max(0, contentHeight() - listH));
+	}
+
+	private record PanelLayout(int x, int y, int w, int h, int innerX, int innerW, int tabsY, int searchY, int listTop, int listBottom, int footerY) {
 	}
 
 	private int sectionHeight(List<Node> nodes, int depth) {
@@ -998,19 +1070,6 @@ public class HudEditScreen extends Screen {
 
 	private boolean isExpandedColor(io.github.axolotlclient.AxolotlClientConfig.api.options.Option<?> option) {
 		return option.getName().equals(expandedColorId);
-	}
-
-	private int contentHeight() {
-		int h = 0;
-		for (Module module : visibleModules()) {
-			h += moduleHeight(module) + 2;
-		}
-		return h;
-	}
-
-	private void clampScroll() {
-		int listH = Math.max(1, height - MenuTheme.PAD * 2 - MenuTheme.HEADER_H - tabsBlockHeight() - MenuTheme.SEARCH_H - MenuTheme.FOOTER_H - 28);
-		listScroll = MathUtil.clamp(listScroll, 0, Math.max(0, contentHeight() - listH));
 	}
 
 	private void drawCentered(String text, int x, int y, int color) {

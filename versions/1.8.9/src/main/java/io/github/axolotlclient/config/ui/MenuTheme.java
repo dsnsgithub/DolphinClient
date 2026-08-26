@@ -56,7 +56,8 @@ public final class MenuTheme {
 	public static final int OPTION_H = 16;
 	public static final int SECTION_H = 14;
 	public static final int FOOTER_H = 24;
-	public static final int PAD = 6;
+	public static final int PAD = 8;
+	public static final int GRID_GAP = 4;
 	public static final int TOGGLE_W = 26;
 	public static final int TOGGLE_H = 12;
 }

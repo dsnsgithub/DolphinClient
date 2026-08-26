@@ -67,7 +67,7 @@ public final class MenuTheme {
 	public static final int TOGGLE_H = 11;
 	public static final int TOGGLE_INSET = 8;
 	public static final int ICON_SIZE = 16;
-	public static final int ICON_TEXT_GAP = 14;
+	public static final int ICON_TEXT_GAP = 18;
 	public static final int CONTROL_W = 78;
 	public static final int HEADER_BTN = 12;
 	public static final int HEADER_BTN_INSET = 14;

@@ -1,0 +1,50 @@
+/*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * For more information, see the LICENSE file.
+ */
+
+package io.github.axolotlclient.oldanimations.util;
+
+import lombok.Getter;
+import lombok.Setter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+
+public final class ItemUtil {
+	public static ItemUtil INSTANCE = new ItemUtil();
+
+	@Getter
+	@Setter
+	private GroundType type;
+
+	public boolean isCustomRenderer(ItemStack stack) {
+		/* items like skulls and banners use a custom model renderer. they are also coincidentally block entities */
+		return Minecraft.getInstance().getItemRenderer().getModelShaper().getModel(stack).isCustomRenderer();
+	}
+
+	public boolean isBlazeRod(ItemStack stack) {
+		/* this guy is a con artist */
+		return stack.getItem() == Items.BLAZE_ROD;
+	}
+
+	public enum GroundType {
+		/* the ground item transform type encompasses these 2 */
+		/* thought it would be fun to use enums hehe */
+		THROWN,
+		DROPPED
+	}
+}

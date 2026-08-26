@@ -34,7 +34,8 @@ public class Credits {
 
 	static {
 		contributor("moehreag", "Author, Programming", "https://github.com/moehreag");
-		contributor("TheKodeToad", "Contributor", "Motion Blur", "Freelook", "Zoom");
+		contributor("TheKodeToad", "Contributor", "Motion Blur", "Freelook", "Zoom", "Old Animations");
+		contributor("Mixces", "Old Animations");
 		contributor("DragonEggBedrockBreaking", "Bugfixes", "Inspiration of new Features");
 		contributor("Astralchroma", "Backend Development", "Backend Hosting");
 		contributor("gart", "gartbin dev and host", "Image sharing help", "https://gart.sh", "Backend developer");

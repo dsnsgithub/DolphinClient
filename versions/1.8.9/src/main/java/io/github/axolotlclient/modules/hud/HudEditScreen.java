@@ -89,6 +89,7 @@ public class HudEditScreen extends Screen {
 	private int listScroll;
 	private int mouseX, mouseY;
 	private int caretTicks;
+	private static final int TAB_COLS = 2;
 
 	private HudEntry current;
 	private DrawPosition offset;
@@ -226,16 +227,17 @@ public class HudEditScreen extends Screen {
 		drawCollapseAffordance(x + w - 16, y + 4, mouseX, mouseY);
 		cursorY += MenuTheme.HEADER_H - 4;
 
-		int tabW = innerW / 3;
+		int tabW = tabWidth(innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
 			Tab t = Tab.values()[i];
-			int tx = innerX + i * tabW;
+			int tx = tabX(innerX, innerW, i);
+			int ty = tabY(cursorY, i);
 			boolean active = tab == t;
-			int color = active ? MenuTheme.ACCENT : (hovered(tx, cursorY, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY) ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER);
-			gfx.br$fillRectRound(tx, cursorY, tabW - 1, MenuTheme.TAB_H, color, 3f);
-			drawCentered(I18n.translate("menu.client.tab." + t.name().toLowerCase(Locale.ROOT)), tx + (tabW - 1) / 2, cursorY + 5, MenuTheme.TEXT);
+			int color = active ? MenuTheme.ACCENT : (hovered(tx, ty, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY) ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER);
+			gfx.br$fillRectRound(tx, ty, tabW - 1, MenuTheme.TAB_H, color, 3f);
+			drawCentered(I18n.translate("menu.client.tab." + t.name().toLowerCase(Locale.ROOT)), tx + (tabW - 1) / 2, ty + 5, MenuTheme.TEXT);
 		}
-		cursorY += MenuTheme.TAB_H + 4;
+		cursorY += tabsBlockHeight() + 4;
 
 		int searchColor = searchFocused ? MenuTheme.PANEL_SELECTED : MenuTheme.PANEL_INNER;
 		gfx.br$fillRectRound(innerX, cursorY, innerW, MenuTheme.SEARCH_H, searchColor, 3f);
@@ -474,16 +476,17 @@ public class HudEditScreen extends Screen {
 		int innerX = x + MenuTheme.PAD;
 		int innerW = w - MenuTheme.PAD * 2;
 		int cursorY = y + 5 + MenuTheme.HEADER_H - 4;
-		int tabW = innerW / 3;
+		int tabW = tabWidth(innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
-			int tx = innerX + i * tabW;
-			if (hovered(tx, cursorY, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY)) {
+			int tx = tabX(innerX, innerW, i);
+			int ty = tabY(cursorY, i);
+			if (hovered(tx, ty, tabW - 1, MenuTheme.TAB_H, mouseX, mouseY)) {
 				tab = Tab.values()[i];
 				listScroll = 0;
 				return;
 			}
 		}
-		cursorY += MenuTheme.TAB_H + 4;
+		cursorY += tabsBlockHeight() + 4;
 		if (hovered(innerX, cursorY, innerW, MenuTheme.SEARCH_H, mouseX, mouseY)) {
 			searchFocused = true;
 			editingOptionName = null;
@@ -919,6 +922,26 @@ public class HudEditScreen extends Screen {
 		return visible;
 	}
 
+	private int tabWidth(int innerW) {
+		return innerW / TAB_COLS;
+	}
+
+	private int tabX(int innerX, int innerW, int index) {
+		return innerX + (index % TAB_COLS) * tabWidth(innerW);
+	}
+
+	private int tabY(int tabsTop, int index) {
+		return tabsTop + (index / TAB_COLS) * (MenuTheme.TAB_H + 2);
+	}
+
+	private int tabRowCount() {
+		return (Tab.values().length + TAB_COLS - 1) / TAB_COLS;
+	}
+
+	private int tabsBlockHeight() {
+		return tabRowCount() * (MenuTheme.TAB_H + 2) - 2;
+	}
+
 	private Module findModule(String id) {
 		if (id == null) {
 			return null;
@@ -986,7 +1009,7 @@ public class HudEditScreen extends Screen {
 	}
 
 	private void clampScroll() {
-		int listH = Math.max(1, height - MenuTheme.PAD * 2 - MenuTheme.HEADER_H - MenuTheme.TAB_H - MenuTheme.SEARCH_H - MenuTheme.FOOTER_H - 28);
+		int listH = Math.max(1, height - MenuTheme.PAD * 2 - MenuTheme.HEADER_H - tabsBlockHeight() - MenuTheme.SEARCH_H - MenuTheme.FOOTER_H - 28);
 		listScroll = MathUtil.clamp(listScroll, 0, Math.max(0, contentHeight() - listH));
 	}
 

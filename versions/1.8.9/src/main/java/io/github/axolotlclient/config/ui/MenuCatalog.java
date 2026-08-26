@@ -34,6 +34,7 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.modules.hud.HudManager;
 import io.github.axolotlclient.modules.hud.gui.component.HudEntry;
 import io.github.axolotlclient.modules.hud.gui.entry.AbstractHudEntry;
+import io.github.axolotlclient.oldanimations.OldAnimations;
 import io.github.axolotlclient.util.options.ForceableBooleanOption;
 import lombok.Getter;
 import net.minecraft.client.resource.language.I18n;
@@ -46,6 +47,7 @@ public final class MenuCatalog {
 	public enum Tab {
 		HUD,
 		MODS,
+		ANIMATIONS,
 		SETTINGS
 	}
 
@@ -146,11 +148,23 @@ public final class MenuCatalog {
 			if ("hud".equals(name) || "storedOptions".equals(name) || "hidden".equals(name) || "config".equals(name)) {
 				continue;
 			}
+			if (OldAnimations.MODID.equals(name)) {
+				absorbAnimations(modules, category);
+				continue;
+			}
 			Tab tab = isSettings(name) ? Tab.SETTINGS : Tab.MODS;
 			absorb(modules, category, tab);
 		}
 
 		return modules;
+	}
+
+	private static void absorbAnimations(List<Module> modules, OptionCategory category) {
+		BooleanOption enabled = firstEnabled(category.getOptions());
+		modules.add(moduleFrom(category.getName(), Tab.ANIMATIONS, enabled, optionNodes(category.getOptions())));
+		for (OptionCategory child : category.getSubCategories()) {
+			modules.add(moduleFrom(child.getName(), Tab.ANIMATIONS, firstEnabled(child.getOptions()), nodesFrom(child, false)));
+		}
 	}
 
 	private static void absorb(List<Module> modules, OptionCategory category, Tab tab) {

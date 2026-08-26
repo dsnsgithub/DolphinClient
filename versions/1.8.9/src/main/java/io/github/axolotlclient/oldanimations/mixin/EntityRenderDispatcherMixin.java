@@ -1,0 +1,112 @@
+/*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * For more information, see the LICENSE file.
+ */
+
+package io.github.axolotlclient.oldanimations.mixin;
+
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
+import io.github.axolotlclient.oldanimations.util.MobUtil;
+import io.github.axolotlclient.oldanimations.util.PlayerUtil;
+import net.minecraft.client.entity.living.player.ClientPlayerEntity;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.PlayerRenderer;
+import net.minecraft.client.render.vertex.Tesselator;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.living.LivingEntity;
+import net.minecraft.util.math.Box;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+
+@Mixin(EntityRenderDispatcher.class)
+public abstract class EntityRenderDispatcherMixin {
+
+	@Shadow
+	private PlayerRenderer defaultPlayerRenderer;
+
+	@Inject(method = "getRenderer(Lnet/minecraft/entity/Entity;)Lnet/minecraft/client/render/entity/EntityRenderer;", at = @At("HEAD"), cancellable = true)
+	private void axolotlclient$defaultToSteve(Entity entity, CallbackInfoReturnable<PlayerRenderer> cir) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.disableAlexModel.get() && entity instanceof ClientPlayerEntity) {
+			/* 1.7 doesn't have Alex skins! */
+			cir.setReturnValue(defaultPlayerRenderer);
+		}
+	}
+
+	@Definition(id = "LivingEntity", type = LivingEntity.class)
+	@Expression("? instanceof LivingEntity")
+	@ModifyExpressionValue(method = "renderHitbox", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
+	private boolean axolotlclient$disableEyeBox(boolean original) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.removeHitboxEyeLine.get()) {
+			/* this doesn't exist in 1.7 */
+			return false;
+		}
+		return original;
+	}
+
+	@WrapOperation(method = "renderHitbox", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/Tesselator;end()V"))
+	private void axolotlclient$cancelDraw(Tesselator instance, Operation<Void> original) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.removeHitboxEyeVector.get()) {
+			/* this is a neat trick to cancel rendering... although maybe i should remove the unused code at that */
+			instance.getBuffer().end();
+		} else {
+			original.call(instance);
+		}
+	}
+
+	@ModifyArgs(method = "renderHitbox", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;<init>(DDDDDD)V"))
+	private void axolotlclient$oldHitboxBehavior(Args args, @Local(argsOnly = true) Entity entity) {
+		if (OldAnimationsConfig.isEnabled() && PlayerUtil.INSTANCE.isSelf(entity)) {
+			/* sneaking compatibility! */
+			double eyeHeightOffset = OldAnimationsConfig.instance.thirdPersonSneaking.get() ? PlayerUtil.INSTANCE.getEyeHeight() - 1.62F : 0.0F;
+			/* man there were a lot of eyeheight bugs back in the day LOOOL - MC-4077 */
+			double hitboxOffset = OldAnimationsConfig.instance.hitboxOffset.get() ? 1.62F : 0.0F;
+			args.set(1, (double) args.get(1) + eyeHeightOffset + hitboxOffset);
+			args.set(4, (double) args.get(4) + eyeHeightOffset + hitboxOffset);
+		}
+	}
+
+	@WrapOperation(method = "renderHitbox", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/world/WorldRenderer;renderOutlineShape(Lnet/minecraft/util/math/Box;IIII)V", ordinal = 0))
+	private void axolotlclient$oldHitboxDimensions(Box shape, int r, int g, int b, int a, Operation<Void> original, Entity entity, double dx, double dy, double dz, float yaw, float tickDelta, @Local(index = 10) float f) {
+		/* although this could be two features, i think it's best to combine it with the mob size/dimensions feature */
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mobSizeDimensions.get()) {
+			/* taken from 1.7 */
+			shape = new Box(dx - f, dy, dz - f, dx + f, dy + MobUtil.INSTANCE.oldMobHeight(entity, entity.height), dz + f);
+		}
+		original.call(shape, r, g, b, a);
+	}
+
+	@ModifyExpressionValue(method = "renderHitbox", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/Entity;width:F"))
+	private float axolotlclient$oldMobWidth(float original, @Local(argsOnly = true) Entity entity) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mobSizeDimensions.get()) {
+			/* since entity hitbox sizes are slightly different in 1.7, this is the closest we can get to emulating that */
+			/* without altering combat */
+			original = MobUtil.INSTANCE.oldMobWidth(entity, original);
+		}
+		return original;
+	}
+}

@@ -229,7 +229,7 @@ public abstract class AxolotlClientCommon {
 	// random stuff
 
 	public void saveConfig() {
-		getConfigManager().save();
+		AxolotlClientConfig.getInstance().saveAll();
 		for (Module m : modules) {
 			if (m instanceof ProfileAware p) {
 				p.saveConfig();

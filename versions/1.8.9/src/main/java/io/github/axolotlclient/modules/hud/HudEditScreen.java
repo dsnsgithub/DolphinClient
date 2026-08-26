@@ -224,9 +224,8 @@ public class HudEditScreen extends Screen {
 
 		String title = I18n.translate("menu.client.title");
 		textRenderer.draw(title, box.innerX, box.y + 5, MenuTheme.TEXT);
-		int controlX = box.innerX + textRenderer.getWidth(title) + 6;
-		drawHeaderButton(gfx, controlX, box.y + 3, "-", mouseX, mouseY);
-		drawHeaderButton(gfx, controlX + 14, box.y + 3, "x", mouseX, mouseY);
+		drawHeaderButton(gfx, box.minimizeX(), box.headerBtnY(), "-", mouseX, mouseY);
+		drawHeaderButton(gfx, box.closeX(), box.headerBtnY(), "x", mouseX, mouseY);
 
 		int tabW = tabWidth(box.innerW);
 		for (int i = 0; i < Tab.values().length; i++) {
@@ -308,16 +307,19 @@ public class HudEditScreen extends Screen {
 			fill(x + 1, y + 6, x + 3, y + h - 6, MenuTheme.ACCENT);
 		}
 		GlStateManager.color4f(1f, 1f, 1f, 1f);
-		ItemUtil.renderGuiItemModel(ModsMenuIcons.forKey(module.getNameKey()), x + 3, y + (h - 16) / 2);
+		int iconX = x + 4;
+		int iconY = y + (h - MenuTheme.ICON_SIZE) / 2;
+		ItemUtil.renderGuiItemModel(ModsMenuIcons.forKey(module.getNameKey()), iconX, iconY);
 		GlStateManager.color4f(1f, 1f, 1f, 1f);
 		GlStateManager.disableLighting();
 		GlStateManager.enableBlend();
 		GlStateManager.enableTexture();
-		int textLeft = x + 21;
-		int textRight = w - (module.getEnabled() != null ? MenuTheme.TOGGLE_W + 10 : 6);
-		textRenderer.draw(trim(module.displayName(), textRight - 21), textLeft, y + 8, MenuTheme.TEXT);
+		int textLeft = iconX + MenuTheme.ICON_SIZE + MenuTheme.ICON_TEXT_GAP;
+		int toggleX = x + w - MenuTheme.TOGGLE_W - MenuTheme.TOGGLE_INSET;
+		int textRight = (module.getEnabled() != null ? toggleX : x + w) - 6;
+		textRenderer.draw(trim(module.displayName(), Math.max(8, textRight - textLeft)), textLeft, y + (h - 8) / 2, MenuTheme.TEXT);
 		if (module.getEnabled() != null) {
-			drawToggle(gfx, x + w - MenuTheme.TOGGLE_W - 5, y + (h - MenuTheme.TOGGLE_H) / 2, module.getEnabled().get(), MenuCatalog.isForcedOff(module.getEnabled()));
+			drawToggle(gfx, toggleX, y + (h - MenuTheme.TOGGLE_H) / 2, module.getEnabled().get(), MenuCatalog.isForcedOff(module.getEnabled()));
 		}
 		return tooltip;
 	}
@@ -353,12 +355,12 @@ public class HudEditScreen extends Screen {
 				}
 			}
 		}
-		int controlW = 72;
-		int labelW = w - controlW - 4;
-		textRenderer.draw(trim(MenuCatalog.label(option.getName()), labelW), x + 2, y + 4, MenuTheme.TEXT_MUTED);
+		int controlW = MenuTheme.CONTROL_W;
+		int labelW = w - controlW - 8;
+		textRenderer.draw(trim(MenuCatalog.label(option.getName()), labelW), x + 2, y + 5, MenuTheme.TEXT_MUTED);
 		int cx = x + w - controlW;
 		if (option instanceof BooleanOption bool) {
-			drawToggle(gfx, cx + controlW - MenuTheme.TOGGLE_W, y + 2, bool.get(), MenuCatalog.isForcedOff(bool));
+			drawToggle(gfx, cx + controlW - MenuTheme.TOGGLE_W, y + (h - MenuTheme.TOGGLE_H) / 2, bool.get(), MenuCatalog.isForcedOff(bool));
 		} else if (option instanceof NumberOption<?> number) {
 			drawSlider(gfx, cx, y + 3, controlW, number);
 		} else if (option instanceof ColorOption color) {
@@ -371,7 +373,7 @@ public class HudEditScreen extends Screen {
 				drawChannelSlider(gfx, x, py + MenuTheme.OPTION_H * 2, w, "B", color.getOriginal().getBlue() / 255f, 0xFF5555FF);
 				drawChannelSlider(gfx, x, py + MenuTheme.OPTION_H * 3, w, "A", color.getOriginal().getAlpha() / 255f, MenuTheme.TEXT);
 				textRenderer.draw(I18n.translate("chroma"), x + 2, py + MenuTheme.OPTION_H * 4 + 4, MenuTheme.TEXT_MUTED);
-				drawToggle(gfx, x + w - MenuTheme.TOGGLE_W, py + MenuTheme.OPTION_H * 4 + 2, color.getOriginal().isChroma(), false);
+				drawToggle(gfx, x + w - MenuTheme.TOGGLE_W - MenuTheme.TOGGLE_INSET, py + MenuTheme.OPTION_H * 4 + (MenuTheme.OPTION_H - MenuTheme.TOGGLE_H) / 2, color.getOriginal().isChroma(), false);
 			}
 		} else if (option instanceof EnumOption<?> || option instanceof StringArrayOption) {
 			gfx.br$fillRectRound(cx, y + 1, controlW, h - 2, MenuTheme.PANEL_INNER, 3f);
@@ -428,9 +430,9 @@ public class HudEditScreen extends Screen {
 	}
 
 	private void drawHeaderButton(AxoRenderContext gfx, int x, int y, String glyph, int mouseX, int mouseY) {
-		boolean hover = hovered(x, y, 12, 12, mouseX, mouseY);
-		gfx.br$fillRectRound(x, y, 12, 12, hover ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER, 3f);
-		drawCentered(glyph, x + 6, y + 2, hover ? MenuTheme.TEXT : MenuTheme.TEXT_MUTED);
+		boolean hover = hovered(x, y, MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, mouseX, mouseY);
+		gfx.br$fillRectRound(x, y, MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, hover ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER, 3f);
+		drawCentered(glyph, x + MenuTheme.HEADER_BTN / 2, y + 2, hover ? MenuTheme.TEXT : MenuTheme.TEXT_MUTED);
 	}
 
 	private void renderTooltip(int mouseX, int mouseY) {
@@ -490,12 +492,11 @@ public class HudEditScreen extends Screen {
 			collapsed = false;
 			return;
 		}
-		int controlX = box.innerX + textRenderer.getWidth(I18n.translate("menu.client.title")) + 6;
-		if (hovered(controlX + 14, box.y + 3, 12, 12, mouseX, mouseY)) {
+		if (hovered(box.closeX(), box.headerBtnY(), MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, mouseX, mouseY)) {
 			closeMenu();
 			return;
 		}
-		if (hovered(controlX, box.y + 3, 12, 12, mouseX, mouseY)) {
+		if (hovered(box.minimizeX(), box.headerBtnY(), MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, mouseX, mouseY)) {
 			collapsed = true;
 			return;
 		}
@@ -561,7 +562,7 @@ public class HudEditScreen extends Screen {
 	}
 
 	private boolean clickModuleToggle(Module module, int x, int y, int w, int mouseX, int mouseY) {
-		if (module.getEnabled() != null && hovered(x + w - MenuTheme.TOGGLE_W - 5, y + (MenuTheme.MODULE_H - MenuTheme.TOGGLE_H) / 2, MenuTheme.TOGGLE_W, MenuTheme.TOGGLE_H, mouseX, mouseY)) {
+		if (module.getEnabled() != null && hovered(x + w - MenuTheme.TOGGLE_W - MenuTheme.TOGGLE_INSET, y + (MenuTheme.MODULE_H - MenuTheme.TOGGLE_H) / 2, MenuTheme.TOGGLE_W, MenuTheme.TOGGLE_H, mouseX, mouseY)) {
 			if (!MenuCatalog.isForcedOff(module.getEnabled())) {
 				module.getEnabled().toggle();
 			}
@@ -595,7 +596,7 @@ public class HudEditScreen extends Screen {
 			option.setDefault();
 			return true;
 		}
-		int controlW = 72;
+		int controlW = MenuTheme.CONTROL_W;
 		int cx = x + w - controlW;
 		if (option instanceof BooleanOption bool) {
 			if (!MenuCatalog.isForcedOff(bool)) {
@@ -1051,6 +1052,17 @@ public class HudEditScreen extends Screen {
 	}
 
 	private record PanelLayout(int x, int y, int w, int h, int innerX, int innerW, int tabsY, int searchY, int listTop, int listBottom, int footerY) {
+		int closeX() {
+			return x + w - MenuTheme.PAD - MenuTheme.HEADER_BTN;
+		}
+
+		int minimizeX() {
+			return closeX() - MenuTheme.HEADER_BTN - 4;
+		}
+
+		int headerBtnY() {
+			return y + 4;
+		}
 	}
 
 	private int sectionHeight(List<Node> nodes, int depth) {

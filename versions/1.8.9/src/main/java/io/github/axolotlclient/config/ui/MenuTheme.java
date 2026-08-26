@@ -56,15 +56,20 @@ public final class MenuTheme {
 	public static final int HEADER_H = 16;
 	public static final int SEARCH_H = 14;
 	public static final int TAB_H = 14;
-	public static final int MODULE_H = 24;
-	public static final int OPTION_H = 15;
-	public static final int SECTION_H = 13;
+	public static final int MODULE_H = 26;
+	public static final int OPTION_H = 17;
+	public static final int SECTION_H = 14;
 	public static final int FOOTER_H = 20;
 	public static final int PAD = 8;
-	public static final int TILE_GAP = 3;
+	public static final int TILE_GAP = 4;
 	public static final int COLS = 2;
 	public static final int TOGGLE_W = 22;
 	public static final int TOGGLE_H = 11;
+	public static final int TOGGLE_INSET = 8;
+	public static final int ICON_SIZE = 16;
+	public static final int ICON_TEXT_GAP = 7;
+	public static final int CONTROL_W = 78;
+	public static final int HEADER_BTN = 12;
 	public static final int COLLAPSED_W = 96;
 	public static final int COLLAPSED_H = 16;
 }

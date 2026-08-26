@@ -16,29 +16,7 @@ pluginManagement {
 	}
 }
 
-boolean checkProp(String property) {
-
-	String value = getProperties().get("axolotlclient.modules." + property)
-	return !(value == null || value.isEmpty() || value == "false" || value == "f")
-}
-
-void optional(String name) {
-	if (checkProp(name) || checkProp("all")) {
-		System.out.println("Adding " + name)
-		include name
-		project(":$name").projectDir = file("versions/$name")
-	}
-}
-
 rootProject.name = "AxolotlClient-mod"
 include 'common'
-
-System.out.println("Adding submodules..")
-
-optional '1.8.9'
-optional '1.20'
-optional '1.21'
-optional '1.21.11'
-optional '26.1'
-optional 'latest'
-
+include '1.8.9'
+project(':1.8.9').projectDir = file('versions/1.8.9')

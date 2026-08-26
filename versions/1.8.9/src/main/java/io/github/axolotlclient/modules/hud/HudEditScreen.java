@@ -271,7 +271,11 @@ public class HudEditScreen extends Screen {
 					}
 				}
 				if (expanded != null) {
-					tooltip = renderNodes(gfx, expanded.getNodes(), innerX + 4, drawY + MenuTheme.MODULE_H + 4, innerW - 8, mouseX, mouseY, tooltip, 0);
+					int optH = sectionHeight(expanded.getNodes(), 0);
+					if (optH > 0) {
+						gfx.br$fillRectRound(innerX, drawY + MenuTheme.MODULE_H + 2, innerW, optH + 2, MenuTheme.PANEL_INNER, 4f);
+						tooltip = renderNodes(gfx, expanded.getNodes(), innerX + 6, drawY + MenuTheme.MODULE_H + 4, innerW - 12, mouseX, mouseY, tooltip, 0);
+					}
 				}
 			}
 			drawY += rowH;
@@ -537,7 +541,7 @@ public class HudEditScreen extends Screen {
 					}
 				}
 				Module expanded = selectedInRow(vis, i / cols, cols);
-				if (expanded != null && handleNodeClick(expanded.getNodes(), innerX + 4, drawY + MenuTheme.MODULE_H + 4, innerW - 8, mouseX, mouseY)) {
+				if (expanded != null && handleNodeClick(expanded.getNodes(), innerX + 6, drawY + MenuTheme.MODULE_H + 4, innerW - 12, mouseX, mouseY)) {
 					return;
 				}
 			}
@@ -972,17 +976,17 @@ public class HudEditScreen extends Screen {
 		if (collapsed) {
 			return Math.min(148, width - 16);
 		}
-		return MathUtil.clamp(width * 80 / 100, 280, Math.max(280, width - 16));
+		return Math.max(260, width - 20);
 	}
 
 	private int panelHeight() {
 		if (collapsed) {
 			return 22;
 		}
-		int max = MathUtil.clamp(height * 68 / 100, 196, height - 16);
 		int chrome = chromeHeight();
 		int needed = chrome + contentHeight();
-		return MathUtil.clamp(needed, 196, max);
+		int max = Math.min(height - 16, Math.max(height * 72 / 100, chrome + MenuTheme.MODULE_H * 5));
+		return Math.min(Math.max(needed, chrome + MenuTheme.MODULE_H * 2), Math.max(max, chrome + MenuTheme.MODULE_H * 2));
 	}
 
 	private int chromeHeight() {
@@ -1010,7 +1014,7 @@ public class HudEditScreen extends Screen {
 
 	private int moduleCols() {
 		int innerW = panelWidth() - MenuTheme.PAD * 2;
-		return MathUtil.clamp(innerW / 128, 2, 4);
+		return MathUtil.clamp(innerW / 100, 2, 5);
 	}
 
 	private int colWidth() {

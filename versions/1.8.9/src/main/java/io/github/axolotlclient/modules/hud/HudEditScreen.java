@@ -431,8 +431,8 @@ public class HudEditScreen extends Screen {
 
 	private void drawHeaderButton(AxoRenderContext gfx, int x, int y, String glyph, int mouseX, int mouseY) {
 		boolean hover = hovered(x, y, MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, mouseX, mouseY);
-		gfx.br$fillRectRound(x, y, MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, hover ? MenuTheme.PANEL_HOVER : MenuTheme.PANEL_INNER, 3f);
-		drawCentered(glyph, x + MenuTheme.HEADER_BTN / 2, y + 2, hover ? MenuTheme.TEXT : MenuTheme.TEXT_MUTED);
+		gfx.br$fillRectRound(x, y, MenuTheme.HEADER_BTN, MenuTheme.HEADER_BTN, hover ? MenuTheme.ACCENT : MenuTheme.PANEL_HOVER, 3f);
+		drawCentered(glyph, x + MenuTheme.HEADER_BTN / 2, y + 2, hover ? 0xFF0B0D12 : MenuTheme.TEXT);
 	}
 
 	private void renderTooltip(int mouseX, int mouseY) {
@@ -1053,7 +1053,7 @@ public class HudEditScreen extends Screen {
 
 	private record PanelLayout(int x, int y, int w, int h, int innerX, int innerW, int tabsY, int searchY, int listTop, int listBottom, int footerY) {
 		int closeX() {
-			return x + w - MenuTheme.PAD - MenuTheme.HEADER_BTN;
+			return x + w - MenuTheme.HEADER_BTN_INSET - MenuTheme.HEADER_BTN;
 		}
 
 		int minimizeX() {
@@ -1061,7 +1061,7 @@ public class HudEditScreen extends Screen {
 		}
 
 		int headerBtnY() {
-			return y + 4;
+			return y + 5;
 		}
 	}
 

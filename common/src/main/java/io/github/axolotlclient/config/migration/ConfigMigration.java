@@ -34,16 +34,17 @@ import io.github.axolotlclient.config.migration.impl.*;
 import net.fabricmc.loader.api.FabricLoader;
 
 public interface ConfigMigration {
-	int CONFIG_VERSION = 8;
+	int CONFIG_VERSION = 11;
 	List<ConfigMigration> MIGRATIONS = new ArrayList<>(List.of(
 		new V2Migration(),
 		new V3Migration(),
 		new V4Migration(),
 		new V5Migration(),
-		new V6Migration(),
 		new V7Migration(),
 		new V8Migration(),
-		new V9Migration()
+		new V9Migration(),
+		new V10Migration(),
+		new V11Migration()
 	));
 
 	static void apply(int oldVersion, JsonObject config) {

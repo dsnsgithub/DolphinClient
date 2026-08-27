@@ -40,7 +40,6 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.StringArrayOption;
-import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.key.AxoKeybinding;
 import io.github.axolotlclient.bridge.key.AxoKeys;
@@ -90,10 +89,6 @@ public class ScreenshotUtils extends AbstractModule {
 					Util.addMessageToChatHud(new TranslatableText("screenshot.gallery.view.error"));
 				}
 			}));
-
-		actions.put(() -> API.getInstance().isAuthenticated(), new Action("uploadAction", Formatting.AQUA,
-			"upload_image",
-			ImageShare.getInstance()::uploadImage));
 	});
 	private final OptionCategory category = OptionCategory.create("screenshotUtils");
 	private final BooleanOption enabled = new BooleanOption("enabled", false);

@@ -1,7 +1,7 @@
 /*
- * Copyright © 2025 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of AxolotlClient.
+ * This file is part of DolphinClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,13 +20,22 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.util;
+package io.github.axolotlclient.config.migration.impl;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import com.google.gson.JsonObject;
+import io.github.axolotlclient.config.migration.ConfigMigration;
 
-public record Authentication(String token, Instant expiration) {
-	public Authentication(String token) {
-		this(token, Instant.now().plus(24, ChronoUnit.HOURS));
+/**
+ * Drops the removed Social Options / API category.
+ */
+public class V10Migration implements ConfigMigration {
+	@Override
+	public int version() {
+		return 10;
+	}
+
+	@Override
+	public void apply(JsonObject config) {
+		config.remove("api.category");
 	}
 }

@@ -1,8 +1,7 @@
 /*
  * Copyright © 2025 moehreag <moehreag@gmail.com> & Contributors
- * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of DolphinClient, a fork of AxolotlClient.
+ * This file is part of AxolotlClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,19 +20,23 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.e4mc.mixin;
+package io.github.axolotlclient.util;
 
-import io.github.axolotlclient.api.e4mc.DolphinClientE4mcPlugin;
-import link.e4mc.QuiclimeSession;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.io.IOException;
+import java.time.Instant;
 
-@Mixin(value = QuiclimeSession.class, remap = false)
-public class QuiclimeSessionMixin {
-	@Inject(method = "stop", at = @At("HEAD"))
-	private void axolotlclient$stopListener(CallbackInfo ci) {
-		DolphinClientE4mcPlugin.INSTANCE.setE4mcDomain(null);
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
+public class InstantTypeAdapter extends TypeAdapter<Instant> {
+	@Override
+	public void write(JsonWriter out, Instant value) throws IOException {
+		out.value(value.toString());
+	}
+
+	@Override
+	public Instant read(JsonReader in) throws IOException {
+		return Instant.parse(in.nextString());
 	}
 }

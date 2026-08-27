@@ -34,11 +34,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import com.mojang.authlib.GameProfile;
-import io.github.axolotlclient.DolphinClient;
-import io.github.axolotlclient.DolphinClientCommon;
-import io.github.axolotlclient.DolphinClientConfigCommon;
-import io.github.axolotlclient.api.requests.UserRequest;
 import io.github.axolotlclient.bridge.impl.AxoRenderContextImpl;
 import io.github.axolotlclient.modules.hud.HudManagerCommon;
 import io.github.axolotlclient.modules.hud.gui.hud.vanilla.PlayerTabOverlayHud;
@@ -52,7 +47,6 @@ import net.minecraft.client.gui.overlay.PlayerTabOverlay;
 import net.minecraft.client.network.PlayerInfo;
 import net.minecraft.client.render.TextRenderer;
 import net.minecraft.network.Connection;
-import net.minecraft.resource.Identifier;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
@@ -65,8 +59,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerTabOverlay.class)
 public abstract class PlayerListHudMixin extends GuiElement {
-	@Unique
-	private final Minecraft axolotlclient$client = Minecraft.getInstance();
 	@Shadow
 	private Text header;
 	@Shadow
@@ -86,45 +78,13 @@ public abstract class PlayerListHudMixin extends GuiElement {
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;getWidth(Ljava/lang/String;)I", ordinal = 0))
 	private int axolotlclient$moveName(TextRenderer instance, String string, Operation<Integer> original, @Local PlayerInfo entry) {
 		var width = original.call(instance, string);
-		if (DolphinClient.config().showBadges.get()) {
-			if (DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED || UserRequest.getOnline(entry.getProfile().getId().toString())) {
-				width += 9;
-			}
-		}
 		if (((PlayerTabOverlayHud) HudManagerCommon.getInstance().get(PlayerTabOverlayHud.ID)).numericalPing.get())
 			width += instance.getWidth(String.valueOf(entry.getPing())) - 10;
 		return width;
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;drawWithShadow(Ljava/lang/String;FFI)I", ordinal = 1))
-	public int axolotlclient$moveName2(TextRenderer instance, String string, float x, float y, int color, Operation<Integer> original, @Local GameProfile entry) {
-		if (DolphinClient.config().showBadges.get() &&
-			(DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME ||
-				DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED)) {
-			if (UserRequest.getOnline(entry.getId().toString())) {
-				axolotlclient$client.getTextureManager().bind((Identifier) DolphinClientCommon.BADGE_PATH);
-				GuiElement.drawTexture((int) x, (int) y, 0, 0, 8, 8, 8, 8);
-				x += 9;
-			} else if (DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED) {
-				x += 9;
-			}
-		}
-		return original.call(instance, string, x, y, color);
-	}
-
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;drawWithShadow(Ljava/lang/String;FFI)I", ordinal = 2))
-	public int axolotlclient$moveName3(TextRenderer instance, String string, float x, float y, int color, Operation<Integer> original, @Local GameProfile entry) {
-		return axolotlclient$moveName2(instance, string, x, y, color, original, entry);
-	}
-
 	@Inject(method = "renderPing", at = @At("HEAD"), cancellable = true)
 	private void axolotlclient$numericalPing(int width, int x, int y, PlayerInfo entry, CallbackInfo ci) {
-		if (DolphinClient.config().showBadges.get() && DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_PING
-			&& UserRequest.getOnline(entry.getProfile().getId().toString())) {
-			var pingWidth = (((PlayerTabOverlayHud) HudManagerCommon.getInstance().get(PlayerTabOverlayHud.ID)).numericalPing.get()) ? Minecraft.getInstance().textRenderer.br$getWidth(String.valueOf(entry.getPing())) + 1 : 11;
-			axolotlclient$client.getTextureManager().bind((Identifier) DolphinClientCommon.BADGE_PATH);
-			GuiElement.drawTexture(x + width - pingWidth - 9, y, 0, 0, 8, 8, 8, 8);
-		}
 		if (BedwarsMod.getInstance().isEnabled() && BedwarsMod.getInstance().customTabList.get() &&
 			BedwarsMod.getInstance().blockLatencyIcon() && (BedwarsMod.getInstance().isWaiting() || BedwarsMod.getInstance().inGame())) {
 			ci.cancel();

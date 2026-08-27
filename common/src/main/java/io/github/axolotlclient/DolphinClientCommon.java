@@ -36,8 +36,6 @@ import io.github.axolotlclient.AxolotlClientConfig.api.manager.ConfigManager;
 import io.github.axolotlclient.AxolotlClientConfig.api.ui.ConfigUI;
 import io.github.axolotlclient.AxolotlClientConfig.impl.managers.JsonConfigManager;
 import io.github.axolotlclient.AxolotlClientConfig.impl.managers.VersionedJsonConfigManager;
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.api.Options;
 import io.github.axolotlclient.bridge.events.Events;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.bridge.util.AxoProfiler;
@@ -56,7 +54,6 @@ import io.github.axolotlclient.modules.zoom.Zoom;
 import io.github.axolotlclient.util.FeatureDisablerCommon;
 import io.github.axolotlclient.util.Logger;
 import io.github.axolotlclient.util.OSUtil;
-import io.github.axolotlclient.util.compat.BetterTabCompat;
 import io.github.axolotlclient.util.notifications.NotificationProvider;
 import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
@@ -160,9 +157,7 @@ public abstract class DolphinClientCommon {
 		registerModule(Freelook.getInstance());
 		registerModule(TntTime.getInstance());
 		registerModule(DiscordRPC.getInstance());
-		registerModule(getApiOptions());
 		registerModule(Zoom.getInstance());
-		registerModule(new BetterTabCompat());
 	}
 
 	// init logic
@@ -232,10 +227,7 @@ public abstract class DolphinClientCommon {
 
 		getFeatureDisabler().init();
 
-		// register events
-
 		Events.END_RESOURCE_RELOAD.register(() -> HypixelAbstractionLayer.getInstance().clearPlayerData());
-		Events.CLIENT_STOP.register(() -> API.getInstance().shutdown());
 	}
 
 	protected final void registerModule(Module module) {
@@ -246,8 +238,6 @@ public abstract class DolphinClientCommon {
 	protected abstract FeatureDisablerCommon getFeatureDisabler();
 
 	protected abstract DolphinClientConfigCommon createConfig();
-
-	public abstract Options getApiOptions();
 
 	// random stuff
 
@@ -282,6 +272,5 @@ public abstract class DolphinClientCommon {
 			}
 		}
 		lateModuleInit();
-		API.getInstance().restart();
 	}
 }

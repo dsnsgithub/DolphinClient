@@ -34,6 +34,10 @@ public class ForceableBooleanOption extends BooleanOption {
 		super(name, defaultValue);
 	}
 
+	public ForceableBooleanOption(String name, String tooltip, Boolean defaultValue) {
+		super(name, tooltip, defaultValue);
+	}
+
 	public ForceableBooleanOption(String name, Boolean defaultValue, ChangeListener<Boolean> changeListener) {
 		super(name, defaultValue, changeListener);
 	}

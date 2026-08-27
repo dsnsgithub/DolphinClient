@@ -31,7 +31,6 @@ import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
-import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.AxoPlayerListEntry;
 import io.github.axolotlclient.bridge.key.AxoKeybinding;
@@ -41,10 +40,8 @@ import io.github.axolotlclient.bridge.util.AxoI18n;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.bridge.util.AxoText;
 import io.github.axolotlclient.modules.hud.gui.entry.TextHudEntry;
-import io.github.axolotlclient.modules.hypixel.HypixelAbstractionLayer;
 import io.github.axolotlclient.modules.hypixel.PlayerData;
 import io.github.axolotlclient.modules.hypixel.PlayerData.Bedwars.CombinedGameData;
-import org.jetbrains.annotations.Nullable;
 
 public class StatsOverlay extends TextHudEntry {
 	@FunctionalInterface
@@ -166,8 +163,6 @@ public class StatsOverlay extends TextHudEntry {
 	private final Map<BedwarsTeam, List<String>> playersByTeam = new EnumMap<>(BedwarsTeam.class);
 	private final AxoKeybinding toggle = AxoKeybinding.create(AxoKeys.KEY_UNKNOWN, "bedwars_stats_overlay");
 	private boolean shouldRender = false;
-	@Nullable
-	private String errorMessage = null;
 
 	public StatsOverlay(BedwarsMod mod) {
 		super(400, 600, true);
@@ -183,46 +178,16 @@ public class StatsOverlay extends TextHudEntry {
 				var index = Math.min(namesSize, player.getNumber() - 1);
 				teamNames.add(index, player.getProfile().br$getName());
 			}
-			HypixelAbstractionLayer.getInstance().getPlayerDataApi()
-				.getAsync(player.getProfile().br$getId().toString())
-				.thenAcceptAsync(o ->
-					o.ifPresent(data -> stats.put(player.getProfile().br$getName(), data.bedwars())), client);
 		});
 	}
 
 	private void onStart(BedwarsGame g) {
 		playersByTeam.clear();
-		// can't call clear here, since we need a fresh map to avoid requests from writing
 		stats = new HashMap<>();
 		shouldRender = toggleKey.get() && autoActivate.get();
 
-		if (!API.getInstance().getApiOptions().enabled.get()) {
-			errorMessage = "API Not Enabled!";
-			return;
-		}
-
-		if (!API.getInstance().isAuthenticated()) {
-			errorMessage = "API Not Authenticated!";
-			return;
-		}
-
-		final var api = HypixelAbstractionLayer.getInstance().getPlayerDataApi();
-
-		// need to use capturedStats since this map could've been "retired"
-		final var capturedStats = this.stats;
-
-		g.getPlayersByTeam().forEach((t, e) -> {
-			playersByTeam.put(t, e.stream().map(AxoPlayerListEntry::br$getName).collect(Collectors.toCollection(ArrayList::new))); // explicit creation because we require mutability
-			e.forEach(entry ->
-				api.getAsync(entry.br$getId().toString())
-					.whenCompleteAsync((playerData, throwable) -> {
-						if (playerData.isEmpty()) {
-							return;
-						}
-
-						capturedStats.put(entry.br$getName(), playerData.get().bedwars());
-					}, client));
-		});
+		g.getPlayersByTeam().forEach((t, e) ->
+			playersByTeam.put(t, e.stream().map(AxoPlayerListEntry::br$getName).collect(Collectors.toCollection(ArrayList::new))));
 	}
 
 	private void onEnd() {
@@ -231,10 +196,6 @@ public class StatsOverlay extends TextHudEntry {
 
 	@Override
 	public void render(AxoRenderContext ctx, float delta) {
-		if (errorMessage != null) {
-			ctx.br$drawString(AxoText.Color.RED + errorMessage, getContentPos().x, getContentPos().y, 0xffffffff, shadow.get());
-		}
-
 		if (mod.inGame() && shouldRender) {
 			super.render(ctx, delta);
 		}

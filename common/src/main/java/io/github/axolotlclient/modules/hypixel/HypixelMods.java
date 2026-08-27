@@ -30,7 +30,6 @@ import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
 import io.github.axolotlclient.DolphinClientConfigCommon;
-import io.github.axolotlclient.api.Request;
 import io.github.axolotlclient.bridge.events.Events;
 import io.github.axolotlclient.modules.AbstractCommonModule;
 import io.github.axolotlclient.modules.hypixel.bedwars.BedwarsMod;
@@ -44,8 +43,6 @@ public class HypixelMods extends AbstractCommonModule {
 	private final OptionCategory category = OptionCategory.create("hypixel-mods");
 	private final List<AbstractHypixelMod> subModules = new ArrayList<>();
 	private final BooleanOption removeLobbyJoinMessages = new BooleanOption("removeLobbyJoinMessages", false);
-
-	private final HypixelModApi modApi = new HypixelModApi();
 
 	public static HypixelMods getInstance() {
 		return INSTANCE;
@@ -75,8 +72,6 @@ public class HypixelMods extends AbstractCommonModule {
 			AutoBoop.getInstance().handleMessage(event.getOriginalMessage());
 			HypixelMessages.getInstance().process(removeLobbyJoinMessages, "lobby_join", event);
 		});
-
-		modApi.init();
 	}
 
 	@Override
@@ -97,9 +92,5 @@ public class HypixelMods extends AbstractCommonModule {
 
 	public enum HypixelApiCacheMode {
 		ON_CLIENT_DISCONNECT, ON_PLAYER_DISCONNECT,
-	}
-
-	public Request getStatus() {
-		return modApi.getStatus();
 	}
 }

@@ -68,7 +68,6 @@
 		"VertexBufferMixin",
 		"WorldRendererAccessor",
 		"WorldRendererMixin",
-		"api.JoinMulitplayerScreenMixin",
 		"commands.ChatScreenMixin",
 		"commands.LocalClientPlayerEntityMixin",
 		"translation.LanguageMixin",

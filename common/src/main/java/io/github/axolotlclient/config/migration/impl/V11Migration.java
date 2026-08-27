@@ -1,7 +1,7 @@
 /*
- * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of AxolotlClient.
+ * This file is part of DolphinClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,28 +20,22 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.types;
+package io.github.axolotlclient.config.migration.impl;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.google.gson.JsonObject;
+import io.github.axolotlclient.config.migration.ConfigMigration;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+/**
+ * Drops Microsoft / Mojang account management settings.
+ */
+public class V11Migration implements ConfigMigration {
+	@Override
+	public int version() {
+		return 11;
+	}
 
-@Getter
-@AllArgsConstructor
-public enum Relation {
-	NONE("none"),
-	REQUEST("request"),
-	FRIEND("friend"),
-	BLOCKED("blocked");
-	private final String id;
-
-	private static final Map<String, Relation> idMap = Arrays.stream(values()).collect(Collectors.toMap(r -> r.id, Function.identity()));
-
-	public static Relation get(String id) {
-		return idMap.get(id);
+	@Override
+	public void apply(JsonObject config) {
+		getObject(config, "general").ifPresent(general -> general.remove("auth"));
 	}
 }

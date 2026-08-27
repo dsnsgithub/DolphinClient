@@ -20,23 +20,30 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.requests;
+package io.github.axolotlclient.util;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.UUID;
 
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.api.Request;
-import io.github.axolotlclient.api.Response;
-
-public class AccountUsernameRequest {
-
-	public static void post(String username, boolean pub) {
-		API.getInstance().post(Request.Route.ACCOUNT_USERNAME.builder()
-			.path(username).query("public", pub).build());
+public class UUIDHelper {
+	public static UUID fromUndashed(String uuid) {
+		return UUID.fromString(uuid.trim().replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
 	}
 
-	public static CompletableFuture<Response> delete(String username) {
-		return API.getInstance().delete(Request.Route.ACCOUNT_USERNAME.builder()
-			.path(username).build());
+	public static String toUndashed(UUID uuid) {
+		return sanitizeUUID(uuid.toString());
+	}
+
+	public static String sanitizeUUID(String uuid) {
+		if (uuid.contains("-")) {
+			return validateUUID(uuid.replace("-", ""));
+		}
+		return validateUUID(uuid);
+	}
+
+	private static String validateUUID(String uuid) {
+		if (uuid.length() != 32) {
+			throw new IllegalArgumentException("Not a valid UUID (undashed): " + uuid);
+		}
+		return uuid;
 	}
 }

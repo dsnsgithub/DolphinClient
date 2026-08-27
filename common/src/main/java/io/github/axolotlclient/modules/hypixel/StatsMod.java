@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.commands.AxoClientCmdSrcStack;
 import io.github.axolotlclient.bridge.commands.Commands;
 import io.github.axolotlclient.bridge.commands.PlayerArgument;
@@ -197,34 +195,8 @@ public class StatsMod implements AbstractHypixelMod {
 
 		for (Entry handler : HANDLERS) {
 			command.then(Commands.literal(handler.name()).then(argument("player", PlayerArgument.player()).executes(c -> {
-				if (!API.getInstance().getApiOptions().enabled.get()) {
-					c.getSource().br$sendError(translatable("playerstats.error.api_disabled").br$color(RED));
-					return -1;
-				}
-
-				if (!API.getInstance().isAuthenticated()) {
-					c.getSource().br$sendError(translatable("playerstats.error.api_unauthenticated").br$color(RED));
-					return -1;
-				}
-
-				final var res = PlayerArgument.get(c, "player");
-
-				res.uuid().whenCompleteAsync((s, ex) -> {
-					if (s.isEmpty()) {
-						c.getSource().br$sendError(translatable("playerstats.error.unknown_player").br$color(RED));
-					} else {
-						HypixelAbstractionLayer.getInstance().getPlayerDataApi().getAsync(s.get()).whenCompleteAsync((playerData, throwable) -> {
-							if (playerData.isEmpty()) {
-								c.getSource().br$sendError(translatable("playerstats.error.failed_data").br$color(RED));
-								return;
-							}
-
-							handler.handler().accept(c.getSource(), s.get(), res.playerName(), playerData.get());
-						}, AxoMinecraftClient.getInstance());
-					}
-				});
-
-				return 0;
+				c.getSource().br$sendError(translatable("playerstats.error.api_disabled").br$color(RED));
+				return -1;
 			})));
 		}
 

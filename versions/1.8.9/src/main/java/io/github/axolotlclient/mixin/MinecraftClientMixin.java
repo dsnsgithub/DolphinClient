@@ -27,9 +27,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.DolphinClient;
-import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.bridge.events.types.WorldLoadEvent;
-import io.github.axolotlclient.modules.auth.Auth;
 import io.github.axolotlclient.modules.blur.MenuBlur;
 import io.github.axolotlclient.modules.hud.HudManager;
 import io.github.axolotlclient.modules.rpc.DiscordRPC;
@@ -136,9 +134,6 @@ public abstract class MinecraftClientMixin {
 	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/texture/TextureManager;close(Lnet/minecraft/resource/Identifier;)V"))
 	private void axolotlclient$onLaunch(CallbackInfo ci) {
 		HudManager.getInstance().refreshAllBounds();
-		if (!API.getInstance().isSocketConnected() && !Auth.getInstance().getCurrent().isOffline()) {
-			API.getInstance().startup(Auth.getInstance().getCurrent());
-		}
 	}
 
 	@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/client/main/RunArgs$Game;version:Ljava/lang/String;", opcode = Opcodes.GETFIELD))

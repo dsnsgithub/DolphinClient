@@ -140,7 +140,7 @@ public abstract class TitleScreenMixin extends Screen {
 	@Inject(method = "initWidgetsNormal", at = @At("TAIL"))
 	private void axolotlclient$addOptionsButton(int y, int spacingY, CallbackInfo ci) {
 		if (DolphinClientConfigCommon.instance().titleScreenOptionButtonMode.get().showButton()) {
-			buttons.add(new ButtonWidget(192, this.width / 2 - 100, y + spacingY * 3, I18n.translate("config") + "..."));
+			buttons.add(new ButtonWidget(192, this.width / 2 - 100, y + spacingY * 3, I18n.translate("config")));
 		}
 	}
 

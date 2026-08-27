@@ -5,7 +5,8 @@
 	"name": "Test Mod",
 	"description": "",
 	"authors": [
-		"moehreag"
+		"moehreag",
+		"Dominic Seung"
 	],
 	"contact": {
 		"sources": "https://codeberg.org/AxolotlClient/AxolotlClient-mod",

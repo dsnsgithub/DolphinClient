@@ -69,6 +69,11 @@ subprojects {
 	}
 
 	license {
+		// Match original DolphinClient files first, then modified AxolotlClient
+		// files, then unmodified upstream files. LGPL requires keeping the
+		// original copyright on derived files.
+		rule(rootProject.file("HEADER_NEW"))
+		rule(rootProject.file("HEADER_FORK"))
 		rule(rootProject.file("HEADER"))
 		include("**/*.java")
 		exclude("**/oldanimations/**")

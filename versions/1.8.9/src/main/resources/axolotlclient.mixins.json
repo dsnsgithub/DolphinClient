@@ -19,6 +19,7 @@
 		"ClientWorldMixin",
 		"ConfigVanillaButtonWidgetMixin",
 		"ConfirmScreenMixin",
+		"ConnectScreenMixin",
 		"ControlsOptionsScreenMixin",
 		"DownloadingTerrainScreenMixin",
 		"DynamicTextureAccessor",

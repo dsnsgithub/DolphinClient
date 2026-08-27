@@ -8,7 +8,7 @@ val featherBuild = "1"
 val lwjglVersion = "3.4.2"
 val legacyLwjgl3 = "1.4.3"
 val osl = "0.20.3"
-base.archivesName = "AxolotlClient"
+base.archivesName = "DolphinClient"
 group = project.property("maven_group")!!
 version = "${project.property("version")}+$minecraftVersion"
 
@@ -23,10 +23,10 @@ loom {
 	accessWidenerPath.set(file("src/main/resources/axolotlclient.classtweaker"))
 
 	mods {
-		create("axolotlclient") {
+		create("dolphinclient") {
 			sourceSet("main")
 		}
-		create("axolotlclient-test") {
+		create("dolphinclient-test") {
 			sourceSet("test")
 		}
 	}

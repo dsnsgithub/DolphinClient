@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.util.notifications.toasts;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -66,8 +66,8 @@ public interface Toast {
 
 	@Environment(EnvType.CLIENT)
 	enum Visibility {
-		SHOW(new Identifier(AxolotlClientCommon.MODID, "gui.toast.in")),
-		HIDE(new Identifier(AxolotlClientCommon.MODID, "gui.toast.out"));
+		SHOW(new Identifier(DolphinClientCommon.MODID, "gui.toast.in")),
+		HIDE(new Identifier(DolphinClientCommon.MODID, "gui.toast.out"));
 
 		private final Identifier soundEvent;
 

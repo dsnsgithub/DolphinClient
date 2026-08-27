@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.StringArrayOption;
@@ -60,7 +60,7 @@ public class AutoBoop implements AbstractHypixelMod {
 					.getFunc().apply(player, filters)) {
 					CompletableFuture.runAsync(() -> {
 						AxoMinecraftClient.getInstance().br$sendToServer("/boop " + player);
-						AxolotlClientCommon.getInstance().getLogger().info("Booped " + player);
+						DolphinClientCommon.getInstance().getLogger().info("Booped " + player);
 					}, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS, AxoMinecraftClient.getInstance()));
 				}
 			}

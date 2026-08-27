@@ -24,7 +24,7 @@ package io.github.axolotlclient.mixin;
 
 import java.util.Objects;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.modules.hypixel.HypixelAbstractionLayer;
 import io.github.axolotlclient.modules.hypixel.HypixelMods;
 import net.minecraft.client.world.ClientWorld;
@@ -49,8 +49,8 @@ public abstract class ClientWorldMixin {
 
 	@ModifyArg(method = "setTimeOfDay", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setTimeOfDay(J)V"))
 	public long axolotlclient$timeChanger(long time) {
-		if (AxolotlClient.config().timeChangerEnabled.get()) {
-			return AxolotlClient.config().customTime.get();
+		if (DolphinClient.config().timeChangerEnabled.get()) {
+			return DolphinClient.config().customTime.get();
 		}
 		return time;
 	}

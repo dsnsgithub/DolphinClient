@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.bridge;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -43,14 +43,20 @@ public enum BridgeVersion {
 
 	// We can't use the standard mechanism of dispatching platform specific logic since the mixin plugin
 	// will read the bridge version, which will cause re-entrance errors
-	private static final BridgeVersion VERSION = valueOf(
-		FabricLoader.getInstance()
-			.getModContainer(AxolotlClientCommon.MODID)
+	private static final BridgeVersion VERSION = valueOf(readBridgeImplVersion());
+
+	private static String readBridgeImplVersion() {
+		var metadata = FabricLoader.getInstance()
+			.getModContainer(DolphinClientCommon.MODID)
+			.or(() -> FabricLoader.getInstance().getModContainer(DolphinClientCommon.LEGACY_MODID))
 			.orElseThrow()
-			.getMetadata()
-			.getCustomValue("axolotlclient:bridge_impl_version")
-			.getAsString()
-	);
+			.getMetadata();
+		var custom = metadata.getCustomValue("dolphinclient:bridge_impl_version");
+		if (custom == null) {
+			custom = metadata.getCustomValue("axolotlclient:bridge_impl_version");
+		}
+		return custom.getAsString();
+	}
 
 	public static BridgeVersion version() {
 		return VERSION;

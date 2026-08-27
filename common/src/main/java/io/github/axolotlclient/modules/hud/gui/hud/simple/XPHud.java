@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
@@ -40,7 +40,7 @@ import lombok.AllArgsConstructor;
 
 public class XPHud extends TextHudEntry {
 
-	private static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "xphud");
+	private static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "xphud");
 
 	private final EnumOption<Mode> mode = new EnumOption<>("mode", Mode.class, Mode.LEVEL);
 	private final BooleanOption minimal = new BooleanOption("minimal", false);

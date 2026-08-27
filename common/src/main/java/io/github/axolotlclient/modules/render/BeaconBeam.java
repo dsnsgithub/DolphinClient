@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.modules.render;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.bridge.BridgeVersion;
@@ -47,7 +47,7 @@ public class BeaconBeam extends AbstractCommonModule {
 			beams.add(showEndGatewayBeams);
 		}
 
-		AxolotlClientCommon.getInstance().getConfig().rendering.add(beams);
+		DolphinClientCommon.getInstance().getConfig().rendering.add(beams);
 	}
 
 	public boolean showBeam(boolean endGateway) {

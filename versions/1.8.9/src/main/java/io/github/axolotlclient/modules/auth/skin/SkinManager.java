@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.google.common.hash.Hashing;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.util.ClientColors;
 import net.minecraft.client.Minecraft;
@@ -80,13 +80,13 @@ public class SkinManager {
 			}
 			return new Skin.LocalSkin(!slim, p, in, sha256);
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to probe skin: ", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to probe skin: ", e);
 		}
 		return null;
 	}
 
 	public AxoIdentifier loadSkin(Skin skin) {
-		var rl = AxoIdentifier.of(AxolotlClientCommon.MODID, "skins/" + skin.sha256());
+		var rl = AxoIdentifier.of(DolphinClientCommon.MODID, "skins/" + skin.sha256());
 		if (loadedTextures.contains(rl)) {
 			return rl;
 		}
@@ -105,7 +105,7 @@ public class SkinManager {
 	}
 
 	public AxoIdentifier loadCape(Cape cape) {
-		var rl = AxoIdentifier.of(AxolotlClientCommon.MODID, "capes/" + cape.id());
+		var rl = AxoIdentifier.of(DolphinClientCommon.MODID, "capes/" + cape.id());
 		if (loadedTextures.contains(rl)) {
 			return rl;
 		}

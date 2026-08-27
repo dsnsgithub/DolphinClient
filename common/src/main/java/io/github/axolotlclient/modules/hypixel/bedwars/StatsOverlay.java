@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
@@ -147,7 +147,7 @@ public class StatsOverlay extends TextHudEntry {
 			null, null, null, null, null, null, null, null);
 	}
 
-	public final static AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "bedwars_stats_overlay");
+	public final static AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "bedwars_stats_overlay");
 
 	protected final IntegerOption padding = new IntegerOption("hud.padding", 3, 1, 10);
 	protected final IntegerOption columnMargin = new IntegerOption("hud.column_margin", 3, 0, 10);

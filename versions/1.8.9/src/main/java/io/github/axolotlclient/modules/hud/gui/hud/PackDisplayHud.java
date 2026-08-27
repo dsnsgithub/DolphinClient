@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.bridge.impl.AxoRenderContextImpl;
@@ -46,7 +46,7 @@ import net.ornithemc.osl.resource.loader.api.resource.repository.ResourcePackRep
 
 public class PackDisplayHud extends TextHudEntry {
 
-	public static final Identifier ID = new Identifier(AxolotlClientCommon.MODID, "packdisplayhud");
+	public static final Identifier ID = new Identifier(DolphinClientCommon.MODID, "packdisplayhud");
 
 	private final List<PackWidget> widgets = new ArrayList<>();
 	private final List<ResourcePack> packs = new ArrayList<>();
@@ -152,7 +152,7 @@ public class PackDisplayHud extends TextHudEntry {
 			try {
 				this.texture = new DynamicTexture(TextureUtil.readImage(pack.getResource(ResourcePack.ICON_FILE))).getGlId();
 			} catch (Exception e) {
-				AxolotlClientCommon.getInstance().getLogger().warn("Pack " + pack.getName()
+				DolphinClientCommon.getInstance().getLogger().warn("Pack " + pack.getName()
 					+ " somehow threw an error! Please investigate... Does it have an icon?", e);
 			}
 		}

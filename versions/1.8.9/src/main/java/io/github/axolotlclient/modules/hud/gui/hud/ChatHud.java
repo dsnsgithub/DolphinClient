@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.hud.gui.hud;
 
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
@@ -47,7 +47,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ChatHud extends TextHudEntry {
 
-	public static final Identifier ID = new Identifier(AxolotlClientCommon.MODID, "chathud");
+	public static final Identifier ID = new Identifier(DolphinClientCommon.MODID, "chathud");
 	// tooltip: "chathud"
 	public final BooleanOption background = new BooleanOption("background", true);
 	public final ColorOption bgColor = new ColorOption("bgcolor", Color.parse("#80000000"));

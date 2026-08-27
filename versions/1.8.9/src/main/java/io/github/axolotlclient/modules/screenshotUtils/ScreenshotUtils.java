@@ -31,8 +31,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Colors;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
@@ -72,7 +72,7 @@ public class ScreenshotUtils extends AbstractModule {
 					Util.addMessageToChatHud(new LiteralText(I18n.translate("screenshot_deleted")
 						.replace("<name>", file.getFileName().toString())));
 				} catch (Exception e) {
-					AxolotlClientCommon.getInstance().getLogger().warn("Couldn't delete Screenshot " + file.getFileName().toString());
+					DolphinClientCommon.getInstance().getLogger().warn("Couldn't delete Screenshot " + file.getFileName().toString());
 				}
 			}));
 
@@ -111,7 +111,7 @@ public class ScreenshotUtils extends AbstractModule {
 		category.add(enabled, mode, autoExec, new GenericOption("imageViewer", "openViewer", () ->
 			client.openScreen(new GalleryScreen(client.screen))), toastBorderColor);
 
-		AxolotlClient.config().general.add(category);
+		DolphinClient.config().general.add(category);
 		screenshotCropBinding.br$registerOnConsumeClick(() -> {
 			var img = Util.takeScreenshot();
 			var instance = new ImageInstance.Memory(img);
@@ -206,7 +206,7 @@ public class ScreenshotUtils extends AbstractModule {
 			if (file != null) {
 				action.doAction(file);
 			} else {
-				AxolotlClientCommon.getInstance().getLogger().warn("How'd you manage to do this? " +
+				DolphinClientCommon.getInstance().getLogger().warn("How'd you manage to do this? " +
 					"Now there's a screenshot ClickEvent without a File attached to it!");
 			}
 		}

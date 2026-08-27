@@ -1,5 +1,5 @@
 {
-  "name": "AxolotlClient 1.8.9 (Ornithe)",
+  "name": "DolphinClient 1.8.9 (Ornithe)",
   "user": "ubuntu",
   "install": "bash .cursor/install.sh"
 }

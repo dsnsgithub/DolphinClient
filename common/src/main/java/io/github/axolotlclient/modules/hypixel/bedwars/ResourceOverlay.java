@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
@@ -43,7 +43,7 @@ import io.github.axolotlclient.modules.hud.util.DefaultOptions;
 import io.github.axolotlclient.util.ItemUtil;
 
 public class ResourceOverlay extends BoxHudEntry implements DynamicallyPositionable {
-	public final static AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "bedwars_resources");
+	public final static AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "bedwars_resources");
 	private static final List<AxoItem> RESOURCES = List.of(AxoItems.IRON_INGOT, AxoItems.GOLD_INGOT, AxoItems.DIAMOND, AxoItems.EMERALD);
 	private static final Map<AxoItem, Integer> PLACEHOLDER = Map.of(
 		AxoItems.IRON_INGOT, 43,

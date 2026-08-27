@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.AxoPlayerListEntry;
@@ -317,7 +317,7 @@ public class BedwarsGame {
 				Optional<BedwarsPlayer> player =
 					BedwarsMessages.matched(BedwarsMessages.BED_BREAK, rawMessage).flatMap(m1 -> getPlayer(m1.group(1)));
 				if (player.isEmpty()) {
-					AxolotlClientCommon.getInstance().getLogger().warn("Unknown bed break message: " + rawMessage);
+					DolphinClientCommon.getInstance().getLogger().warn("Unknown bed break message: " + rawMessage);
 					//Notifications.getInstance().addStatus("bedwars.unknown_bed_break", "bedwars.unknown_message");
 					return;
 				}
@@ -443,7 +443,7 @@ public class BedwarsGame {
 		try {
 			seconds = Integer.parseInt(timer.split(":")[1].substring(0, 2));
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("couldn't parse timer '" + timer + "': ", e);
+			DolphinClientCommon.getInstance().getLogger().warn("couldn't parse timer '" + timer + "': ", e);
 			return;
 		}
 		int target = (60 - seconds) % 60;

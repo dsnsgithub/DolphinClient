@@ -25,7 +25,7 @@ package io.github.axolotlclient.modules.hud.gui.hud;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
@@ -38,7 +38,7 @@ import io.github.axolotlclient.modules.hud.gui.layout.AnchorPoint;
 import io.github.axolotlclient.modules.hud.util.DefaultOptions;
 
 public class IconHud extends BoxHudEntry implements DynamicallyPositionable {
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "iconhud");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "iconhud");
 	private final EnumOption<AnchorPoint> anchor = DefaultOptions.getAnchorPoint(this);
 	private final EnumOption<Mode> mode = new EnumOption<>("iconhud.mode", Mode.class, Mode.BOTH);
 

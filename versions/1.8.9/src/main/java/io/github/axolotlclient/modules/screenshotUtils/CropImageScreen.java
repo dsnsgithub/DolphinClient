@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Colors;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.ClickableWidget;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.TextFieldWidget;
@@ -127,12 +127,12 @@ public class CropImageScreen extends io.github.axolotlclient.AxolotlClientConfig
 					var dest = Path.of(result);
 					try (var out = Files.newOutputStream(dest)) {
 						ImageIO.write(crop, "png", out);
-						AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save_as.success", "gallery.image.crop.save_as.success.description", dest.getFileName());
+						DolphinClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save_as.success", "gallery.image.crop.save_as.success.description", dest.getFileName());
 					}
 				}
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().error("Failed to save cropped image!", e);
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save_as.failure", "gallery.image.crop.save_as.failure.description", result);
+				DolphinClientCommon.getInstance().getLogger().error("Failed to save cropped image!", e);
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save_as.failure", "gallery.image.crop.save_as.failure.description", result);
 			}
 		}));
 		addDrawableChild(new VanillaButtonWidget(width / 2 - (100 * 3 + 4 * 2) / 2 + 100 + 4, footerLine2Y, 100, 20, I18n.translate("gallery.image.crop.save"), btn -> {
@@ -142,11 +142,11 @@ public class CropImageScreen extends io.github.axolotlclient.AxolotlClientConfig
 				var crop = imageWidget.getCopyOfSelection();
 				try (var out = Files.newOutputStream(dest)) {
 					ImageIO.write(crop, "png", out);
-					AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save.success", "gallery.image.crop.save.success.description", dest.getFileName());
+					DolphinClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save.success", "gallery.image.crop.save.success.description", dest.getFileName());
 				}
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().error("Failed to save cropped image!", e);
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save.failure", "gallery.image.crop.save.failure.description", dest.getFileName());
+				DolphinClientCommon.getInstance().getLogger().error("Failed to save cropped image!", e);
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.save.failure", "gallery.image.crop.save.failure.description", dest.getFileName());
 			}
 		}));
 		addDrawableChild(new VanillaButtonWidget(width / 2 - (100 * 3 + 4 * 2) / 2 + 100 + 4 + 100 + 4, footerLine2Y, 100, 20, I18n.translate("gallery.image.crop.copy"), btn -> {
@@ -155,10 +155,10 @@ public class CropImageScreen extends io.github.axolotlclient.AxolotlClientConfig
 				var baos = new ByteArrayOutputStream();
 				ImageIO.write(crop, "png", baos);
 				ScreenshotCopying.copy(baos.toByteArray());
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.copy.success", "gallery.image.crop.copy.success.description");
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.copy.success", "gallery.image.crop.copy.success.description");
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().error("Failed to copy cropped image!", e);
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.copy.failure", "gallery.image.crop.save.copy.description");
+				DolphinClientCommon.getInstance().getLogger().error("Failed to copy cropped image!", e);
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("gallery.image.crop.copy.failure", "gallery.image.crop.save.copy.description");
 			}
 		}));
 		addDrawableChild(new VanillaButtonWidget(width / 2 - 150 / 2, footerLine3Y, 150, 20, CommonTexts.back(), btn -> closeScreen()));

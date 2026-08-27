@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.render.TextRenderUtils;
@@ -184,7 +184,7 @@ public abstract class TextRenderUtilsMixin {
 						case ITALIC -> part.getStyle().setItalic(true);
 						case UNDERLINE -> part.getStyle().setUnderlined(true);
 						case STRIKETHROUGH -> part.getStyle().setStrikethrough(true);
-						default -> AxolotlClientCommon.getInstance().getLogger().warn("Unexpected modifier: " + mod);
+						default -> DolphinClientCommon.getInstance().getLogger().warn("Unexpected modifier: " + mod);
 					}
 				}
 			}

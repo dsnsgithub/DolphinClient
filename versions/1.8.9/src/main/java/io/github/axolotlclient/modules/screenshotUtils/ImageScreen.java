@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.api.util.UUIDHelper;
 import io.github.axolotlclient.util.GsonHelper;
@@ -95,7 +95,7 @@ public class ImageScreen extends Screen {
 			drawCenteredString(textRenderer, title, width / 2, 38 / 2 - textRenderer.fontHeight - 2, -1);
 			drawCenteredString(textRenderer,
 				I18n.translate("gallery.image.upload_details", uploader.join(),
-					r.sharedAt().atZone(ZoneId.systemDefault()).format(AxolotlClientCommon.getInstance().getConfig().getDateTimeFormatter())),
+					r.sharedAt().atZone(ZoneId.systemDefault()).format(DolphinClientCommon.getInstance().getConfig().getDateTimeFormatter())),
 				width / 2, 38 / 2 + 2, -1);
 		} else {
 			drawCenteredString(textRenderer, title, width / 2, 33 / 2 - textRenderer.fontHeight / 2, -1);
@@ -175,7 +175,7 @@ public class ImageScreen extends Screen {
 					minecraft.openScreen(new ImageScreen(parent, remote.toShared(out), freeOnClose));
 				} catch (IOException e) {
 					Notifications.getInstance().addStatus("gallery.image.save.failure", "gallery.image.save.failure.description", e.getMessage());
-					AxolotlClientCommon.getInstance().getLogger().warn("Failed to save shared image!", e);
+					DolphinClientCommon.getInstance().getLogger().warn("Failed to save shared image!", e);
 				}
 			}
 			case 4 -> {
@@ -184,7 +184,7 @@ public class ImageScreen extends Screen {
 					ScreenshotCopying.copy(baos.toByteArray());
 				} catch (IOException e) {
 					Notifications.getInstance().addStatus("gallery.image.copy.failure", "gallery.image.copy.failure.description", e.getMessage());
-					AxolotlClientCommon.getInstance().getLogger().warn("Failed to copy shared image!", e);
+					DolphinClientCommon.getInstance().getLogger().warn("Failed to copy shared image!", e);
 				}
 			}
 			case 5 -> OSUtil.getOS().open(((ImageInstance.Remote) image).url());
@@ -202,7 +202,7 @@ public class ImageScreen extends Screen {
 					Notifications.getInstance().addStatus("gallery.image.delete.success", "gallery.image.delete.success.description", loc);
 				} catch (IOException e) {
 					Notifications.getInstance().addStatus("gallery.image.delete.failure", "gallery.image.delete.failure.description", loc);
-					AxolotlClientCommon.getInstance().getLogger().warn("Failed to delete image!", e);
+					DolphinClientCommon.getInstance().getLogger().warn("Failed to delete image!", e);
 				}
 			}
 			case 9 -> minecraft.openScreen(new CropImageScreen(this, image));

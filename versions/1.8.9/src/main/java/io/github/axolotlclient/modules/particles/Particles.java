@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.particles;
 
 import java.util.*;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
@@ -56,7 +56,7 @@ public class Particles extends AbstractModule {
 		cat.add(enabled);
 
 		addParticleOptions();
-		AxolotlClient.config().rendering.add(cat);
+		DolphinClient.config().rendering.add(cat);
 	}
 
 	private void addParticleOptions() {

@@ -24,6 +24,7 @@ package io.github.axolotlclient.bridge.mixin.internal;
 
 import java.util.Objects;
 
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.GraphicsOption;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.AxoPlayerListEntry;
@@ -130,7 +131,7 @@ public abstract class PlatformImplInternalMixin {
 	@Overwrite
 	public static AxoKeybinding createKeyBinding(AxoKey defaultKey, String name) {
 		final var id = ((AxoKeyImpl) Objects.requireNonNullElse(defaultKey, AxoKeys.KEY_UNKNOWN)).id();
-		final var binding = new KeyBinding(name, id, "category.axolotlclient");
+		final var binding = new KeyBinding(name, id, DolphinClientCommon.KEY_CATEGORY);
 		Bridge.addKeybind(binding);
 		return binding;
 	}

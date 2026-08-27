@@ -37,13 +37,15 @@ import io.github.axolotlclient.util.options.ForceableBooleanOption;
 import io.github.axolotlclient.util.options.GenericOption;
 import net.fabricmc.loader.api.FabricLoader;
 
-public abstract class AxolotlClientConfigCommon {
+public abstract class DolphinClientConfigCommon {
 	public enum MenuButtonMode {
 		DISABLED,
 		MODMENU() {
 			@Override
 			public boolean showButton() {
-				return !(FabricLoader.getInstance().isModLoaded("modmenu") && !FabricLoader.getInstance().isModLoaded("axolotlclient-modmenu"));
+				return !(FabricLoader.getInstance().isModLoaded("modmenu")
+					&& !FabricLoader.getInstance().isModLoaded("axolotlclient-modmenu")
+					&& !FabricLoader.getInstance().isModLoaded("dolphinclient-modmenu"));
 			}
 		},
 		ALWAYS() {
@@ -132,7 +134,7 @@ public abstract class AxolotlClientConfigCommon {
 
 	public DateTimeFormatter dateTimeFormatter;
 
-	public AxolotlClientConfigCommon() {
+	public DolphinClientConfigCommon() {
 		config.add(general);
 		config.add(rendering);
 		config.add(hidden);
@@ -182,11 +184,11 @@ public abstract class AxolotlClientConfigCommon {
 
 		AxoKeybinding.create(AxoKeys.KEY_UNKNOWN, "toggle_hide_chat").br$registerOnConsumeClick(() -> {
 			hideChat.toggle();
-			AxolotlClientCommon.getInstance().saveConfig();
+			DolphinClientCommon.getInstance().saveConfig();
 		});
 		AxoKeybinding.create(AxoKeys.KEY_UNKNOWN, "toggle_fullbright").br$registerOnConsumeClick(() -> {
 			fullBright.toggle();
-			AxolotlClientCommon.getInstance().saveConfig();
+			DolphinClientCommon.getInstance().saveConfig();
 		});
 
 		Events.TICK.register(() -> {
@@ -204,8 +206,8 @@ public abstract class AxolotlClientConfigCommon {
 		return dateTimeFormatter;
 	}
 
-	public static AxolotlClientConfigCommon instance() {
-		return AxolotlClientCommon.getInstance().getConfig();
+	public static DolphinClientConfigCommon instance() {
+		return DolphinClientCommon.getInstance().getConfig();
 	}
 
 	public final void add(Option<?> option) {

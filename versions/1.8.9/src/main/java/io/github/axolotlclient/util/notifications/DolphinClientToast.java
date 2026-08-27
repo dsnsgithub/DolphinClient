@@ -25,7 +25,7 @@ package io.github.axolotlclient.util.notifications;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
 import io.github.axolotlclient.util.DrawUtil;
 import io.github.axolotlclient.util.notifications.toasts.Toast;
@@ -40,8 +40,8 @@ import net.minecraft.resource.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
-public class AxolotlClientToast extends DrawUtil implements Toast {
-	private static final Identifier BACKGROUND_SPRITE = new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/toast/axolotlclient.png");
+public class DolphinClientToast extends DrawUtil implements Toast {
+	private static final Identifier BACKGROUND_SPRITE = new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/toast/axolotlclient.png");
 	private static final NineSlice SPRITE_SCALING = new NineSlice(160, 64, new Border(17, 30, 4, 4), false);
 	private static final int DISPLAY_TIME_MILLIS = 5000;
 	private static final int MAX_LINE_SIZE = 200;
@@ -52,7 +52,7 @@ public class AxolotlClientToast extends DrawUtil implements Toast {
 	private final int width;
 	private Visibility wantedVisibility = Visibility.HIDE;
 
-	public AxolotlClientToast(String title, @Nullable String message) {
+	public DolphinClientToast(String title, @Nullable String message) {
 		this(
 			title,
 			nullToEmpty(message),
@@ -60,14 +60,14 @@ public class AxolotlClientToast extends DrawUtil implements Toast {
 		);
 	}
 
-	public static AxolotlClientToast multiline(Minecraft minecraft, String title, String message) {
+	public static DolphinClientToast multiline(Minecraft minecraft, String title, String message) {
 		TextRenderer font = minecraft.textRenderer;
 		List<String> list = font.split(message, MAX_LINE_SIZE);
 		int i = Math.min(MAX_LINE_SIZE, Math.max(font.getWidth(title), list.stream().mapToInt(font::getWidth).max().orElse(MAX_LINE_SIZE)));
-		return new AxolotlClientToast(title, list, i + (2 * MARGIN) + 15);
+		return new DolphinClientToast(title, list, i + (2 * MARGIN) + 15);
 	}
 
-	private AxolotlClientToast(String title, List<String> messageLines, int width) {
+	private DolphinClientToast(String title, List<String> messageLines, int width) {
 		this.title = title;
 		this.messageLines = messageLines;
 		this.width = width;
@@ -103,7 +103,7 @@ public class AxolotlClientToast extends DrawUtil implements Toast {
 		GlStateManager.disableBlend();
 		Lighting.turnOff();
 		blitSprite(BACKGROUND_SPRITE, 0, 0, width(), height(), SPRITE_SCALING);
-		Minecraft.getInstance().getTextureManager().bind((Identifier) AxolotlClientCommon.BADGE_PATH);
+		Minecraft.getInstance().getTextureManager().bind((Identifier) DolphinClientCommon.BADGE_PATH);
 		drawTexture(4, 4, 0, 0, 15, 15, 15, 15);
 		int textOffset = 22;
 		if (this.messageLines.isEmpty()) {

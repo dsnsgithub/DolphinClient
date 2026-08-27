@@ -23,7 +23,7 @@
 package io.github.axolotlclient.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.platform.GlStateManager;
 import net.minecraft.client.resource.model.BakedModel;
@@ -38,7 +38,7 @@ public abstract class ItemEntityRendererMixin {
 
 	@Inject(method = "applyItemBobbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;translatef(FFF)V", ordinal = 0), cancellable = true)
 	private void axolotlclient$transformItems(ItemEntity itemEntity, double d, double e, double f, float g, BakedModel bakedModel, CallbackInfoReturnable<Integer> cir, @Local int i) {
-		if (AxolotlClient.config().flatItems.get()) {
+		if (DolphinClient.config().flatItems.get()) {
 			GlStateManager.translated(d, e + 0.05, f);
 			GlStateManager.rotatef(itemEntity.pitch, 0, 0, 1);
 			GlStateManager.rotatef(90, 1, 0, 0);

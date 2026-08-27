@@ -25,8 +25,8 @@ package io.github.axolotlclient.modules.blur;
 import java.io.IOException;
 
 import com.google.gson.JsonSyntaxException;
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.FloatOption;
@@ -45,7 +45,7 @@ public class MotionBlur extends AbstractModule {
 	public final FloatOption strength = new FloatOption("strength", 50F, 1F, 99F);
 	public final BooleanOption inGuis = new BooleanOption("inGuis", false);
 	public final OptionCategory category = OptionCategory.create("motionBlur");
-	private final Identifier shaderLocation = new Identifier("axolotlclient", "shaders/post/motion_blur.json");
+	private final Identifier shaderLocation = new Identifier(DolphinClientCommon.MODID, "shaders/post/motion_blur.json");
 	public PostChain shader;
 	private float currentBlur;
 
@@ -60,7 +60,7 @@ public class MotionBlur extends AbstractModule {
 	public void init() {
 		category.add(enabled, strength, inGuis);
 
-		AxolotlClient.config().rendering.add(category);
+		DolphinClient.config().rendering.add(category);
 	}
 
 	public void onUpdate() {
@@ -72,7 +72,7 @@ public class MotionBlur extends AbstractModule {
 					client.getRenderTarget(), shaderLocation);
 				shader.resize(client.width, client.height);
 			} catch (JsonSyntaxException | IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().error("Could not load motion blur: ", e);
+				DolphinClientCommon.getInstance().getLogger().error("Could not load motion blur: ", e);
 			}
 		}
 		if (currentBlur != getBlur()) {

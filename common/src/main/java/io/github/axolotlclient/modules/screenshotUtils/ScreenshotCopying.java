@@ -34,7 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -84,7 +84,7 @@ public class ScreenshotCopying {
 			Process p = builder.start();
 			p.waitFor();
 		} catch (IOException | InterruptedException ignored) {
-			AxolotlClientCommon.getInstance().getLogger().error("Failed to invoke 'wl-copy'!\nMake sure 'wl-clipboard' is installed and accessible!");
+			DolphinClientCommon.getInstance().getLogger().error("Failed to invoke 'wl-copy'!\nMake sure 'wl-clipboard' is installed and accessible!");
 		}
 	}
 
@@ -97,7 +97,7 @@ public class ScreenshotCopying {
 					copyWayland(i);
 					Files.delete(i);
 				} catch (IOException e) {
-					AxolotlClientCommon.getInstance().getLogger().error("Failed to copy image using temporary file!");
+					DolphinClientCommon.getInstance().getLogger().error("Failed to copy image using temporary file!");
 				}
 			} else {
 				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new ImageTransferable(image), null);
@@ -109,7 +109,7 @@ public class ScreenshotCopying {
 		try {
 			return SDLFence.copySdl(Files.readAllBytes(p));
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().error("Failed to read screenshot!", e);
+			DolphinClientCommon.getInstance().getLogger().error("Failed to read screenshot!", e);
 		}
 		return false;
 	}

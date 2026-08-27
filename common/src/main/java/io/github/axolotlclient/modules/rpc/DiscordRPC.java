@@ -29,7 +29,7 @@ import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.IPCListener;
 import com.jagrosh.discordipc.entities.*;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.StringArrayOption;
@@ -59,7 +59,7 @@ public class DiscordRPC extends AbstractCommonModule {
 	private final BooleanOption showTime = new BooleanOption("showTime", true);
 
 	private final Instant time = Instant.now();
-	private final Logger logger = AxolotlClientCommon.getInstance().getLogger();
+	private final Logger logger = DolphinClientCommon.getInstance().getLogger();
 	private final AtomicReference<State> state = new AtomicReference<>(State.NOT_CONNECTED);
 	private IPCClient ipcClient;
 	private String currentWorld = "";
@@ -73,7 +73,7 @@ public class DiscordRPC extends AbstractCommonModule {
 		if (OSUtil.getOS() == OSUtil.OperatingSystem.OTHER) {
 			enabled.setForceOff(true, "crash");
 		}
-		AxolotlClientCommon.getInstance().getConfig().addCategory(category);
+		DolphinClientCommon.getInstance().getConfig().addCategory(category);
 		Events.CLIENT_STOP.register(this::shutdown);
 	}
 
@@ -95,7 +95,7 @@ public class DiscordRPC extends AbstractCommonModule {
 
 	private RichPresence createRichPresence(String state, String details) {
 		RichPresence.Builder builder = new RichPresence.Builder();
-		builder.setLargeImageWithTooltip("icon", "AxolotlClient " + AxolotlClientCommon.VERSION + " | Minecraft " + AxolotlClientCommon.GAME_VERSION);
+		builder.setLargeImageWithTooltip("icon", "DolphinClient " + DolphinClientCommon.VERSION + " | Minecraft " + DolphinClientCommon.GAME_VERSION);
 		if (showTime.get()) {
 			builder.setStartTimestamp(time.getEpochSecond());
 		}
@@ -189,7 +189,7 @@ public class DiscordRPC extends AbstractCommonModule {
 				logger.info("Started RPC");
 			} catch (Exception e) {
 				logger.warn("Failed to start RPC", e);
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("rpc.starting.error", e.getMessage());
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("rpc.starting.error", e.getMessage());
 				try {
 					ipcClient.close();
 				} catch (Throwable ignored) {

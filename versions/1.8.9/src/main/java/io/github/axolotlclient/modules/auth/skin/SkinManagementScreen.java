@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Colors;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.ClickableWidget;
@@ -89,7 +89,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 		this.parent = parent;
 		this.account = account;
 		skinDirWatcher = Watcher.createSelfTicking(SKINS_DIR, () -> {
-			AxolotlClientCommon.getInstance().getLogger().info("Reloading screen as local files changed!");
+			DolphinClientCommon.getInstance().getLogger().info("Reloading screen as local files changed!");
 			loadSkinsList();
 		});
 		loadingFuture = (account.needsRefresh() ? account.refresh(Auth.getInstance().getMsApi())
@@ -186,11 +186,11 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 		var importButton = new SpriteButton(I18n.translate("skins.manage.import.local"), btn -> {
 			btn.active = false;
 			SkinImportUtil.openImportSkinDialog().thenAccept(this::onFileDrop).thenRun(() -> btn.active = true);
-		}, new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/folder.png"));
+		}, new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/folder.png"));
 		var downloadButton = new SpriteButton(I18n.translate("skins.manage.import.online"), btn -> {
 			btn.active = false;
 			promptForSkinDownload();
-		}, new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/download.png"));
+		}, new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/download.png"));
 		if (width - (capesTab.getX() + capesTab.getWidth()) > 28) {
 			importButton.setX(width - importButton.getWidth() - 2);
 			downloadButton.setX(importButton.getX() - downloadButton.getWidth() - 2);
@@ -230,7 +230,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 				minecraft.openScreen(parent);
 				return null;
 			}
-			AxolotlClientCommon.getInstance().getLogger().error("Failed to load skins!", t);
+			DolphinClientCommon.getInstance().getLogger().error("Failed to load skins!", t);
 			var error = I18n.translate("skins.error.failed_to_load");
 			var errorDesc = I18n.translate("skins.error.failed_to_load_desc");
 			clearChildren();
@@ -247,10 +247,10 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 		minecraft.openScreen(new SimpleTextInputScreen(this, I18n.translate("skins.manage.import.online"), I18n.translate("skins.manage.import.online.input"), s ->
 			UUIDHelper.ensureUuidOpt(s).thenAccept(o -> {
 				if (o.isPresent()) {
-					AxolotlClientCommon.getInstance().getLogger().info("Downloading skin of {} ({})", s, o.get());
+					DolphinClientCommon.getInstance().getLogger().info("Downloading skin of {} ({})", s, o.get());
 					Auth.getInstance().getMsApi().getTextures(o.get())
 						.exceptionally(th -> {
-							AxolotlClientCommon.getInstance().getLogger().info("Failed to download skin of {} ({})", s, o.get(), th);
+							DolphinClientCommon.getInstance().getLogger().info("Failed to download skin of {} ({})", s, o.get(), th);
 							return null;
 						}).thenAccept(t -> {
 							if (t == null) {
@@ -264,9 +264,9 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 								Files.write(out, bytes);
 								minecraft.executeTask(this::loadSkinsList);
 								Notifications.getInstance().addStatus("skins.notification.title", "skins.notification.import.online.downloaded", t.name());
-								AxolotlClientCommon.getInstance().getLogger().info("Downloaded skin of {} ({})", t.name(), o.get());
+								DolphinClientCommon.getInstance().getLogger().info("Downloaded skin of {} ({})", t.name(), o.get());
 							} catch (IOException e) {
-								AxolotlClientCommon.getInstance().getLogger().warn("Failed to write skin file", e);
+								DolphinClientCommon.getInstance().getLogger().warn("Failed to write skin file", e);
 								Notifications.getInstance().addStatus("skins.notification.title", "skins.notification.import.online.failed_to_save", t.name());
 							}
 						});
@@ -362,7 +362,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 				}).reversed()).map(Auth.getInstance().getSkinManager()::read).filter(Objects::nonNull).toList();
 			}
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to read skins dir!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to read skins dir!", e);
 		}
 		return Collections.emptyList();
 	}
@@ -417,11 +417,11 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 					if (skin != null) {
 						Files.write(target, skin.image());
 					} else {
-						AxolotlClientCommon.getInstance().getLogger().info("Skipping dragged file {} because it does not seem to be a valid skin!", p);
+						DolphinClientCommon.getInstance().getLogger().info("Skipping dragged file {} because it does not seem to be a valid skin!", p);
 						Notifications.getInstance().addStatus("skins.notification.title", "skins.notification.not_copied", p.getFileName());
 					}
 				} catch (IOException e) {
-					AxolotlClientCommon.getInstance().getLogger().warn("Failed to copy skin file: ", e);
+					DolphinClientCommon.getInstance().getLogger().warn("Failed to copy skin file: ", e);
 				}
 			}, minecraft);
 		}
@@ -610,8 +610,8 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 			var asset = widget.getFocusedAsset();
 			if (asset != null) {
 				if (asset instanceof Skin skin) {
-					var wideSprite = new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/wide.png");
-					var slimSprite = new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/slim.png");
+					var wideSprite = new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/wide.png");
+					var slimSprite = new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/slim.png");
 					var slimText = I18n.translate("skins.manage.variant.classic");
 					var wideText = I18n.translate("skins.manage.variant.slim");
 					actionButtons.add(new SpriteButton(skin.classicVariant() ? wideText : slimText, btn -> {
@@ -631,7 +631,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 									Files.delete(local.file());
 									Skin.LocalSkin.deleteMetadata(local.file());
 								} catch (IOException e) {
-									AxolotlClientCommon.getInstance().getLogger().warn("Failed to delete: ", e);
+									DolphinClientCommon.getInstance().getLogger().warn("Failed to delete: ", e);
 								}
 							}
 							client.openScreen(SkinManagementScreen.this);
@@ -640,7 +640,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 							AxoText.translatable("skins.manage.delete.confirm.desc_active") :
 							AxoText.translatable("skins.manage.delete.confirm.desc")
 						).br$color(Colors.RED.toInt())).getFormattedString(), 0));
-					}, new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/delete.png")));
+					}, new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/delete.png")));
 				}
 				if (asset instanceof Asset.Online online && online.supportsDownload() && !(asset instanceof Asset.Local)) {
 					this.actionButtons.add(new SpriteButton(I18n.translate("skins.manage.download"), btn -> {
@@ -649,7 +649,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 							refreshCurrentList();
 							btn.active = true;
 						});
-					}, new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/download.png")));
+					}, new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/download.png")));
 				}
 			}
 			if (label != null) {
@@ -678,7 +678,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 							client.executeTask(() -> client.openScreen(SkinManagementScreen.this));
 						}
 					}).exceptionally(t -> {
-						AxolotlClientCommon.getInstance().getLogger().warn("Failed to equip asset!", t);
+						DolphinClientCommon.getInstance().getLogger().warn("Failed to equip asset!", t);
 						equipping = false;
 						return null;
 					});
@@ -709,7 +709,7 @@ public class SkinManagementScreen extends io.github.axolotlclient.AxolotlClientC
 						Skin.LocalSkin.writeMetadata(out, Map.of(Skin.LocalSkin.CLASSIC_METADATA_KEY, skin.classicVariant()));
 					}
 				} catch (IOException e) {
-					AxolotlClientCommon.getInstance().getLogger().warn("Failed to download: ", e);
+					DolphinClientCommon.getInstance().getLogger().warn("Failed to download: ", e);
 				}
 			});
 		}

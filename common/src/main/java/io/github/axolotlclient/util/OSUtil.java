@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Locale;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 
 public class OSUtil {
 
@@ -84,7 +84,7 @@ public class OSUtil {
 			try {
 				this.open(uri.toURL());
 			} catch (MalformedURLException var3) {
-				AxolotlClientCommon.getInstance().getLogger().error("Couldn't open uri '{}'", uri, var3);
+				DolphinClientCommon.getInstance().getLogger().error("Couldn't open uri '{}'", uri, var3);
 			}
 		}
 
@@ -95,7 +95,7 @@ public class OSUtil {
 				process.getErrorStream().close();
 				process.getOutputStream().close();
 			} catch (IOException var3) {
-				AxolotlClientCommon.getInstance().getLogger().error("Couldn't open url '{}'", url, var3);
+				DolphinClientCommon.getInstance().getLogger().error("Couldn't open url '{}'", url, var3);
 			}
 		}
 
@@ -103,7 +103,7 @@ public class OSUtil {
 			try {
 				this.open(new URI(uri));
 			} catch (IllegalArgumentException | URISyntaxException var3) {
-				AxolotlClientCommon.getInstance().getLogger().error("Couldn't open uri '{}'", uri, var3);
+				DolphinClientCommon.getInstance().getLogger().error("Couldn't open uri '{}'", uri, var3);
 			}
 		}
 

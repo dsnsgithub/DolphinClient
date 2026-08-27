@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.stream.JsonWriter;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Colors;
@@ -100,12 +100,12 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 		key.br$registerOnConsumeClick(this::openScreen);
 		toggleHud.br$registerOnConsumeClick(() -> {
 			enabled.toggle();
-			AxolotlClientCommon.getInstance().saveConfig();
+			DolphinClientCommon.getInstance().saveConfig();
 		});
-		AxolotlClientCommon.getInstance().getConfig().addCategory(hudCategory);
+		DolphinClientCommon.getInstance().getConfig().addCategory(hudCategory);
 		hudCategory.add(enabled, grabCornerColor, hudLinkCreationEnabled, hudLinkLineWidth);
 		hudEditScreenCategory.add(snapping);
-		AxolotlClientCommon.getInstance().getConfig().hidden.add(hudEditScreenCategory);
+		DolphinClientCommon.getInstance().getConfig().hidden.add(hudEditScreenCategory);
 		add(new PingHud());
 		add(new FPSHud());
 		add(new CPSHud());
@@ -146,7 +146,7 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 			saveHudDependencyLinks();
 		}));
 		hudCategory.add(new GenericOption("hud.custom_entry", "hud.custom_entry.add", () -> {
-			CustomHudEntry entry = new CustomHudEntry(AxoIdentifier.of(AxolotlClientCommon.MODID, "custom_hud/" + UUID.randomUUID()));
+			CustomHudEntry entry = new CustomHudEntry(AxoIdentifier.of(DolphinClientCommon.MODID, "custom_hud/" + UUID.randomUUID()));
 			entry.setEnabled(true);
 			entry.init();
 			entry.onBoundsUpdate();
@@ -179,7 +179,7 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 	@SuppressWarnings("unchecked")
 	private void loadHudDependencyLinks() {
 		try {
-			var path = AxolotlClientCommon.resolveProfileConfigFile(HUD_DEPENDENCIES_SAVE_FILE_NAME);
+			var path = DolphinClientCommon.resolveProfileConfigFile(HUD_DEPENDENCIES_SAVE_FILE_NAME);
 			if (Files.exists(path)) {
 				var obj = (Map<String, Object>) GsonHelper.read(Files.readString(path));
 				obj.forEach((name, o) -> {
@@ -208,13 +208,13 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 				});
 			}
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to load hud dependency links!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to load hud dependency links!", e);
 		}
 	}
 
 	public void saveHudDependencyLinks() {
 		try {
-			var path = AxolotlClientCommon.resolveProfileConfigFile(HUD_DEPENDENCIES_SAVE_FILE_NAME);
+			var path = DolphinClientCommon.resolveProfileConfigFile(HUD_DEPENDENCIES_SAVE_FILE_NAME);
 			Files.createDirectories(path.getParent());
 			var writer = Files.newBufferedWriter(path);
 			var json = new JsonWriter(writer);
@@ -245,14 +245,14 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 			json.endObject();
 			json.close();
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to save hud dependency links!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to save hud dependency links!", e);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadCustomEntries() {
 		try {
-			var path = AxolotlClientCommon.resolveProfileConfigFile(CUSTOM_MODULE_SAVE_FILE_NAME);
+			var path = DolphinClientCommon.resolveProfileConfigFile(CUSTOM_MODULE_SAVE_FILE_NAME);
 			if (Files.exists(path)) {
 				var obj = (List<Object>) GsonHelper.read(Files.readString(path));
 				obj.forEach(o -> {
@@ -261,7 +261,7 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 					if (values.containsKey("id")) {
 						id = AxoIdentifier.parse((String) values.get("id"));
 					} else {
-						id = AxoIdentifier.of(AxolotlClientCommon.MODID, "custom_hud/" + UUID.randomUUID());
+						id = AxoIdentifier.of(DolphinClientCommon.MODID, "custom_hud/" + UUID.randomUUID());
 					}
 					CustomHudEntry entry = new CustomHudEntry(id);
 					entry.getAllOptions().getOptions().forEach(opt -> {
@@ -276,13 +276,13 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 				});
 			}
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to load custom hud modules!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to load custom hud modules!", e);
 		}
 	}
 
 	public void saveCustomEntries() {
 		try {
-			var path = AxolotlClientCommon.resolveProfileConfigFile(CUSTOM_MODULE_SAVE_FILE_NAME);
+			var path = DolphinClientCommon.resolveProfileConfigFile(CUSTOM_MODULE_SAVE_FILE_NAME);
 			Files.createDirectories(path.getParent());
 			var writer = Files.newBufferedWriter(path);
 			var json = new JsonWriter(writer);
@@ -305,7 +305,7 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 			json.endArray();
 			json.close();
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to save custom hud modules!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to save custom hud modules!", e);
 		}
 	}
 
@@ -350,7 +350,11 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 	}
 
 	public final HudEntry get(AxoIdentifier identifier) {
-		return entries.get(identifier);
+		HudEntry entry = entries.get(identifier);
+		if (entry != null) {
+			return entry;
+		}
+		return entries.get(DolphinClientCommon.aliasIdentifier(identifier));
 	}
 
 	public final void removeEntry(AxoIdentifier identifier) {
@@ -461,7 +465,7 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 
 	public void toggleSnapping() {
 		snapping.toggle();
-		AxolotlClientCommon.getInstance().saveConfig();
+		DolphinClientCommon.getInstance().saveConfig();
 	}
 
 	protected abstract void openScreen();

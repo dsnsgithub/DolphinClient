@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "axolotlclient-test",
+	"id": "dolphinclient-test",
 	"version": "1.0.0",
 	"name": "Test Mod",
 	"description": "",
@@ -12,14 +12,14 @@
 		"issues": "https://codeberg.org/AxolotlClient/AxolotlClient-mod/issues"
 	},
 	"license": "LGPL-3.0",
-	"icon": "assets/axolotlclient/icon.png",
+	"icon": "assets/dolphinclient/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"io.github.axolotlclient.AxolotlClientTest"
+			"io.github.axolotlclient.DolphinClientTest"
 		]
 	},
 	"depends": {
-		"axolotlclient": "*"
+		"dolphinclient": "*"
 	}
 }

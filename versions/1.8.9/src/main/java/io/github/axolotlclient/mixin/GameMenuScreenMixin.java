@@ -26,8 +26,8 @@ import java.util.Objects;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientConfigCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientConfigCommon;
 import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.api.APIOptions;
 import io.github.axolotlclient.api.ChatsSidebar;
@@ -55,7 +55,9 @@ public abstract class GameMenuScreenMixin extends Screen {
 
 	@Unique
 	private static boolean axolotlclient$hasModMenu() {
-		return FabricLoader.getInstance().isModLoaded("modmenu") && !FabricLoader.getInstance().isModLoaded("axolotlclient-modmenu");
+		return FabricLoader.getInstance().isModLoaded("modmenu")
+			&& !FabricLoader.getInstance().isModLoaded("axolotlclient-modmenu")
+			&& !FabricLoader.getInstance().isModLoaded("dolphinclient-modmenu");
 	}
 
 	@Inject(method = "init", at = @At("RETURN"))
@@ -69,7 +71,7 @@ public abstract class GameMenuScreenMixin extends Screen {
 			buttons.add(new ButtonWidget(234, 10, buttonY, 75, 20, I18n.translate("api.chats")));
 		}
 
-		if (!AxolotlClientConfigCommon.instance().gameMenuScreenOptionButtonMode.get().showButton())
+		if (!DolphinClientConfigCommon.instance().gameMenuScreenOptionButtonMode.get().showButton())
 			return;
 
 		if (minecraft.isSingleplayer() && !this.minecraft.getServer().isPublished()) {
@@ -124,7 +126,7 @@ public abstract class GameMenuScreenMixin extends Screen {
 
 	@WrapMethod(method = "buttonClicked")
 	private void confirmDisconnect(ButtonWidget button, Operation<Void> original) {
-		if (button.id == 1 && minecraft.getCurrentServerEntry() != null && AxolotlClient.config().confirmDisconnect.get()) {
+		if (button.id == 1 && minecraft.getCurrentServerEntry() != null && DolphinClient.config().confirmDisconnect.get()) {
 			minecraft.openScreen(new ConfirmScreen((confirmed, i) -> {
 				if (confirmed) original.call(button);
 				else minecraft.openScreen(null);

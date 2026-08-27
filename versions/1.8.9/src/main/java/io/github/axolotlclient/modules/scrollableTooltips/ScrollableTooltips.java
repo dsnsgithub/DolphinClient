@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.scrollableTooltips;
 
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
@@ -58,7 +58,7 @@ public class ScrollableTooltips extends AbstractModule {
 		category.add(inverse);
 		category.add(alignToBottom);
 
-		AxolotlClient.config().rendering.add(category);
+		DolphinClient.config().rendering.add(category);
 	}
 
 	public void onRenderTooltip() {

@@ -22,11 +22,11 @@
 
 package io.github.axolotlclient.bridge.internal;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 
 public class BridgeUtil {
 	public static AbstractMethodError noImpl() {
-		return new AbstractMethodError("Bridge method not implemented for " + AxolotlClientCommon.GAME_VERSION);
+		return new AbstractMethodError("Bridge method not implemented for " + DolphinClientCommon.GAME_VERSION);
 	}
 
 	public static <T> T noImplValue() {

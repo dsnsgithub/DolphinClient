@@ -35,7 +35,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.util.AxoI18n;
 import io.github.axolotlclient.util.GsonHelper;
 import lombok.*;
@@ -73,7 +73,7 @@ public class Status {
 	}
 
 	public String getLastOnline() {
-		return lastOnline == null ? null : AxoI18n.translate("api.status.last_online", lastOnline.atZone(ZoneId.systemDefault()).format(AxolotlClientCommon.getInstance().getConfig().getDateTimeFormatter()));
+		return lastOnline == null ? null : AxoI18n.translate("api.status.last_online", lastOnline.atZone(ZoneId.systemDefault()).format(DolphinClientCommon.getInstance().getConfig().getDateTimeFormatter()));
 	}
 
 	public void setOnline(boolean online) {

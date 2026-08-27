@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.hypixel.autoboop;
 
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.vanilla.widgets.VanillaButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
@@ -54,7 +54,7 @@ public class FilterListConfigurationScreen extends io.github.axolotlclient.Axolo
 			I18n.translate("autoboop.filters.clear"), button -> {
 			filters.clear();
 			filtersList.reload();
-			AxolotlClientCommon.getInstance().saveConfig();
+			DolphinClientCommon.getInstance().saveConfig();
 		});
 		addDrawableChild(resetButton);
 		addDrawableChild(new VanillaButtonWidget(width / 2 + 4, height - 33 / 2 - 10, 150, 20,
@@ -64,6 +64,6 @@ public class FilterListConfigurationScreen extends io.github.axolotlclient.Axolo
 	public void closeScreen() {
 		this.minecraft.openScreen(this.parent);
 		filtersList.apply();
-		AxolotlClientCommon.getInstance().saveConfig();
+		DolphinClientCommon.getInstance().saveConfig();
 	}
 }

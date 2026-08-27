@@ -24,7 +24,7 @@ package io.github.axolotlclient.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import net.minecraft.client.render.platform.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,7 +37,7 @@ public abstract class GlStateManagerMixin {
 	@Inject(method = "color4f", at = @At("HEAD"))
 	private static void nightMode(float f, float g, float h, float i, CallbackInfo ci,
 								  @Local(ordinal = 2, argsOnly = true) LocalFloatRef blue) {
-		if (AxolotlClient.config().nightMode.get()) {
+		if (DolphinClient.config().nightMode.get()) {
 			blue.set(blue.get() / 2f);
 		}
 	}

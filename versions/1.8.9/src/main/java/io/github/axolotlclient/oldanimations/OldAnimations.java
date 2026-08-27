@@ -18,7 +18,7 @@
 
 package io.github.axolotlclient.oldanimations;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.AxolotlClientConfig;
 import io.github.axolotlclient.AxolotlClientConfig.api.manager.ConfigManager;
 import io.github.axolotlclient.bridge.events.Events;
@@ -39,7 +39,7 @@ public class OldAnimations extends AbstractModule implements ProfileAware {
 	public void init() {
 		OldAnimationsConfig.instance.initConfig();
 		Events.CLIENT_READY.register(() ->
-			AxolotlClient.config().getConfig().add(OldAnimationsConfig.instance.getCategory(), false));
+			DolphinClient.config().getConfig().add(OldAnimationsConfig.instance.getCategory(), false));
 	}
 
 	@Override

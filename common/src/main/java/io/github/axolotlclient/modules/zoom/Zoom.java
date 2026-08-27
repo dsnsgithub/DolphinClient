@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.modules.zoom;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.FloatOption;
@@ -152,7 +152,7 @@ public class Zoom extends AbstractCommonModule {
 	public void init() {
 		zoom.add(zoomDivisor, zoomSpeed, zoomScrolling, decreaseSensitivity, smoothCamera, toggle);
 
-		AxolotlClientCommon.getInstance().getConfig().rendering.add(zoom);
+		DolphinClientCommon.getInstance().getConfig().rendering.add(zoom);
 
 		active = false;
 

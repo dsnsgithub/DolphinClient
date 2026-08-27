@@ -173,7 +173,7 @@ public final class MenuCatalog {
 
 	private static void absorb(List<Module> modules, OptionCategory category, Tab tab) {
 		Collection<OptionCategory> children = category.getSubCategories();
-		if (shouldPromote(children)) {
+		if (shouldPromote(children, tab)) {
 			List<Node> own = optionNodes(category.getOptions());
 			if (!own.isEmpty()) {
 				modules.add(moduleFrom(category.getName(), tab, firstEnabled(category.getOptions()), own));
@@ -190,9 +190,17 @@ public final class MenuCatalog {
 		return new Module(tab.name().toLowerCase(Locale.ROOT) + ":" + nameKey, nameKey, tab, enabled, null, nodes);
 	}
 
-	private static boolean shouldPromote(Collection<OptionCategory> children) {
+	/**
+	 * Settings keeps a tile per child even when only Screenshots remains
+	 * under General, matching the layout from before Authentication was
+	 * removed. Mods still need at least two children before splitting.
+	 */
+	private static boolean shouldPromote(Collection<OptionCategory> children, Tab tab) {
 		int size = children.size();
-		return size >= 2 && size <= 12;
+		if (size == 0 || size > 12) {
+			return false;
+		}
+		return tab == Tab.SETTINGS || size >= 2;
 	}
 
 	private static List<Node> nodesFrom(OptionCategory category, boolean skipNestedHudEntries) {

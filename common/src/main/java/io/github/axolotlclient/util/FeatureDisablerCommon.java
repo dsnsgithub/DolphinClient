@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.events.Events;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.modules.freelook.Freelook;
@@ -41,15 +41,15 @@ public abstract class FeatureDisablerCommon {
 	private static FeatureDisablerCommon instance;
 
 	private static final Supplier<Boolean> NONE = () -> true;
-	protected static final AxoIdentifier CHANNEL_NAME = AxoIdentifier.of(AxolotlClientCommon.MODID, "block_mods");
+	protected static final AxoIdentifier CHANNEL_NAME = AxoIdentifier.of(DolphinClientCommon.LEGACY_MODID, "block_mods");
 	// Features that can be disabled on the server's behalf
 	// If something should be added here, feel free to ping us via your favorite way.
 	protected static final HashMap<String, ForceableBooleanOption> FEATURES = CommonUtil.make(() -> {
 		HashMap<String, ForceableBooleanOption> features = new HashMap<>();
 		features.put("freelook", Freelook.getInstance().enabled);
-		features.put("timechanger", AxolotlClientCommon.getInstance().getConfig().timeChangerEnabled);
-		features.put("lowfire", AxolotlClientCommon.getInstance().getConfig().lowFire);
-		features.put("fullbright", AxolotlClientCommon.getInstance().getConfig().fullBright);
+		features.put("timechanger", DolphinClientCommon.getInstance().getConfig().timeChangerEnabled);
+		features.put("lowfire", DolphinClientCommon.getInstance().getConfig().lowFire);
+		features.put("fullbright", DolphinClientCommon.getInstance().getConfig().fullBright);
 		return features;
 	});
 

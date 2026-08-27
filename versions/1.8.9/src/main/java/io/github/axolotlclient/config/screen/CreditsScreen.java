@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.Element;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.vanilla.ElementListWidget;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.vanilla.widgets.PlainTextButtonWidget;
@@ -60,7 +60,7 @@ public class CreditsScreen extends io.github.axolotlclient.AxolotlClientConfig.i
 
 	@Override
 	public void renderBackground() {
-		if (AxolotlClient.config().someNiceBackground.get()) { // Credit to pridelib for the colors
+		if (DolphinClient.config().someNiceBackground.get()) { // Credit to pridelib for the colors
 			fill(0, 0, width, height / 6, 0xFFff0018);
 			fill(0, height / 6, width, height * 2 / 6, 0xFFffa52c);
 			fill(0, height * 2 / 6, width, height / 2, 0xFFffff41);
@@ -87,13 +87,13 @@ public class CreditsScreen extends io.github.axolotlclient.AxolotlClientConfig.i
 			I18n.translate("gui.back"), buttonWidget -> closeScreen()));
 
 		addDrawableChild(new VanillaButtonWidget(6, back.getY(), 100, 20, I18n.translate("creditsBGM") + ": "
-			+ I18n.translate(AxolotlClient.config().creditsBGM.get() ? "options.on" : "options.off"),
+			+ I18n.translate(DolphinClient.config().creditsBGM.get() ? "options.on" : "options.off"),
 			buttonWidget -> {
-				AxolotlClient.config().creditsBGM.toggle();
-				AxolotlClient.getInstance().saveConfig();
+				DolphinClient.config().creditsBGM.toggle();
+				DolphinClient.getInstance().saveConfig();
 				stopBGM();
 				buttonWidget.setMessage(I18n.translate("creditsBGM") + ": " +
-					I18n.translate(AxolotlClient.config().creditsBGM.get() ? "options.on" : "options.off"));
+					I18n.translate(DolphinClient.config().creditsBGM.get() ? "options.on" : "options.off"));
 			}));
 	}
 
@@ -108,7 +108,7 @@ public class CreditsScreen extends io.github.axolotlclient.AxolotlClientConfig.i
 	}
 
 	public void tickBGM() {
-		if (AxolotlClient.config().creditsBGM.get() && !minecraft.getSoundManager().isPlaying(bgm)) {
+		if (DolphinClient.config().creditsBGM.get() && !minecraft.getSoundManager().isPlaying(bgm)) {
 			minecraft.getSoundManager().play(bgm);
 		}
 	}

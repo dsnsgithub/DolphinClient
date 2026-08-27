@@ -29,7 +29,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.TextRenderer;
@@ -51,7 +51,7 @@ public abstract class TextRendererMixin {
 	// Pain at its finest
 
 	@Unique
-	private final Identifier texture_g = new Identifier(AxolotlClientCommon.MODID, "textures/font/g_breve_capital.png");
+	private final Identifier texture_g = new Identifier(DolphinClientCommon.MODID, "textures/font/g_breve_capital.png");
 	@Shadow
 	public int fontHeight;
 	@Shadow

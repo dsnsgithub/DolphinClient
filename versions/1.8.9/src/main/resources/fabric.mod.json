@@ -1,13 +1,14 @@
 {
 	"schemaVersion": 1,
-	"id": "axolotlclient",
+	"id": "dolphinclient",
 	"version": "${version}",
-	"name": "AxolotlClient",
-	"description": "Free & Open-Source Minecraft Mod for use in PvP and other Scenarios",
+	"name": "DolphinClient",
+	"description": "Insanely optimized Minecraft client for Hypixel 1.8.9.",
 	"authors": [
-		"moehreag"
+		"DSNS"
 	],
 	"contributors": [
+		"moehreag",
 		"YakisikliBaran",
 		"DragonEggBedrockBreaking",
 		"TheKodeToad",
@@ -15,12 +16,12 @@
 		"Mixces"
 	],
 	"contact": {
-		"homepage": "https://axolotlclient.com/",
-		"sources": "https://codeberg.org/AxolotlClient/AxolotlClient-mod/",
-		"issues": "https://codeberg.org/AxolotlClient/AxolotlClient-mod/issues"
+		"homepage": "https://github.com/dsnsgithub/DolphinClient/",
+		"sources": "https://github.com/dsnsgithub/DolphinClient/",
+		"issues": "https://github.com/dsnsgithub/DolphinClient/issues"
 	},
 	"license": "LGPL-3.0-or-later",
-	"icon": "assets/axolotlclient/icon.png",
+	"icon": "assets/dolphinclient/icon.png",
 	"accessWidener": "axolotlclient.classtweaker",
 	"environment": "client",
 	"entrypoints": {
@@ -35,10 +36,12 @@
 		"oldanimations.mixins.json"
 	],
 	"provides": [
+		"axolotlclient",
 		"axolotlclient-oldanimations"
 	],
 	"custom": {
-		"axolotlclient:bridge_impl_version": "V1_8"
+		"axolotlclient:bridge_impl_version": "V1_8",
+		"dolphinclient:bridge_impl_version": "V1_8"
 	},
 	"depends": {
 		"fabricloader": ">=0.18.0",
@@ -48,7 +51,7 @@
 		"osl-keybinds": "*",
 		"osl-entrypoints": "*",
 		"axolotlclientconfig": "*",
-		"axolotlclient-common": "*",
+		"dolphinclient-common": "*",
 		"legacy-lwjgl3": ">=1.4.3"
 	}
 }

@@ -25,7 +25,7 @@ package io.github.axolotlclient.mixin;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.bridge.AxoPerspective;
 import io.github.axolotlclient.modules.hypixel.LevelHead;
 import io.github.axolotlclient.modules.hypixel.bedwars.BedwarsMod;
@@ -72,7 +72,7 @@ public abstract class EntityRendererMixin<T extends Entity> {
 
 	@WrapOperation(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;draw(Ljava/lang/String;III)I", ordinal = 1))
 	public int axolotlclient$forceShadows(TextRenderer instance, String string, int x, int y, int color, Operation<Integer> original, Entity entity) {
-		if (AxolotlClient.config().useShadows.get() && !entity.isSneaking()) {
+		if (DolphinClient.config().useShadows.get() && !entity.isSneaking()) {
 			return instance.draw(string, x, y, color, true);
 		}
 		return original.call(instance, string, x, y, color);
@@ -123,27 +123,27 @@ public abstract class EntityRendererMixin<T extends Entity> {
 		}
 
 		textRenderer.draw(text, -x, y, LevelHead.getInstance().textColor.get().toInt(),
-			AxolotlClient.config().useShadows.get());
+			DolphinClient.config().useShadows.get());
 	}
 
 	@WrapWithCondition(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;begin(ILnet/minecraft/client/render/vertex/VertexFormat;)V"))
 	private boolean disableNameTagBackground(BufferBuilder instance, int drawMode, VertexFormat format) {
-		return AxolotlClient.config().nametagBackground.get();
+		return DolphinClient.config().nametagBackground.get();
 	}
 
 	@WrapWithCondition(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;nextVertex()V"))
 	private boolean disableNameTagBackground$2(BufferBuilder instance) {
-		return AxolotlClient.config().nametagBackground.get();
+		return DolphinClient.config().nametagBackground.get();
 	}
 
 	@WrapWithCondition(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/Tesselator;end()V"))
 	private boolean disableNameTagBackground$3(Tesselator instance) {
-		return AxolotlClient.config().nametagBackground.get();
+		return DolphinClient.config().nametagBackground.get();
 	}
 
 	@WrapOperation(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;vertex(DDD)Lnet/minecraft/client/render/vertex/BufferBuilder;"))
 	private BufferBuilder disableNameTagBackground(BufferBuilder instance, double x, double y, double z, Operation<BufferBuilder> original) {
-		if (AxolotlClient.config().nametagBackground.get()) {
+		if (DolphinClient.config().nametagBackground.get()) {
 			return original.call(instance, x, y, z);
 		}
 		return instance;
@@ -151,7 +151,7 @@ public abstract class EntityRendererMixin<T extends Entity> {
 
 	@WrapOperation(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;color(FFFF)Lnet/minecraft/client/render/vertex/BufferBuilder;"))
 	private BufferBuilder disableNameTagBackground$2(BufferBuilder instance, float r, float g, float b, float a, Operation<BufferBuilder> original) {
-		if (AxolotlClient.config().nametagBackground.get()) {
+		if (DolphinClient.config().nametagBackground.get()) {
 			return original.call(instance, r, g, b, a);
 		}
 		return instance;

@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.hypixel.bedwars;
 
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.Element;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.vanilla.ElementListWidget;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.vanilla.widgets.VanillaButtonWidget;
@@ -50,7 +50,7 @@ public class SessionStatsHudEntryConfigScreen extends io.github.axolotlclient.Ax
 	@Override
 	public void closeScreen() {
 		minecraft.openScreen(parent);
-		AxolotlClientCommon.getInstance().saveConfig();
+		DolphinClientCommon.getInstance().saveConfig();
 	}
 
 	@Override

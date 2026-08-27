@@ -28,7 +28,7 @@ import java.util.List;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
-import io.github.axolotlclient.AxolotlClientConfigCommon;
+import io.github.axolotlclient.DolphinClientConfigCommon;
 import io.github.axolotlclient.api.Request;
 import io.github.axolotlclient.bridge.events.Events;
 import io.github.axolotlclient.modules.AbstractCommonModule;
@@ -66,7 +66,7 @@ public class HypixelMods extends AbstractCommonModule {
 
 		subModules.forEach(AbstractHypixelMod::init);
 
-		AxolotlClientConfigCommon.instance().addCategory(category);
+		DolphinClientConfigCommon.instance().addCategory(category);
 
 		Events.END_RESOURCE_RELOAD.register(HypixelMessages.getInstance());
 

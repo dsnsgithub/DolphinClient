@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.unfocusedFpsLimiter;
 
 import java.util.concurrent.locks.LockSupport;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.FloatOption;
@@ -67,7 +67,7 @@ public class UnfocusedFpsLimiter extends AbstractModule {
 	public void init() {
 		OptionCategory category = OptionCategory.create("fpsLimiter");
 		category.add(enabled, reduceFPSWhenUnfocused, unfocusedFPS, restoreOnHover, unfocusedVolumeMultiplier, hiddenVolumeMultiplier, runGCOnUnfocus);
-		AxolotlClient.config().rendering.add(category);
+		DolphinClient.config().rendering.add(category);
 	}
 
 	public boolean checkForRender() {

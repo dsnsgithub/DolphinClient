@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.manager.ConfigManager;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.managers.JsonConfigManager;
@@ -47,7 +47,7 @@ public abstract class Options implements Module {
 		if (!val.isAccepted() && API.getInstance().isAuthenticated()) {
 			API.getInstance().shutdown();
 		}
-		AxolotlClientCommon.getInstance().saveConfig();
+		DolphinClientCommon.getInstance().saveConfig();
 	});
 	public final BooleanOption sendStatusUpdates = new BooleanOption("api.send_status_updates", true);
 	public final BooleanOption statusUpdateNotifs = new BooleanOption("statusUpdateNotifs", true);
@@ -72,7 +72,7 @@ public abstract class Options implements Module {
 	public final BooleanOption addShortcutButtons = new BooleanOption("api.add_shortcut_buttons", true);
 	public final BooleanOption allowFriendsServerJoin = new BooleanOption("api.allow_friends_server_join", false);
 	private final OptionCategory pkConfig = OptionCategory.create("pluralkit_sensitive");
-	private final ConfigManager pkConfigManager = new JsonConfigManager(AxolotlClientCommon.resolveConfigFile("pluralkit_sensitive.json"), pkConfig);
+	private final ConfigManager pkConfigManager = new JsonConfigManager(DolphinClientCommon.resolveConfigFile("pluralkit_sensitive.json"), pkConfig);
 	public final StringOption pkToken = new StringOption("api.pk_token", "", s -> {
 		PkSystem.fromToken(s).thenAccept(sys -> {
 			if (sys != null) {
@@ -116,7 +116,7 @@ public abstract class Options implements Module {
 		pluralkit.add(pkToken, false);
 		pluralkit.add(autoproxy, autoproxyMode, autoproxyMember);
 		account.add(showRegistered, retainUsernames, showLastOnline, showActivity, allowFriendsImageAccess);
-		var globalConfig = AxolotlClientCommon.getInstance().getConfig();
+		var globalConfig = DolphinClientCommon.getInstance().getConfig();
 		badgeOptions.add(globalConfig.showBadges, globalConfig.customBadge, globalConfig.badgeText, globalConfig.tabBadgeMode);
 		category.add(pluralkit, badgeOptions);
 		category.add(account, false);

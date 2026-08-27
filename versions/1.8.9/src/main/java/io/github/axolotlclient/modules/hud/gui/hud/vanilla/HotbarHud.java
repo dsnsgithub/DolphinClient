@@ -25,7 +25,7 @@ package io.github.axolotlclient.modules.hud.gui.hud.vanilla;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
 import io.github.axolotlclient.modules.hud.gui.entry.TextHudEntry;
@@ -41,7 +41,7 @@ import net.minecraft.resource.Identifier;
 
 public class HotbarHud extends TextHudEntry {
 
-	public static final Identifier ID = new Identifier(AxolotlClientCommon.MODID, "hotbarhud");
+	public static final Identifier ID = new Identifier(DolphinClientCommon.MODID, "hotbarhud");
 	private static final Identifier WIDGETS_TEXTURE = new Identifier("textures/gui/widgets.png");
 
 	private final Minecraft client = (Minecraft) super.client;

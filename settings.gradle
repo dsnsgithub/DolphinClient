@@ -16,7 +16,7 @@ pluginManagement {
 	}
 }
 
-rootProject.name = "AxolotlClient-mod"
+rootProject.name = "DolphinClient-mod"
 include 'common'
 include '1.8.9'
 project(':1.8.9').projectDir = file('versions/1.8.9')

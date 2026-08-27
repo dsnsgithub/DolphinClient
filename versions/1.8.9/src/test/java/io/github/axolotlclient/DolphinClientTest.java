@@ -25,7 +25,7 @@ package io.github.axolotlclient;
 import io.github.axolotlclient.bridge.internal.BridgeValidationPostprocessor;
 import net.fabricmc.api.ClientModInitializer;
 
-public class AxolotlClientTest implements ClientModInitializer {
+public class DolphinClientTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {

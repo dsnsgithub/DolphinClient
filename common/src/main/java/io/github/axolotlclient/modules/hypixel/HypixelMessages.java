@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.events.types.ReceiveChatMessageEvent;
@@ -50,12 +50,12 @@ public class HypixelMessages implements Runnable {
 		languageMessageMap.clear();
 		messageLanguageMap.clear();
 
-		AxolotlClientCommon.getInstance().getLogger().debug("Loading Hypixel Messages");
+		DolphinClientCommon.getInstance().getLogger().debug("Loading Hypixel Messages");
 		AxoMinecraftClient.getInstance().br$getResourceManager().br$listResources("", "lang", id -> id.br$getPath().endsWith(".hypixel.json"))
 			.forEach((id, resource) -> {
 				int i = id.br$getPath().lastIndexOf("/") + 1;
 				String lang = id.br$getPath().substring(i, i + 5);
-				AxolotlClientCommon.getInstance().getLogger().debug("Found message file: " + id);
+				DolphinClientCommon.getInstance().getLogger().debug("Found message file: " + id);
 				Map<String, String> lines;
 				try {
 					lines = (Map<String, String>) GsonHelper.read(resource.br$asStream());

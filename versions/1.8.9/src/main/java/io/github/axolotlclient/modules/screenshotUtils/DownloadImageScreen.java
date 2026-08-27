@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.modules.screenshotUtils;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -32,7 +32,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.resource.Identifier;
 
 public class DownloadImageScreen extends Screen {
-	private static final Identifier SPRITE = new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/go.png");
+	private static final Identifier SPRITE = new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/go.png");
 
 	private final Screen parent;
 

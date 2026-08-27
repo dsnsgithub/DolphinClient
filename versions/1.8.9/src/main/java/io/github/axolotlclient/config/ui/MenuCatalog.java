@@ -28,7 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
@@ -41,7 +41,7 @@ import lombok.Getter;
 import net.minecraft.client.resource.language.I18n;
 
 /**
- * Flattens the nested AxolotlClient option tree into Lunar-style modules.
+ * Flattens the nested DolphinClient option tree into Lunar-style modules.
  * Nested categories become inline sections instead of extra screens.
  */
 public final class MenuCatalog {
@@ -121,7 +121,7 @@ public final class MenuCatalog {
 
 	public static List<Module> build() {
 		List<Module> modules = new ArrayList<>();
-		OptionCategory root = AxolotlClient.getInstance().getConfig().getConfig();
+		OptionCategory root = DolphinClient.getInstance().getConfig().getConfig();
 
 		OptionCategory hudCategory = find(root.getSubCategories(), "hud");
 		if (hudCategory != null) {

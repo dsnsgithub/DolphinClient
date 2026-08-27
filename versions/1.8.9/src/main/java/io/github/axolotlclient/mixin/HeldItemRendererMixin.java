@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.mixin;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import net.minecraft.client.render.ItemInHandRenderer;
 import net.minecraft.client.render.platform.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +35,7 @@ public abstract class HeldItemRendererMixin {
 
 	@Inject(method = "renderOnFireEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;pushMatrix()V", shift = At.Shift.AFTER))
 	public void axolotlclient$lowFire(float f, CallbackInfo ci) {
-		if (AxolotlClient.config().lowFire.get()) {
+		if (DolphinClient.config().lowFire.get()) {
 			GlStateManager.translatef(0, -0.3F, 0);
 		}
 	}

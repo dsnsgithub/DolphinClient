@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import com.google.gson.JsonObject;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.mixin.TextureManagerAccessor;
 import io.github.axolotlclient.mixin.WorldRendererAccessor;
 import io.github.axolotlclient.util.Util;
@@ -153,7 +153,7 @@ public abstract class SkyboxInstance {
 				case "overlay" -> 7;
 				case "replace" -> 8;
 				default -> {
-					AxolotlClientCommon.getInstance().getLogger().warn("Unknown blend: " + str);
+					DolphinClientCommon.getInstance().getLogger().warn("Unknown blend: " + str);
 					yield 1;
 				}
 			};

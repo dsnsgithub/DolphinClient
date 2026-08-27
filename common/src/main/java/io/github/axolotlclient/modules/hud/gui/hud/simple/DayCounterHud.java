@@ -22,14 +22,14 @@
 
 package io.github.axolotlclient.modules.hud.gui.hud.simple;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.util.AxoI18n;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.modules.hud.gui.entry.SimpleTextHudEntry;
 
 public class DayCounterHud extends SimpleTextHudEntry {
 
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "daycounterhud");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "daycounterhud");
 
 	@Override
 	public String getPlaceholderValue() {

@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.hud.gui.hud.vanilla;
 
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
@@ -38,7 +38,7 @@ import io.github.axolotlclient.modules.hud.util.DefaultOptions;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class SubtitlesHudHud extends BoxHudEntry implements DynamicallyPositionable {
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "subtitleshud");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "subtitleshud");
 	private final EnumOption<AnchorPoint> anchor = DefaultOptions.getAnchorPoint(AnchorPoint.BOTTOM_RIGHT, this);
 	// only relevant to 1.8.9
 	private static final boolean SOUNDFIX_INSTALLED = FabricLoader.getInstance().isModLoaded("soundfix");

@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Colors;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.DoubleOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.ButtonWidget;
@@ -199,7 +199,7 @@ public class ChannelSettingsScreen extends io.github.axolotlclient.AxolotlClient
 				GlStateManager.blendFunc(770, 771);
 				this.drawTexture(this.getX(), this.getY(), 0, 46 + k * 20, this.getWidth() / 2, this.getHeight());
 				this.drawTexture(this.getX() + this.getWidth() / 2, this.getY(), 200 - this.getWidth() / 2, 46 + k * 20, this.getWidth() / 2, this.getHeight());
-				client.getTextureManager().bind(new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/cursor.png"));
+				client.getTextureManager().bind(new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/cursor.png"));
 				drawTexture(getX() + getWidth() / 2 - 4, getY() + getHeight() / 2 - 4,
 					8, 8, 8, 8, 8, 8, 8, 8);
 

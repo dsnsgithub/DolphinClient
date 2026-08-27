@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.mixin;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.modules.sky.SkyboxManager;
 import io.github.axolotlclient.util.DrawUtil;
 import net.minecraft.client.Minecraft;
@@ -62,7 +62,7 @@ public abstract class WorldRendererMixin {
 	@Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
 	public void axolotlclient$renderCustomSky(float tickDelta, int anaglyphFilter, CallbackInfo ci) {
 		if (this.world.dimension.isNatural()) {
-			if (AxolotlClient.config().customSky.get() && SkyboxManager.getInstance().hasSkyBoxes()) {
+			if (DolphinClient.config().customSky.get() && SkyboxManager.getInstance().hasSkyBoxes()) {
 				GlStateManager.depthMask(false);
 				this.minecraft.profiler.push("Custom Skies");
 				SkyboxManager.getInstance().renderSkyboxes(tickDelta, world.getRain(tickDelta));
@@ -75,13 +75,13 @@ public abstract class WorldRendererMixin {
 
 	@Redirect(method = "renderClouds", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/dimension/Dimension;getCloudHeight()F"))
 	public float axolotlclient$getCloudHeight(Dimension instance) {
-		return AxolotlClient.config().cloudHeight.get();
+		return DolphinClient.config().cloudHeight.get();
 	}
 
 	@ModifyArg(method = "renderBlockOutline", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glLineWidth(F)V"), remap = false)
 	public float axolotlclient$OutlineWidth(float width) {
-		if (AxolotlClient.config().enableCustomOutlines.get() && AxolotlClient.config().outlineWidth.get() > 1) {
-			return width + AxolotlClient.config().outlineWidth.get() - 1f;
+		if (DolphinClient.config().enableCustomOutlines.get() && DolphinClient.config().outlineWidth.get() > 1) {
+			return width + DolphinClient.config().outlineWidth.get() - 1f;
 		}
 		return width;
 	}
@@ -93,12 +93,12 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "renderBlockOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;color4f(FFFF)V", shift = At.Shift.AFTER))
 	public void axolotlclient$customOutlineColor(PlayerEntity camera, HitResult hitResult, int i, float tickDelta, CallbackInfo ci) {
-		if (AxolotlClient.config().enableCustomOutlines.get()) {
+		if (DolphinClient.config().enableCustomOutlines.get()) {
 			DrawUtil.drawOutlines(camera, hitResult, tickDelta, world);
 
 			GlStateManager.clearColor();
 
-			int color = AxolotlClient.config().outlineColor.get().toInt();
+			int color = DolphinClient.config().outlineColor.get().toInt();
 			float a = (float) (color >> 24 & 0xFF) / 255.0F;
 			float r = (float) (color >> 16 & 0xFF) / 255.0F;
 			float g = (float) (color >> 8 & 0xFF) / 255.0F;

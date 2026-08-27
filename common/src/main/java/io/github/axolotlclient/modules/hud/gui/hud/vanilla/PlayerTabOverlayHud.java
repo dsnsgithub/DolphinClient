@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
@@ -39,7 +39,7 @@ import io.github.axolotlclient.modules.hud.gui.layout.AnchorPoint;
 
 public class PlayerTabOverlayHud extends TextHudEntry {
 
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "tab_overlay_hud");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "tab_overlay_hud");
 	public final BooleanOption showPlayerHeads = new BooleanOption("showPlayerHeads", true);
 	public final BooleanOption showHeader = new BooleanOption("showHeader", true);
 	public final BooleanOption showFooter = new BooleanOption("showFooter", true);

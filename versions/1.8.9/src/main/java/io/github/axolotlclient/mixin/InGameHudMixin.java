@@ -25,7 +25,7 @@ package io.github.axolotlclient.mixin;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.events.Events;
 import io.github.axolotlclient.bridge.events.types.ScoreboardRenderEvent;
@@ -217,7 +217,7 @@ public abstract class InGameHudMixin {
 
 	@Inject(method = "renderVignette", at = @At("HEAD"), cancellable = true)
 	private void axolotlclient$removeVignette(float f, Window window, CallbackInfo ci) {
-		if (AxolotlClient.config().removeVignette.get()) {
+		if (DolphinClient.config().removeVignette.get()) {
 			ci.cancel();
 		}
 	}
@@ -227,11 +227,11 @@ public abstract class InGameHudMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;scalef(FFF)V", ordinal = 0))
 	private void scaleTitle(float f, CallbackInfo ci) {
-		if (!AxolotlClient.config().scaleTitles.get()) {
+		if (!DolphinClient.config().scaleTitles.get()) {
 			return;
 		}
 		if (titleScale == -1) {
-			calculateTitleScale(Minecraft.getInstance(), title, Util.getWindow().getWidth() - AxolotlClient.config().titlePadding.get() * 8);
+			calculateTitleScale(Minecraft.getInstance(), title, Util.getWindow().getWidth() - DolphinClient.config().titlePadding.get() * 8);
 		}
 		if (titleScale != -1) {
 			GlStateManager.scalef(titleScale, titleScale, 1);
@@ -240,11 +240,11 @@ public abstract class InGameHudMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;scalef(FFF)V", ordinal = 1))
 	private void scaleSubtitle(float f, CallbackInfo ci) {
-		if (!AxolotlClient.config().scaleTitles.get()) {
+		if (!DolphinClient.config().scaleTitles.get()) {
 			return;
 		}
 		if (subtitleScale == -1) {
-			calculateSubtitleScale(Minecraft.getInstance(), subtitle, Util.getWindow().getWidth() - AxolotlClient.config().titlePadding.get() * 8);
+			calculateSubtitleScale(Minecraft.getInstance(), subtitle, Util.getWindow().getWidth() - DolphinClient.config().titlePadding.get() * 8);
 		}
 		if (subtitleScale != -1) {
 			GlStateManager.scalef(subtitleScale, subtitleScale, 1);
@@ -253,11 +253,11 @@ public abstract class InGameHudMixin {
 
 	@Inject(method = "setTitles", at = @At("HEAD"))
 	private void calculateScales(String string, String string2, int i, int j, int k, CallbackInfo ci) {
-		if (!AxolotlClient.config().scaleTitles.get()) {
+		if (!DolphinClient.config().scaleTitles.get()) {
 			return;
 		}
 		var client = Minecraft.getInstance();
-		int padding = AxolotlClient.config().titlePadding.get();
+		int padding = DolphinClient.config().titlePadding.get();
 		int windowWidth = Util.getWindow().getWidth() - padding * 8;
 		calculateTitleScale(client, string, windowWidth);
 		calculateSubtitleScale(client, string2, windowWidth);
@@ -289,7 +289,7 @@ public abstract class InGameHudMixin {
 
 	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/chat/ChatGui;render(I)V"))
 	private boolean hideChat(ChatGui instance, int i) {
-		return !AxolotlClient.config().hideChat.get();
+		return !DolphinClient.config().hideChat.get();
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/overlay/PlayerTabOverlay;render(ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))

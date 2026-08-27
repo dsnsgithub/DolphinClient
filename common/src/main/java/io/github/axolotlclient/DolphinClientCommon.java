@@ -40,6 +40,7 @@ import io.github.axolotlclient.api.Options;
 import io.github.axolotlclient.bridge.events.Events;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.bridge.util.AxoProfiler;
+import io.github.axolotlclient.config.ConfigPathMigration;
 import io.github.axolotlclient.config.migration.ConfigMigration;
 import io.github.axolotlclient.config.profiles.ProfileAware;
 import io.github.axolotlclient.config.profiles.Profiles;
@@ -59,8 +60,15 @@ import io.github.axolotlclient.util.notifications.NotificationProvider;
 import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
 
-public abstract class AxolotlClientCommon {
-	public static final String MODID = "axolotlclient";
+public abstract class DolphinClientCommon {
+	public static final String NAME = "DolphinClient";
+	public static final String MODID = "dolphinclient";
+	public static final String LEGACY_MODID = "axolotlclient";
+	public static final String COMMON_MODID = "dolphinclient-common";
+	public static final String LEGACY_COMMON_MODID = "axolotlclient-common";
+	public static final String CONFIG_FILE_NAME = "dolphinclient.json";
+	public static final String LEGACY_CONFIG_FILE_NAME = "axolotlclient.json";
+	public static final String KEY_CATEGORY = "category.dolphinclient";
 	public static final AxoIdentifier BADGE_PATH = AxoIdentifier.of(MODID, "textures/badge.png");
 
 	// static utility methods
@@ -72,11 +80,27 @@ public abstract class AxolotlClientCommon {
 		return Profiles.getInstance().resolveProfileFile(file);
 	}
 
+	public static boolean isOwnNamespace(String namespace) {
+		return MODID.equals(namespace) || LEGACY_MODID.equals(namespace);
+	}
+
+	public static AxoIdentifier aliasIdentifier(AxoIdentifier id) {
+		String namespace = id.br$getNamespace();
+		if (LEGACY_MODID.equals(namespace)) {
+			return AxoIdentifier.of(MODID, id.br$getPath());
+		}
+		if (MODID.equals(namespace)) {
+			return AxoIdentifier.of(LEGACY_MODID, id.br$getPath());
+		}
+		return id;
+	}
+
 	public static final boolean SHADERS_SUPPORTED = OSUtil.getOS() != OSUtil.OperatingSystem.OTHER &&
 		!FabricLoader.getInstance().isModLoaded("vulkanmod");
 
 	public static final String VERSION = FabricLoader.getInstance()
-		.getModContainer("axolotlclient-common")
+		.getModContainer(COMMON_MODID)
+		.or(() -> FabricLoader.getInstance().getModContainer(LEGACY_COMMON_MODID))
 		.orElseThrow()
 		.getMetadata()
 		.getVersion()
@@ -89,9 +113,9 @@ public abstract class AxolotlClientCommon {
 		.getVersion()
 		.getFriendlyString();
 
-	private static AxolotlClientCommon instance;
+	private static DolphinClientCommon instance;
 
-	private AxolotlClientConfigCommon config;
+	private DolphinClientConfigCommon config;
 	@Getter
 	private final Logger logger = new Logger.Slf4jLogger();
 	private NotificationProvider notificationProvider;
@@ -99,12 +123,12 @@ public abstract class AxolotlClientCommon {
 	private boolean initialized = false;
 	public final List<Module> modules = new ArrayList<>();
 
-	protected AxolotlClientCommon() {
+	protected DolphinClientCommon() {
 	}
 
 	// getters
 
-	public AxolotlClientConfigCommon getConfig() {
+	public DolphinClientConfigCommon getConfig() {
 		Preconditions.checkState(initialized && config != null);
 		return config;
 	}
@@ -124,7 +148,7 @@ public abstract class AxolotlClientCommon {
 		return notificationProvider;
 	}
 
-	public static AxolotlClientCommon getInstance() {
+	public static DolphinClientCommon getInstance() {
 		Preconditions.checkState(instance != null);
 		return instance;
 	}
@@ -150,21 +174,17 @@ public abstract class AxolotlClientCommon {
 		modules.forEach(Module::lateInit);
 	}
 
+	private void migrateLegacyConfigLocation() {
+		try {
+			ConfigPathMigration.migrateConfigDirectory(
+				FabricLoader.getInstance().getConfigDir(), LEGACY_MODID, MODID);
+		} catch (IOException e) {
+			logger.warn("Failed to migrate legacy config directory, settings may reset! ", e);
+		}
+	}
+
 	private void initConfig() {
 		var configFile = getMainConfigFile();
-		if (Files.notExists(configFile)) {
-			var legacy = new Path[]{resolveConfigFile("axolotlclient.json"), FabricLoader.getInstance().getConfigDir().resolve("AxolotlClient.json")};
-			for (Path p : legacy) {
-				try {
-					if (Files.exists(p)) {
-						Files.move(p, configFile);
-						break;
-					}
-				} catch (IOException e) {
-					logger.warn("Failed to move config file, it might get reset! ", e);
-				}
-			}
-		}
 		configManager = new VersionedJsonConfigManager(configFile, config.getConfig(), ConfigMigration.CONFIG_VERSION,
 			(oldVersion, newVersion, config, json) -> {
 				ConfigMigration.apply(oldVersion.getMajor(), json);
@@ -182,6 +202,8 @@ public abstract class AxolotlClientCommon {
 	protected final void init(NotificationProvider provider) {
 		Preconditions.checkState(!initialized);
 		Preconditions.checkState(instance == null);
+
+		migrateLegacyConfigLocation();
 
 		instance = this;
 		addBuiltinCommonModules();
@@ -202,7 +224,7 @@ public abstract class AxolotlClientCommon {
 		});
 
 		Events.TICK.register(() -> {
-			AxoProfiler.get().br$push("AxolotlClient");
+			AxoProfiler.get().br$push("DolphinClient");
 			modules.forEach(Module::tick);
 			AxoProfiler.get().br$pop();
 		});
@@ -222,7 +244,7 @@ public abstract class AxolotlClientCommon {
 
 	protected abstract FeatureDisablerCommon getFeatureDisabler();
 
-	protected abstract AxolotlClientConfigCommon createConfig();
+	protected abstract DolphinClientConfigCommon createConfig();
 
 	public abstract Options getApiOptions();
 
@@ -238,9 +260,12 @@ public abstract class AxolotlClientCommon {
 	}
 
 	public Path getMainConfigFile() {
-		var path = resolveProfileConfigFile("axolotlclient.json");
+		var path = resolveProfileConfigFile(CONFIG_FILE_NAME);
 		try {
 			Files.createDirectories(path.getParent());
+			path = ConfigPathMigration.resolveConfigFile(path.getParent(), CONFIG_FILE_NAME, LEGACY_CONFIG_FILE_NAME);
+			ConfigPathMigration.migrateRootLegacyFile(
+				FabricLoader.getInstance().getConfigDir(), path, "AxolotlClient.json", "DolphinClient.json");
 		} catch (IOException e) {
 			getLogger().warn("Failed to create config directory, config may not be saved correctly!", e);
 		}

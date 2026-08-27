@@ -31,11 +31,11 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 
 @Setter
-public class AxolotlClientE4mcPlugin {
+public class DolphinClientE4mcPlugin {
 
 	private String e4mcDomain = null;
 
-	public static final AxolotlClientE4mcPlugin INSTANCE = new AxolotlClientE4mcPlugin();
+	public static final DolphinClientE4mcPlugin INSTANCE = new DolphinClientE4mcPlugin();
 
 	public Status.Activity.E4mcMetadata getStatusDescription() {
 		Minecraft mc = Minecraft.getInstance();

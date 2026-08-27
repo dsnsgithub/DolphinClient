@@ -46,7 +46,7 @@ import io.github.axolotlclient.util.FeatureDisablerCommon;
 import io.github.axolotlclient.util.notifications.Notifications;
 import net.ornithemc.osl.resource.loader.api.client.ClientResourceLoaderEvents;
 
-public class AxolotlClient extends AxolotlClientCommon {
+public class DolphinClient extends DolphinClientCommon {
 
 	private void addBuiltinModules() {
 		registerModule(SkyResourceManager.getInstance());
@@ -77,7 +77,7 @@ public class AxolotlClient extends AxolotlClientCommon {
 		new API(new StatusUpdateProviderImpl());
 
 		getLogger().debug("Debug Output enabled, Logs will be quite verbose!");
-		getLogger().info("AxolotlClient Initialized");
+		getLogger().info("DolphinClient Initialized");
 
 		Bridge.postInit();
 		ClientResourceLoaderEvents.END_RESOURCE_PACKS_RELOAD.register(resourcePackRepository -> {
@@ -94,7 +94,7 @@ public class AxolotlClient extends AxolotlClientCommon {
 	}
 
 	@Override
-	protected AxolotlClientConfigCommon createConfig() {
+	protected DolphinClientConfigCommon createConfig() {
 		return new AxolotlClientConfig();
 	}
 

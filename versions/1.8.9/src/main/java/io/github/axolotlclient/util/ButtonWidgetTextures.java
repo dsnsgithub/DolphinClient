@@ -25,7 +25,7 @@ package io.github.axolotlclient.util;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.texture.DynamicTexture;
 import net.minecraft.client.render.texture.TextureUtil;
@@ -66,7 +66,7 @@ public class ButtonWidgetTextures {
 	}
 
 	private static Identifier register(BufferedImage atlas, String name, int imageY) {
-		var id = new Identifier(AxolotlClientCommon.MODID, "minecraft/buttonwidget/" + name);
+		var id = new Identifier(DolphinClientCommon.MODID, "minecraft/buttonwidget/" + name);
 		int scale = atlas.getHeight() / 256;
 		var texture = new DynamicTexture(atlas.getSubimage(0, imageY * scale, 200 * scale, 20 * scale));
 		Minecraft.getInstance().getTextureManager().register(id, texture);

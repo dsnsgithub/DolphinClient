@@ -26,19 +26,19 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 
 import com.github.mizosoft.methanol.Methanol;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NetworkUtil {
-	private static final String UA_PATTERN = "AxolotlClient/%s Minecraft/%s";
+	private static final String UA_PATTERN = "DolphinClient/%s Minecraft/%s";
 
 	public String getUserAgent() {
 		return getUserAgent(false);
 	}
 
 	public String getUserAgent(boolean includeContact) {
-		var ua = UA_PATTERN.formatted(AxolotlClientCommon.VERSION, AxolotlClientCommon.GAME_VERSION);
+		var ua = UA_PATTERN.formatted(DolphinClientCommon.VERSION, DolphinClientCommon.GAME_VERSION);
 		if (includeContact) {
 			return ua + " contact: moehreag<at>gmail.com";
 		}

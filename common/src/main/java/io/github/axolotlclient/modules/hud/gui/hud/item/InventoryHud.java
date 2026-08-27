@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
@@ -46,7 +46,7 @@ import io.github.axolotlclient.modules.hud.util.DefaultOptions;
 import io.github.axolotlclient.util.CommonUtil;
 
 public class InventoryHud extends BoxHudEntry implements DynamicallyPositionable {
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "inventoryhud");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "inventoryhud");
 	private static final Supplier<List<AxoItemStack>> PLACEHOLDER = CommonUtil.memoize(() -> Stream.of(
 		IntStream.range(0, 9).mapToObj(x -> AxoItemStack.of(AxoItems.STONE)),
 		IntStream.range(0, 9).mapToObj(x -> (AxoItemStack) null),

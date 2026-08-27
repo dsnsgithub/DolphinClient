@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.api.e4mc.mixin;
 
-import io.github.axolotlclient.api.e4mc.AxolotlClientE4mcPlugin;
+import io.github.axolotlclient.api.e4mc.DolphinClientE4mcPlugin;
 import link.e4mc.QuiclimeSession;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,6 +33,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class QuiclimeSessionMixin {
 	@Inject(method = "stop", at = @At("HEAD"))
 	private void axolotlclient$stopListener(CallbackInfo ci) {
-		AxolotlClientE4mcPlugin.INSTANCE.setE4mcDomain(null);
+		DolphinClientE4mcPlugin.INSTANCE.setE4mcDomain(null);
 	}
 }

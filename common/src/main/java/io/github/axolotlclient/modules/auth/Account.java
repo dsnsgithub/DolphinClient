@@ -33,7 +33,8 @@ import lombok.Setter;
 
 public class Account {
 
-	public static final String OFFLINE_TOKEN = "AxolotlClient/Offline";
+	public static final String OFFLINE_TOKEN = "DolphinClient/Offline";
+	private static final String LEGACY_OFFLINE_TOKEN = "AxolotlClient/Offline";
 
 	@Getter
 	private final String uuid;
@@ -88,7 +89,7 @@ public class Account {
 	}
 
 	public boolean isOffline() {
-		return authToken.equals(OFFLINE_TOKEN) || authToken.length() < 400;
+		return authToken.equals(OFFLINE_TOKEN) || authToken.equals(LEGACY_OFFLINE_TOKEN) || authToken.length() < 400;
 	}
 
 	public JsonObject serialize() {

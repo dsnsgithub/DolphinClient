@@ -24,7 +24,7 @@ package io.github.axolotlclient.modules.tnttime;
 
 import java.text.DecimalFormat;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
 import io.github.axolotlclient.bridge.util.AxoText;
@@ -45,7 +45,7 @@ public class TntTime extends AbstractCommonModule {
 	@Override
 	public void init() {
 		category.add(enabled, decimalPlaces);
-		AxolotlClientCommon.getInstance().getConfig().rendering.add(category);
+		DolphinClientCommon.getInstance().getConfig().rendering.add(category);
 	}
 
 	@Override

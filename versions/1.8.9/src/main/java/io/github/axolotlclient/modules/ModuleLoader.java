@@ -25,43 +25,55 @@ package io.github.axolotlclient.modules;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.config.screen.CreditsScreen;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class ModuleLoader {
 
 	public static List<AbstractModule> loadExternalModules() {
 		ArrayList<AbstractModule> modules = new ArrayList<>();
-		FabricLoader.getInstance().getEntrypointContainers("axolotlclient.module", AbstractModule.class)
-			.forEach(entrypoint -> {
-				try {
-					AbstractModule module = entrypoint.getEntrypoint();
-					if (module != null) {
-						modules.add(module);
-						String modName = entrypoint.getProvider().getMetadata().getName();
-						ModMetadata data = entrypoint.getProvider().getMetadata();
-						List<String> authorsNContributors = new ArrayList<>();
-
-						if (!data.getAuthors().isEmpty()) {
-							authorsNContributors.add("Author(s):");
-							data.getAuthors().forEach(p -> authorsNContributors.add(p.getName()));
-							authorsNContributors.add("");
-						}
-
-						if (!data.getContributors().isEmpty()) {
-							authorsNContributors.add("Contributor(s):");
-							data.getContributors().forEach(p -> authorsNContributors.add(p.getName()));
-						}
-						CreditsScreen.externalModuleCredits.put(modName,
-							authorsNContributors.toArray(new String[0]));
-					}
-				} catch (Exception e) {
-					AxolotlClientCommon.getInstance().getLogger().warn("Skipping module: " + entrypoint.getProvider().getMetadata().getName()
-						+ " because of error:", e);
-				}
-			});
+		loadEntrypoints(modules, "dolphinclient.module");
+		loadEntrypoints(modules, "axolotlclient.module");
 		return modules;
+	}
+
+	private static void loadEntrypoints(ArrayList<AbstractModule> modules, String key) {
+		FabricLoader.getInstance().getEntrypointContainers(key, AbstractModule.class)
+			.forEach(entrypoint -> loadExternalModule(modules, entrypoint));
+	}
+
+	private static void loadExternalModule(ArrayList<AbstractModule> modules, EntrypointContainer<AbstractModule> entrypoint) {
+		try {
+			AbstractModule module = entrypoint.getEntrypoint();
+			if (module == null) {
+				return;
+			}
+			if (modules.stream().anyMatch(existing -> existing.getClass() == module.getClass())) {
+				return;
+			}
+			modules.add(module);
+			String modName = entrypoint.getProvider().getMetadata().getName();
+			ModMetadata data = entrypoint.getProvider().getMetadata();
+			List<String> authorsNContributors = new ArrayList<>();
+
+			if (!data.getAuthors().isEmpty()) {
+				authorsNContributors.add("Author(s):");
+				data.getAuthors().forEach(p -> authorsNContributors.add(p.getName()));
+				authorsNContributors.add("");
+			}
+
+			if (!data.getContributors().isEmpty()) {
+				authorsNContributors.add("Contributor(s):");
+				data.getContributors().forEach(p -> authorsNContributors.add(p.getName()));
+			}
+			CreditsScreen.externalModuleCredits.put(modName,
+				authorsNContributors.toArray(new String[0]));
+		} catch (Exception e) {
+			DolphinClientCommon.getInstance().getLogger().warn("Skipping module: " + entrypoint.getProvider().getMetadata().getName()
+				+ " because of error:", e);
+		}
 	}
 }

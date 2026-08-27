@@ -25,14 +25,15 @@ package io.github.axolotlclient.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
-import io.github.axolotlclient.AxolotlClientConfigCommon;
+import io.github.axolotlclient.DolphinClientConfigCommon;
 import io.github.axolotlclient.config.screen.CreditsScreen;
 import io.github.axolotlclient.config.screen.ProfilesScreen;
 import io.github.axolotlclient.modules.Module;
@@ -42,7 +43,7 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.Display;
 
-public class AxolotlClientConfig extends AxolotlClientConfigCommon {
+public class AxolotlClientConfig extends DolphinClientConfigCommon {
 	public final BooleanOption customSky = new BooleanOption("customSky", false);
 	public final IntegerOption cloudHeight = new IntegerOption("cloudHeight", 128, 100, 512);
 
@@ -82,7 +83,7 @@ public class AxolotlClientConfig extends AxolotlClientConfigCommon {
 		titles.add(scaleTitles, titlePadding);
 		rendering.add(titles);
 
-		AxolotlClient.getInstance().modules.add(new Module() {
+		DolphinClient.getInstance().modules.add(new Module() {
 			@Override
 			public void lateInit() {
 				if (WindowAccess.getInstance().rawMouseMotionAvailable()) {
@@ -92,7 +93,7 @@ public class AxolotlClientConfig extends AxolotlClientConfigCommon {
 					}
 					WindowAccess.getInstance().setRawMouseMotion(rawMouseInput.get());
 				} else {
-					AxolotlClient.getInstance().getConfigManager().suppressName(rawMouseInput.getName());
+					DolphinClient.getInstance().getConfigManager().suppressName(rawMouseInput.getName());
 				}
 			}
 		});
@@ -104,7 +105,7 @@ public class AxolotlClientConfig extends AxolotlClientConfigCommon {
 	@Override
 	protected void updateWindowTitle(boolean useCustom) {
 		if (useCustom) {
-			Display.setTitle("AxolotlClient "+Minecraft.getInstance().getGameVersion());
+			Display.setTitle(DolphinClientCommon.NAME + " "+Minecraft.getInstance().getGameVersion());
 		} else {
 			Display.setTitle("Minecraft "+Minecraft.getInstance().getGameVersion());
 		}

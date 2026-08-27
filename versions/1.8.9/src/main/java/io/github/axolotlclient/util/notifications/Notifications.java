@@ -36,7 +36,7 @@ public class Notifications implements NotificationProvider {
 	private final ToastManager toastManager = new ToastManager(client);
 
 	public void addStatus(String title, String description, Object... args) {
-		toastManager.addToast(AxolotlClientToast.multiline(client, I18n.translate(title, args), I18n.translate(description, args)));
+		toastManager.addToast(DolphinClientToast.multiline(client, I18n.translate(title, args), I18n.translate(description, args)));
 	}
 
 	public void addStatus(Toast toast) {

@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.util;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.modules.hud.util.Rectangle;
 import net.minecraft.block.Block;
@@ -391,7 +391,7 @@ public class DrawUtil extends GuiElement {
 	}
 
 	public static void drawOutlines(PlayerEntity camera, HitResult hitResult, double tickDelta, ClientWorld world) {
-		if (AxolotlClient.config().enableCustomOutlines.get() && AxolotlClient.config().outlineFill.get()) {
+		if (DolphinClient.config().enableCustomOutlines.get() && DolphinClient.config().outlineFill.get()) {
 			BlockPos blockPos = hitResult.getPos();
 			Block block = world.getBlockState(blockPos).getBlock();
 			if (block.getMaterial() != Material.AIR && world.getWorldBorder().contains(blockPos)) {
@@ -401,7 +401,7 @@ public class DrawUtil extends GuiElement {
 				double y = camera.prevY + (camera.y - camera.prevY) * tickDelta;
 				double z = camera.prevZ + (camera.z - camera.prevZ) * tickDelta;
 				Box box = block.getOutlineShape(world, blockPos);
-				var color = AxolotlClient.config().outlineFillColor.get();
+				var color = DolphinClient.config().outlineFillColor.get();
 				var r = color.getRed();
 				var g = color.getGreen();
 				var b = color.getBlue();

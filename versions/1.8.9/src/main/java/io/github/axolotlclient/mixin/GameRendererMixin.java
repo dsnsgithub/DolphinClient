@@ -27,7 +27,7 @@ import java.nio.FloatBuffer;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.bridge.impl.AxoRenderContextImpl;
 import io.github.axolotlclient.modules.blur.MenuBlur;
 import io.github.axolotlclient.modules.blur.MotionBlur;
@@ -87,7 +87,7 @@ public abstract class GameRendererMixin {
 
 	@Inject(method = "setupFog", at = @At("HEAD"), cancellable = true)
 	public void axolotlclient$noFog(int i, float tickDelta, CallbackInfo ci) {
-		if (Minecraft.getInstance().world.dimension.isNatural() && AxolotlClient.config().customSky.get()
+		if (Minecraft.getInstance().world.dimension.isNatural() && DolphinClient.config().customSky.get()
 			&& SkyboxManager.getInstance().hasSkyBoxes()) {
 			this.renderDistance = (float) (this.renderDistance * 2 + Minecraft.getInstance().player.getCommandSourcePos().y);
 			Entity entity = this.minecraft.getCamera();
@@ -159,7 +159,7 @@ public abstract class GameRendererMixin {
 
 		float returnValue = cir.getReturnValue();
 
-		if (!AxolotlClient.config().dynamicFOV.get()) {
+		if (!DolphinClient.config().dynamicFOV.get()) {
 			Entity entity = this.minecraft.getCamera();
 			float f = changingFov ? minecraft.options.fov : 70F;
 			if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0.0F) {
@@ -181,7 +181,7 @@ public abstract class GameRendererMixin {
 
 	@WrapOperation(method = "updateLightMap", at = @At(value = "FIELD", target = "Lnet/minecraft/client/options/GameOptions;gamma:F", opcode = Opcodes.GETFIELD))
 	public float axolotlclient$setGamma(GameOptions instance, Operation<Float> original) {
-		if (AxolotlClient.config().fullBright.get())
+		if (DolphinClient.config().fullBright.get())
 			return 15F;
 		return original.call(instance);
 	}
@@ -262,14 +262,14 @@ public abstract class GameRendererMixin {
 
 	@Inject(method = "renderSnowAndRain", at = @At("HEAD"), cancellable = true)
 	private void axolotlclient$changeWeather(float tickDelta, CallbackInfo ci) {
-		if (AxolotlClient.config().noRain.get()) {
+		if (DolphinClient.config().noRain.get()) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "applyViewBobbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;translatef(FFF)V"), cancellable = true)
 	private void axolotlclient$minimalViewBob(float f, CallbackInfo ci, @Local(ordinal = 2) float h, @Local(ordinal = 3) float i, @Local(ordinal = 4) float j) {
-		if (AxolotlClient.config().minimalViewBob.get()) {
+		if (DolphinClient.config().minimalViewBob.get()) {
 			h /= 2;
 			i /= 2;
 			j /= 2;
@@ -283,7 +283,7 @@ public abstract class GameRendererMixin {
 
 	@Inject(method = "applyHurtCam", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getCamera()Lnet/minecraft/entity/Entity;", ordinal = 1), cancellable = true)
 	private void axolotlclient$noHurtCam(float f, CallbackInfo ci) {
-		if (AxolotlClient.config().noHurtCam.get()) {
+		if (DolphinClient.config().noHurtCam.get()) {
 			ci.cancel();
 		}
 	}

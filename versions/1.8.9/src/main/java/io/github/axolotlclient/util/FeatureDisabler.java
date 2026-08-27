@@ -24,7 +24,7 @@ package io.github.axolotlclient.util;
 
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import lombok.Getter;
 import net.ornithemc.osl.core.api.util.NamespacedIdentifier;
 import net.ornithemc.osl.networking.api.ChannelRegistry;
@@ -48,7 +48,7 @@ public class FeatureDisabler extends FeatureDisablerCommon {
 
 					FEATURES.get(element).setForceOff(true, "ban_reason");
 				} catch (Exception e) {
-					AxolotlClientCommon.getInstance().getLogger().error("Failed to disable " + element + "!");
+					DolphinClientCommon.getInstance().getLogger().error("Failed to disable " + element + "!");
 				}
 			}
 		});

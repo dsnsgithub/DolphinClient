@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.modules.AbstractModule;
 import lombok.Getter;
 import net.ornithemc.osl.core.api.util.NamespacedIdentifier;
@@ -52,22 +52,22 @@ public class SkyResourceManager extends AbstractModule {
 	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public void reload(ResourceManager resourceManager) {
-		AxolotlClientCommon.getInstance().getLogger().debug("Loading custom skies!");
+		DolphinClientCommon.getInstance().getLogger().debug("Loading custom skies!");
 		for (var entry : resourceManager
 			.findResources("sky", identifier -> identifier.identifier().endsWith(".json")).entrySet()) {
 			if (entry.getKey().namespace().equals("celestial")) { // Skip Celestial Packs, we cannot load them.
 				continue;
 			}
-			AxolotlClientCommon.getInstance().getLogger().debug("Loading FSB sky from " + entry.getKey());
+			DolphinClientCommon.getInstance().getLogger().debug("Loading FSB sky from " + entry.getKey());
 			try (BufferedReader reader = entry.getValue().openAsReader()) {
 				JsonObject json = gson.fromJson(reader.lines().collect(Collectors.joining("\n")), JsonObject.class);
 				if (!json.has("type") || !json.get("type").getAsString().equals("square-textured")) {
-					AxolotlClientCommon.getInstance().getLogger().debug("Skipping " + entry + " as we currently cannot load it!");
+					DolphinClientCommon.getInstance().getLogger().debug("Skipping " + entry + " as we currently cannot load it!");
 					continue;
 				}
 				SkyboxManager.getInstance().addSkybox(new FSBSkyboxInstance(
 					json));
-				AxolotlClientCommon.getInstance().getLogger().debug("Loaded FSB sky from " + entry.getKey());
+				DolphinClientCommon.getInstance().getLogger().debug("Loaded FSB sky from " + entry.getKey());
 			} catch (IOException ignored) {
 			}
 		}
@@ -75,17 +75,17 @@ public class SkyResourceManager extends AbstractModule {
 		for (var entry : resourceManager
 			.findResources("minecraft", "optifine/sky", identifier -> isMCPSky(identifier.identifier()))
 			.entrySet()) {
-			AxolotlClientCommon.getInstance().getLogger().debug("Loading sky: " + entry.getKey());
+			DolphinClientCommon.getInstance().getLogger().debug("Loading sky: " + entry.getKey());
 			loadMCPSky("optifine", entry.getKey(), entry.getValue(), resourceManager);
-			AxolotlClientCommon.getInstance().getLogger().debug("Loaded sky: " + entry.getKey());
+			DolphinClientCommon.getInstance().getLogger().debug("Loaded sky: " + entry.getKey());
 		}
 
 		for (var entry : resourceManager
 			.findResources("minecraft", "mcpatcher/sky", identifier -> isMCPSky(identifier.identifier()))
 			.entrySet()) {
-			AxolotlClientCommon.getInstance().getLogger().debug("Loading sky: " + entry.getKey());
+			DolphinClientCommon.getInstance().getLogger().debug("Loading sky: " + entry.getKey());
 			loadMCPSky("mcpatcher", entry.getKey(), entry.getValue(), resourceManager);
-			AxolotlClientCommon.getInstance().getLogger().debug("Loaded sky: " + entry.getKey());
+			DolphinClientCommon.getInstance().getLogger().debug("Loaded sky: " + entry.getKey());
 		}
 	}
 
@@ -114,8 +114,8 @@ public class SkyResourceManager extends AbstractModule {
 								}
 							}
 							if (resourceManager.getResource(NamespacedIdentifiers.parse(option[1])).isEmpty()) {
-								AxolotlClientCommon.getInstance().getLogger().warn("Sky " + id + " does not have a valid texture attached to it: ", option[1]);
-								AxolotlClientCommon.getInstance().getLogger().warn("Please fix your packs.");
+								DolphinClientCommon.getInstance().getLogger().warn("Sky " + id + " does not have a valid texture attached to it: ", option[1]);
+								DolphinClientCommon.getInstance().getLogger().warn("Please fix your packs.");
 								return;
 							}
 						}
@@ -132,7 +132,7 @@ public class SkyResourceManager extends AbstractModule {
 
 			SkyboxManager.getInstance().addSkybox(new MCPSkyboxInstance(object));
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().debug("Error while loading sky", e);
+			DolphinClientCommon.getInstance().getLogger().debug("Error while loading sky", e);
 		}
 	}
 

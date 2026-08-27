@@ -23,7 +23,7 @@
 package io.github.axolotlclient.config.migration.impl;
 
 import com.google.gson.JsonObject;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.config.migration.ConfigMigration;
 
 public class V6Migration implements ConfigMigration {
@@ -37,6 +37,6 @@ public class V6Migration implements ConfigMigration {
 		getObject(json, "api.category")
 			.flatMap(api -> getObject(api, "api.pluralkit"))
 			.flatMap(pk -> getString(pk, "api.pk_token"))
-			.ifPresent(AxolotlClientCommon.getInstance().getApiOptions().pkToken::set);
+			.ifPresent(DolphinClientCommon.getInstance().getApiOptions().pkToken::set);
 	}
 }

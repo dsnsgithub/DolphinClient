@@ -43,7 +43,7 @@ import com.github.mizosoft.methanol.MultipartBodyPublisher;
 import com.google.common.hash.Hashing;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.modules.auth.skin.Cape;
 import io.github.axolotlclient.modules.auth.skin.Skin;
 import io.github.axolotlclient.util.GsonHelper;
@@ -71,7 +71,7 @@ public class MSApi {
 	public static MSApi INSTANCE;
 
 	public MSApi(Accounts accounts, Supplier<String> languageSupplier) {
-		this.logger = AxolotlClientCommon.getInstance().getLogger();
+		this.logger = DolphinClientCommon.getInstance().getLogger();
 		this.client = NetworkUtil.createHttpClient();
 		this.accounts = accounts;
 		this.languageSupplier = languageSupplier;
@@ -171,12 +171,12 @@ public class MSApi {
 
 			JsonObject profileJson = getMCProfile(mc.accessToken()).join();
 			if (profileJson.has("error") && "NOT_FOUND".equals(profileJson.get("error").getAsString())) {
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("auth.notif.login.failed", "auth.notif.login.failed.no_profile");
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("auth.notif.login.failed", "auth.notif.login.failed.no_profile");
 				throw new IllegalStateException();
 			}
 			logger.debug("retrieving entitlements...");
 			if (!checkOwnership(mc.accessToken()).join()) {
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("auth.notif.login.failed", "auth.notif.login.failed.no_entitlement");
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("auth.notif.login.failed", "auth.notif.login.failed.no_entitlement");
 				logger.warn("Failed to check for game ownership!");
 				throw new IllegalStateException();
 			}
@@ -390,7 +390,7 @@ public class MSApi {
 						return accounts.showAccountsExpiredScreen(account);
 					} else {
 						logger.warn("Login error, unexpected response: " + response);
-						AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("auth.notif.refresh.error", "auth.notif.refresh.error.unexpected_response");
+						DolphinClientCommon.getInstance().getNotificationProvider().addStatus("auth.notif.refresh.error", "auth.notif.refresh.error.unexpected_response");
 						throw new IllegalArgumentException();
 					}
 				}

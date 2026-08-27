@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.BridgeVersion;
 import io.github.axolotlclient.bridge.entity.effect.AxoStatusEffects;
 import io.github.axolotlclient.bridge.item.AxoEnchants;
@@ -114,8 +115,12 @@ public class BridgeValidationPostprocessor implements IMixinConfigPlugin {
 	public static void validate() {
 		Preconditions.checkState(IS_DEV, "BridgeValidationPostprocessor.validate() called in prod?");
 
-		Stream.of("minecraft", "axolotlclient-common")
-			.map(x -> FabricLoader.getInstance().getModContainer(x).orElseThrow())
+		Stream.of(
+				FabricLoader.getInstance().getModContainer("minecraft").orElseThrow(),
+				FabricLoader.getInstance().getModContainer(DolphinClientCommon.COMMON_MODID)
+					.or(() -> FabricLoader.getInstance().getModContainer(DolphinClientCommon.LEGACY_COMMON_MODID))
+					.orElseThrow()
+			)
 			.flatMap(x -> x.getRootPaths().stream())
 			.forEach(BridgeValidationPostprocessor::loadClasses);
 
@@ -144,7 +149,8 @@ public class BridgeValidationPostprocessor implements IMixinConfigPlugin {
 			return;
 		}
 
-		final var ctPath = FabricLoader.getInstance().getModContainer("axolotlclient")
+		final var ctPath = FabricLoader.getInstance().getModContainer(DolphinClientCommon.MODID)
+			.or(() -> FabricLoader.getInstance().getModContainer(DolphinClientCommon.LEGACY_MODID))
 			.orElseThrow()
 			.findPath("axolotlclient.classtweaker");
 		if (ctPath.isPresent()) {

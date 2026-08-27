@@ -27,8 +27,8 @@ import java.util.concurrent.CompletableFuture;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.api.types.User;
@@ -78,7 +78,7 @@ public class Auth extends Accounts implements Module {
 		}
 
 		category.add(showButton, viewAccounts);
-		AxolotlClient.config().general.add(category);
+		DolphinClient.config().general.add(category);
 	}
 
 	@Override
@@ -105,10 +105,10 @@ public class Auth extends Accounts implements Module {
 				save();
 				current = account;
 				Notifications.getInstance().addStatus("auth.notif.title", "auth.notif.login.successful", current.getName());
-				AxolotlClientCommon.getInstance().getLogger().info("Successfully logged in as " + current.getName());
+				DolphinClientCommon.getInstance().getLogger().info("Successfully logged in as " + current.getName());
 				API.getInstance().startup(account);
 			} catch (Exception e) {
-				AxolotlClientCommon.getInstance().getLogger().error("Failed to log in! ", e);
+				DolphinClientCommon.getInstance().getLogger().error("Failed to log in! ", e);
 				Notifications.getInstance().addStatus("auth.notif.title", "auth.notif.login.failed");
 			}
 		}

@@ -25,7 +25,7 @@ package io.github.axolotlclient.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.bridge.events.types.WorldLoadEvent;
 import io.github.axolotlclient.modules.auth.Auth;
@@ -96,8 +96,8 @@ public abstract class MinecraftClientMixin {
 
 	@Inject(method = "initDisplay", at = @At("TAIL"))
 	public void axolotlclient$setWindowTitle(CallbackInfo ci) {
-		if (AxolotlClient.config().customWindowTitle.get()) {
-			Display.setTitle("AxolotlClient " + this.gameVersion);
+		if (DolphinClient.config().customWindowTitle.get()) {
+			Display.setTitle("DolphinClient " + this.gameVersion);
 		}
 	}
 
@@ -114,22 +114,22 @@ public abstract class MinecraftClientMixin {
 	// Don't ask me why we need both here, but otherwise it looks ugly
 	@WrapOperation(method = "renderLoadingScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;color(IIII)Lnet/minecraft/client/render/vertex/BufferBuilder;"))
 	public BufferBuilder axolotlclient$loadingScreenColor(BufferBuilder instance, int red, int green, int blue, int alpha, Operation<BufferBuilder> original) {
-		if (!AxolotlClient.config().customLoadingScreenColor.get())
+		if (!DolphinClient.config().customLoadingScreenColor.get())
 			return original.call(instance, red, green, blue, alpha);
-		return original.call(instance, AxolotlClient.config().loadingScreenColor.get().getRed(),
-			AxolotlClient.config().loadingScreenColor.get().getGreen(),
-			AxolotlClient.config().loadingScreenColor.get().getBlue(),
-			AxolotlClient.config().loadingScreenColor.get().getAlpha());
+		return original.call(instance, DolphinClient.config().loadingScreenColor.get().getRed(),
+			DolphinClient.config().loadingScreenColor.get().getGreen(),
+			DolphinClient.config().loadingScreenColor.get().getBlue(),
+			DolphinClient.config().loadingScreenColor.get().getAlpha());
 	}
 
 	@WrapOperation(method = "renderLoadingScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;color(IIII)Lnet/minecraft/client/render/vertex/BufferBuilder;"))
 	public BufferBuilder axolotlclient$loadingScreenBg(BufferBuilder instance, int red, int green, int blue, int alpha, Operation<BufferBuilder> original) {
-		if (!AxolotlClient.config().customLoadingScreenColor.get())
+		if (!DolphinClient.config().customLoadingScreenColor.get())
 			return original.call(instance, red, green, blue, alpha);
-		return original.call(instance, AxolotlClient.config().loadingScreenColor.get().getRed(),
-			AxolotlClient.config().loadingScreenColor.get().getGreen(),
-			AxolotlClient.config().loadingScreenColor.get().getBlue(),
-			AxolotlClient.config().loadingScreenColor.get().getAlpha());
+		return original.call(instance, DolphinClient.config().loadingScreenColor.get().getRed(),
+			DolphinClient.config().loadingScreenColor.get().getGreen(),
+			DolphinClient.config().loadingScreenColor.get().getBlue(),
+			DolphinClient.config().loadingScreenColor.get().getAlpha());
 	}
 
 	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/texture/TextureManager;close(Lnet/minecraft/resource/Identifier;)V"))
@@ -183,7 +183,7 @@ public abstract class MinecraftClientMixin {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void onClientInit(RunArgs runArgs, CallbackInfo ci) {
-		new AxolotlClient().onInitializeClient();
+		new DolphinClient().onInitializeClient();
 	}
 
 	@Inject(method = "handleGuiKeyBindings", at = @At(value = "FIELD", target = "Lnet/minecraft/client/options/GameOptions;screenshotKey:Lnet/minecraft/client/options/KeyBinding;", opcode = Opcodes.GETFIELD), cancellable = true)

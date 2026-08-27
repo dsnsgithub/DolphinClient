@@ -26,7 +26,8 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.ui.screen.ConfigScreen;
 import io.github.axolotlclient.api.chat.ChannelInvitesScreen;
 import io.github.axolotlclient.api.chat.ChatListScreen;
@@ -64,7 +65,7 @@ public class APIOptions extends Options {
 			client.executeTask(() -> client.openScreen(new PrivacyNoticeScreen(parent, fut)));
 			return fut;
 		};
-		KeyBinding openSidebar = new KeyBinding("api.chats.sidebar.open", Keyboard.KEY_O, "category.axolotlclient");
+		KeyBinding openSidebar = new KeyBinding("api.chats.sidebar.open", Keyboard.KEY_O, DolphinClientCommon.KEY_CATEGORY);
 		KeybindEvents.REGISTER_KEYBINDS.register(() -> KeybindRegistry.register(openSidebar));
 		MinecraftClientEvents.TICK_END.register(minecraft -> {
 			if (openSidebar.consumeClick() && API.getInstance().isAuthenticated()) {
@@ -133,7 +134,7 @@ public class APIOptions extends Options {
 			}
 		};
 		if (Constants.ENABLED) {
-			AxolotlClient.config().addCategory(category);
+			DolphinClient.config().addCategory(category);
 		}
 	}
 }

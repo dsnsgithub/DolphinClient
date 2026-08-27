@@ -29,7 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -58,7 +58,7 @@ public class Watcher implements AutoCloseable {
 			Files.createDirectories(path);
 			return new Watcher(path, fileFilter);
 		} catch (IOException var2) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to initialize directory {} monitoring", path, var2);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to initialize directory {} monitoring", path, var2);
 			return null;
 		}
 	}

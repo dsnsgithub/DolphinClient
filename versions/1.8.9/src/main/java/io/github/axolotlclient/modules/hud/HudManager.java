@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.modules.hud;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.impl.ui.Screen;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
 import io.github.axolotlclient.modules.hud.gui.hud.ChatHud;
@@ -73,7 +73,7 @@ public class HudManager extends HudManagerCommon {
 	public void lateInit() {
 		super.lateInit();
 		if (!FabricLoader.getInstance().isModLoaded("soundfix")) {
-			AxolotlClient.getInstance().getConfigManager().suppressName(SubtitlesHudHud.ID.br$getPath());
+			DolphinClient.getInstance().getConfigManager().suppressName(SubtitlesHudHud.ID.br$getPath());
 		}
 	}
 

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.JsonObject;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.config.migration.impl.*;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -47,7 +47,7 @@ public interface ConfigMigration {
 
 	static void apply(int oldVersion, JsonObject config) {
 		MIGRATIONS.sort(Comparator.comparingInt(ConfigMigration::version));
-		var logger = AxolotlClientCommon.getInstance().getLogger();
+		var logger = DolphinClientCommon.getInstance().getLogger();
 
 		var devEnv = FabricLoader.getInstance().isDevelopmentEnvironment();
 		if (devEnv) {

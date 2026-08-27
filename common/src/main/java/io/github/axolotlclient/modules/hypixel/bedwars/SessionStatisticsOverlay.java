@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
@@ -47,7 +47,7 @@ import io.github.axolotlclient.util.options.GenericOption;
 import lombok.Getter;
 
 public class SessionStatisticsOverlay extends TextHudEntry {
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "bedwars.session_statistics");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "bedwars.session_statistics");
 	private static final DecimalFormat FORMAT = new DecimalFormat("0.##");
 	private static final SessionStatistics PLACEHOLDER_STATS = CommonUtil.make(new SessionStatistics(), s -> {
 		s.wins = 50;
@@ -99,7 +99,7 @@ public class SessionStatisticsOverlay extends TextHudEntry {
 		AxoKeybinding.create(AxoKeys.KEY_UNKNOWN, "bedwars.session_stats.toggle_hud")
 			.br$registerOnConsumeClick(() -> {
 				shown.toggle();
-				AxolotlClientCommon.getInstance().saveConfig();
+				DolphinClientCommon.getInstance().saveConfig();
 			});
 	}
 
@@ -115,7 +115,7 @@ public class SessionStatisticsOverlay extends TextHudEntry {
 
 	@Override
 	public void postConfigLoad() {
-		entries.forEach(e -> AxolotlClientCommon.getInstance().getConfigManager().suppressName(e.enabled.getName()));
+		entries.forEach(e -> DolphinClientCommon.getInstance().getConfigManager().suppressName(e.enabled.getName()));
 	}
 
 	@Override

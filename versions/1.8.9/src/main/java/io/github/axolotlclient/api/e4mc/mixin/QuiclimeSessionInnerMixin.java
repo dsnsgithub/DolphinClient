@@ -23,7 +23,7 @@
 package io.github.axolotlclient.api.e4mc.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.axolotlclient.api.e4mc.AxolotlClientE4mcPlugin;
+import io.github.axolotlclient.api.e4mc.DolphinClientE4mcPlugin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -33,7 +33,7 @@ public class QuiclimeSessionInnerMixin {
 
 	@ModifyArg(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Llink/e4mc/QuiclimeSession$ControlMessageCodec$ControlMessage;)V", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;)V"), index = 1)
 	private Object axolotlclient$hookE4mcDomain(Object o, @Local(name = "domain") String domain) {
-		AxolotlClientE4mcPlugin.INSTANCE.setE4mcDomain(domain);
+		DolphinClientE4mcPlugin.INSTANCE.setE4mcDomain(domain);
 		return o;
 	}
 }

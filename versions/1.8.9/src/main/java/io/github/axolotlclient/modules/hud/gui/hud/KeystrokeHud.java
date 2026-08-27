@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
@@ -544,18 +544,18 @@ public class KeystrokeHud extends TextHudEntry implements ProfileAware {
 	public void saveKeystrokes() {
 		if (keystrokes == null) return;
 		try {
-			var path = AxolotlClientCommon.resolveProfileConfigFile(KEYSTROKE_SAVE_FILE_NAME);
+			var path = DolphinClientCommon.resolveProfileConfigFile(KEYSTROKE_SAVE_FILE_NAME);
 			Files.createDirectories(path.getParent());
 			Files.writeString(path, GsonHelper.GSON.toJson(keystrokes.stream().map(Keystroke::serialize).toList()));
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to save keystroke configuration!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to save keystroke configuration!", e);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadKeystrokes() {
 		try {
-			var path = AxolotlClientCommon.resolveProfileConfigFile(KEYSTROKE_SAVE_FILE_NAME);
+			var path = DolphinClientCommon.resolveProfileConfigFile(KEYSTROKE_SAVE_FILE_NAME);
 			if (Files.exists(path)) {
 				List<?> entries = (List<?>) GsonHelper.read(Files.readString(path));
 				var loaded = entries.stream().map(e -> (Map<String, Object>) e)
@@ -571,7 +571,7 @@ public class KeystrokeHud extends TextHudEntry implements ProfileAware {
 				saveKeystrokes();
 			}
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to load keystroke configuration, using defaults!", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to load keystroke configuration, using defaults!", e);
 		}
 	}
 

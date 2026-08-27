@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
@@ -134,11 +134,11 @@ public class HudEditScreen extends Screen {
 		pendingMode = ModificationMode.NONE;
 		mode = ModificationMode.NONE;
 		CursorTypes.ARROW.select();
-		AxolotlClient.getInstance().saveConfig();
+		DolphinClient.getInstance().saveConfig();
 	}
 
 	public void closeMenu() {
-		AxolotlClient.getInstance().saveConfig();
+		DolphinClient.getInstance().saveConfig();
 		CursorTypes.ARROW.select();
 		Minecraft.getInstance().openScreen(parent);
 	}
@@ -735,7 +735,7 @@ public class HudEditScreen extends Screen {
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int button) {
 		if (current != null && current.getCategory() != null) {
-			AxolotlClient.getInstance().saveConfig();
+			DolphinClient.getInstance().saveConfig();
 		}
 		current = null;
 		snap = null;

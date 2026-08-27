@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.modules.hud.gui.hud.simple;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.util.AxoI18n;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
 import io.github.axolotlclient.modules.hud.gui.entry.SimpleTextHudEntry;
@@ -36,7 +36,7 @@ import io.github.axolotlclient.modules.hud.gui.entry.SimpleTextHudEntry;
 
 public class PlayerCountHud extends SimpleTextHudEntry {
 
-	public static final AxoIdentifier ID = AxoIdentifier.of(AxolotlClientCommon.MODID, "playercounthud");
+	public static final AxoIdentifier ID = AxoIdentifier.of(DolphinClientCommon.MODID, "playercounthud");
 
 	public PlayerCountHud() {
 		super(true);

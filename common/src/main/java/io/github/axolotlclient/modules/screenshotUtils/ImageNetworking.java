@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.api.Constants;
 import io.github.axolotlclient.api.Request;
@@ -47,7 +47,7 @@ public abstract class ImageNetworking {
 		try {
 			return upload(file.getFileName().toString(), Files.readAllBytes(file));
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().error("Failed to upload image", e);
+			DolphinClientCommon.getInstance().getLogger().error("Failed to upload image", e);
 			return CompletableFuture.completedFuture("");
 		}
 	}
@@ -56,7 +56,7 @@ public abstract class ImageNetworking {
 		return API.getInstance().post(Request.Route.IMAGE.builder().path(name).rawBody(data).build())
 			.thenApply(response -> {
 				if (response.isError()) {
-					AxolotlClientCommon.getInstance().getLogger().error("Failed to upload image, server responded with " + response);
+					DolphinClientCommon.getInstance().getLogger().error("Failed to upload image, server responded with " + response);
 					return "";
 				}
 				return idToUrl(response.getPlainBody());

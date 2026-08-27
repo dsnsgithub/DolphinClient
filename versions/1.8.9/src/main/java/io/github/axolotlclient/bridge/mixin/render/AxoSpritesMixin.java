@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.bridge.mixin.render;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.bridge.impl.AxoSpriteImpl;
 import io.github.axolotlclient.bridge.render.AxoSprite;
 import io.github.axolotlclient.bridge.render.AxoSprites;
@@ -64,11 +64,11 @@ public abstract class AxoSpritesMixin {
 
 	@Inject(method = "<clinit>", at = @At("HEAD"), cancellable = true)
 	private static void setStaticValues(CallbackInfo info) {
-		BADGE = new AxoSpriteImpl.Simple((Identifier) AxolotlClientCommon.BADGE_PATH, 0, 0, 15, 15);
+		BADGE = new AxoSpriteImpl.Simple((Identifier) DolphinClientCommon.BADGE_PATH, 0, 0, 15, 15);
 		BARRIER_ITEM_ICON = new AxoSpriteImpl.Simple(new Identifier("textures/items/barrier.png"), 0, 0, 16, 16);
 		FURNACE_OFF = new AxoSpriteImpl.Simple(new Identifier("textures/blocks/furnace_front_off.png"), 0, 0, 16, 16);
 		FURNACE_ON = new AxoSpriteImpl.Simple(new Identifier("textures/blocks/furnace_front_on.png"), 0, 0, 16, 16);
-		MAGNET_ICON = new AxoSpriteImpl.Simple(new Identifier(AxolotlClientCommon.MODID, "textures/gui/sprites/magnet.png"), 0, 0, 9, 9);
+		MAGNET_ICON = new AxoSpriteImpl.Simple(new Identifier(DolphinClientCommon.MODID, "textures/gui/sprites/magnet.png"), 0, 0, 9, 9);
 		info.cancel();
 	}
 }

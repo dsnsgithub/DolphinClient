@@ -25,7 +25,7 @@ package io.github.axolotlclient.modules.freelook;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
@@ -67,7 +67,7 @@ public class Freelook extends AbstractCommonModule {
 	public void init() {
 		category.add(enabled, mode, perspective, invert, toggle);
 		category.add(perspectiveAlt, toggleAlt);
-		AxolotlClientCommon.getInstance().getConfig().addCategory(category);
+		DolphinClientCommon.getInstance().getConfig().addCategory(category);
 	}
 
 	@Override

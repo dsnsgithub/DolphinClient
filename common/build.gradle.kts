@@ -43,6 +43,8 @@ dependencies {
 	compileOnly("com.mojang:brigadier:1.0.18")
 
 	compileOnly("org.slf4j:slf4j-api:2.0.1")
+
+	testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 }
 
 tasks.jar {
@@ -110,6 +112,10 @@ tasks.withType(JavaCompile::class).configureEach {
 	if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_18)) {
 		options.release = 17
 	}
+}
+
+tasks.test {
+	useJUnitPlatform()
 }
 
 tasks.withType(AbstractArchiveTask::class).configureEach {

@@ -34,9 +34,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.authlib.GameProfile;
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientCommon;
-import io.github.axolotlclient.AxolotlClientConfigCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
+import io.github.axolotlclient.DolphinClientConfigCommon;
 import io.github.axolotlclient.api.requests.UserRequest;
 import io.github.axolotlclient.bridge.impl.AxoRenderContextImpl;
 import io.github.axolotlclient.modules.hud.HudManagerCommon;
@@ -85,8 +85,8 @@ public abstract class PlayerListHudMixin extends GuiElement {
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;getWidth(Ljava/lang/String;)I", ordinal = 0))
 	private int axolotlclient$moveName(TextRenderer instance, String string, Operation<Integer> original, @Local PlayerInfo entry) {
 		var width = original.call(instance, string);
-		if (AxolotlClient.config().showBadges.get()) {
-			if (AxolotlClient.config().tabBadgeMode.get() == AxolotlClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED || UserRequest.getOnline(entry.getProfile().getId().toString())) {
+		if (DolphinClient.config().showBadges.get()) {
+			if (DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED || UserRequest.getOnline(entry.getProfile().getId().toString())) {
 				width += 9;
 			}
 		}
@@ -97,14 +97,14 @@ public abstract class PlayerListHudMixin extends GuiElement {
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;drawWithShadow(Ljava/lang/String;FFI)I", ordinal = 1))
 	public int axolotlclient$moveName2(TextRenderer instance, String string, float x, float y, int color, Operation<Integer> original, @Local GameProfile entry) {
-		if (AxolotlClient.config().showBadges.get() &&
-			(AxolotlClient.config().tabBadgeMode.get() == AxolotlClientConfigCommon.TabBadgeMode.BEFORE_NAME ||
-				AxolotlClient.config().tabBadgeMode.get() == AxolotlClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED)) {
+		if (DolphinClient.config().showBadges.get() &&
+			(DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME ||
+				DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED)) {
 			if (UserRequest.getOnline(entry.getId().toString())) {
-				axolotlclient$client.getTextureManager().bind((Identifier) AxolotlClientCommon.BADGE_PATH);
+				axolotlclient$client.getTextureManager().bind((Identifier) DolphinClientCommon.BADGE_PATH);
 				GuiElement.drawTexture((int) x, (int) y, 0, 0, 8, 8, 8, 8);
 				x += 9;
-			} else if (AxolotlClient.config().tabBadgeMode.get() == AxolotlClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED) {
+			} else if (DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_NAME_ALIGNED) {
 				x += 9;
 			}
 		}
@@ -118,10 +118,10 @@ public abstract class PlayerListHudMixin extends GuiElement {
 
 	@Inject(method = "renderPing", at = @At("HEAD"), cancellable = true)
 	private void axolotlclient$numericalPing(int width, int x, int y, PlayerInfo entry, CallbackInfo ci) {
-		if (AxolotlClient.config().showBadges.get() && AxolotlClient.config().tabBadgeMode.get() == AxolotlClientConfigCommon.TabBadgeMode.BEFORE_PING
+		if (DolphinClient.config().showBadges.get() && DolphinClient.config().tabBadgeMode.get() == DolphinClientConfigCommon.TabBadgeMode.BEFORE_PING
 			&& UserRequest.getOnline(entry.getProfile().getId().toString())) {
 			var pingWidth = (((PlayerTabOverlayHud) HudManagerCommon.getInstance().get(PlayerTabOverlayHud.ID)).numericalPing.get()) ? Minecraft.getInstance().textRenderer.br$getWidth(String.valueOf(entry.getPing())) + 1 : 11;
-			axolotlclient$client.getTextureManager().bind((Identifier) AxolotlClientCommon.BADGE_PATH);
+			axolotlclient$client.getTextureManager().bind((Identifier) DolphinClientCommon.BADGE_PATH);
 			GuiElement.drawTexture(x + width - pingWidth - 9, y, 0, 0, 8, 8, 8, 8);
 		}
 		if (BedwarsMod.getInstance().isEnabled() && BedwarsMod.getInstance().customTabList.get() &&

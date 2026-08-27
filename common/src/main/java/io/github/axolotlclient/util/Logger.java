@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.util;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +37,8 @@ public sealed interface Logger permits Logger.Slf4jLogger {
 
 	final class Slf4jLogger implements Logger {
 
-		private final org.slf4j.Logger delegate = LoggerFactory.getLogger("AxolotlClient");
-		private static final String prefix = FabricLoader.getInstance().isDevelopmentEnvironment() ? "" : "(AxolotlClient) ";
+		private final org.slf4j.Logger delegate = LoggerFactory.getLogger("DolphinClient");
+		private static final String prefix = FabricLoader.getInstance().isDevelopmentEnvironment() ? "" : "(DolphinClient) ";
 
 		public void info(String msg, Object... args) {
 			//noinspection StringConcatenationArgumentToLogCall
@@ -56,7 +56,7 @@ public sealed interface Logger permits Logger.Slf4jLogger {
 		}
 
 		public void debug(String msg, Object... args) {
-			if (AxolotlClientCommon.getInstance().getConfig().debugLogOutput.get()) {
+			if (DolphinClientCommon.getInstance().getConfig().debugLogOutput.get()) {
 				//noinspection StringConcatenationArgumentToLogCall
 				delegate.info(prefix + "[DEBUG] " + msg, args);
 			}

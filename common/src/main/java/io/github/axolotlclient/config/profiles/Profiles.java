@@ -43,7 +43,8 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
+import io.github.axolotlclient.config.ConfigPathMigration;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.resource.AxoResource;
 import io.github.axolotlclient.bridge.util.AxoI18n;
@@ -58,7 +59,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 public class Profiles {
-	private static final Path PROFILES_CONFIG = AxolotlClientCommon.resolveConfigFile("profiles").resolve("profiles.json");
+	private static final Path PROFILES_CONFIG = DolphinClientCommon.resolveConfigFile("profiles").resolve("profiles.json");
 	private static final String PROFILE_EXPORT_FILE_EXTENSION = ".axoprofile";
 	private static final DateTimeFormatter EXPORT_TIME_FORMAT = new DateTimeFormatterBuilder().appendPattern("yyyy_MM_dd-HH_mm_ss").toFormatter();
 	private static final String PROFILE_INFO_FILE = "profile_info.json";
@@ -76,25 +77,47 @@ public class Profiles {
 			try (var stream = Files.newBufferedReader(PROFILES_CONFIG)) {
 				storage = GsonHelper.GSON.fromJson(stream, ProfileStorage.class);
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().warn("Failed to load profiles!", e);
+				DolphinClientCommon.getInstance().getLogger().warn("Failed to load profiles!", e);
 			}
 		} else {
 			storage = new ProfileStorage();
 			storage.current = newProfile("Default");
 			saveProfiles();
-			for (String name : new String[]{"axolotlclient.json", "custom_hud.json", "keystrokes.json"}) {
-				var oldPath = AxolotlClientCommon.resolveConfigFile(name);
+			for (String name : new String[]{
+				DolphinClientCommon.CONFIG_FILE_NAME,
+				DolphinClientCommon.LEGACY_CONFIG_FILE_NAME,
+				"custom_hud.json",
+				"keystrokes.json"
+			}) {
+				var oldPath = DolphinClientCommon.resolveConfigFile(name);
 				var newPath = resolveProfileFile(name);
 				if (Files.exists(oldPath) && !Files.exists(newPath)) {
 					try {
 						Files.createDirectories(newPath.getParent());
 						Files.move(oldPath, newPath);
 					} catch (IOException e) {
-						AxolotlClientCommon.getInstance().getLogger().warn("Failed to move {} to profile-based config path at {}", oldPath, newPath, e);
+						DolphinClientCommon.getInstance().getLogger().warn("Failed to move {} to profile-based config path at {}", oldPath, newPath, e);
 					}
 				}
 			}
 		}
+		migrateLegacyProfileConfigFiles();
+	}
+
+	private void migrateLegacyProfileConfigFiles() {
+		if (storage == null) {
+			return;
+		}
+		iterateAvailable(profile -> {
+			try {
+				ConfigPathMigration.resolveConfigFile(
+					profile.getPath(),
+					DolphinClientCommon.CONFIG_FILE_NAME,
+					DolphinClientCommon.LEGACY_CONFIG_FILE_NAME);
+			} catch (IOException e) {
+				DolphinClientCommon.getInstance().getLogger().warn("Failed to migrate config file in profile {}", profile.name(), e);
+			}
+		});
 	}
 
 	public void saveProfiles() {
@@ -104,7 +127,7 @@ public class Profiles {
 				GsonHelper.GSON.toJson(storage, stream);
 			}
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to save profiles, falling back to 'default'", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to save profiles, falling back to 'default'", e);
 		}
 	}
 
@@ -120,9 +143,9 @@ public class Profiles {
 		if (!storage.available().contains(profile)) {
 			throw new IllegalArgumentException("Unknown profile!");
 		}
-		AxolotlClientCommon.getInstance().getLogger().debug("Switching to profile {}", profile.name());
+		DolphinClientCommon.getInstance().getLogger().debug("Switching to profile {}", profile.name());
 		storage.current = profile;
-		AxolotlClientCommon.getInstance().reloadConfig();
+		DolphinClientCommon.getInstance().reloadConfig();
 	}
 
 	public Profile getCurrent() {
@@ -141,12 +164,12 @@ public class Profiles {
 	}
 
 	public Profile duplicate(Profile profile) {
-		AxolotlClientCommon.getInstance().saveConfig();
+		DolphinClientCommon.getInstance().saveConfig();
 		var duplicate = newProfile(AxoI18n.translate("profiles.duplicated", profile.name()));
 		try {
 			Files.copy(profile.getPath(), duplicate.getPath());
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to duplicate profile!");
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to duplicate profile!");
 		}
 		return duplicate;
 	}
@@ -165,7 +188,7 @@ public class Profiles {
 					return;
 				}
 				if (!out.endsWith(PROFILE_EXPORT_FILE_EXTENSION)) {
-					AxolotlClientCommon.getInstance().getNotificationProvider()
+					DolphinClientCommon.getInstance().getNotificationProvider()
 						.addStatus("profiles.profile.export.notification.failed",
 							"profiles.profile.export.notification.failed.invalid_destination");
 					return;
@@ -185,12 +208,12 @@ public class Profiles {
 					});
 					Files.writeString(fs.getPath(PROFILE_INFO_FILE), GsonHelper.GSON.toJson(new ProfileInfo(profile)));
 				}
-				AxolotlClientCommon.getInstance().getNotificationProvider()
+				DolphinClientCommon.getInstance().getNotificationProvider()
 					.addStatus("profiles.profile.export.notification.success",
 						"profiles.profile.export.notification.success.desc", profile.name(), FabricLoader.getInstance().getGameDir().relativize(outPath));
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().info("Failed to export profile", e);
-				AxolotlClientCommon.getInstance().getNotificationProvider()
+				DolphinClientCommon.getInstance().getLogger().info("Failed to export profile", e);
+				DolphinClientCommon.getInstance().getNotificationProvider()
 					.addStatus("profiles.profile.export.notification.failed",
 						"profiles.profile.export.notification.failed.generic");
 			}
@@ -215,11 +238,11 @@ public class Profiles {
 				if (!imported.isEmpty()) {
 					var count = imported.size();
 					if (count == 1) {
-						AxolotlClientCommon.getInstance().getNotificationProvider()
+						DolphinClientCommon.getInstance().getNotificationProvider()
 							.addStatus("profiles.profile.import.notification.success",
 								"profiles.profile.import.notification.success.desc.one");
 					} else {
-						AxolotlClientCommon.getInstance().getNotificationProvider()
+						DolphinClientCommon.getInstance().getNotificationProvider()
 							.addStatus("profiles.profile.import.notification.success",
 								"profiles.profile.import.notification.success.desc.more", count);
 					}
@@ -233,24 +256,24 @@ public class Profiles {
 		try (var fs = FileSystems.newFileSystem(p)) {
 			var profileInfoPath = fs.getPath(PROFILE_INFO_FILE);
 			if (!Files.exists(profileInfoPath)) {
-				AxolotlClientCommon.getInstance().getLogger().warn("Skipping bad profile file at {}", p);
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", p.getFileName());
+				DolphinClientCommon.getInstance().getLogger().warn("Skipping bad profile file at {}", p);
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", p.getFileName());
 				return null;
 			}
 			var profileInfo = GsonHelper.GSON.fromJson(Files.readString(profileInfoPath), ProfileInfo.class);
-			AxolotlClientCommon.getInstance().getLogger().debug("Extracting profile: {}", profileInfo);
+			DolphinClientCommon.getInstance().getLogger().debug("Extracting profile: {}", profileInfo);
 			var newProfile = newProfile(profileInfo.name());
 			Files.createDirectories(newProfile.getPath());
 			var fakeRoot = fs.getPath("/profile");
 			if (!Files.exists(fakeRoot)) {
-				AxolotlClientCommon.getInstance().getLogger().debug("Profile is empty!");
+				DolphinClientCommon.getInstance().getLogger().debug("Profile is empty!");
 				return newProfile;
 			}
 			Files.walkFileTree(fakeRoot, new SimpleFileVisitor<>() {
 				@Override
 				public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
 					var outPath = newProfile.getPath().resolve(fakeRoot.relativize(file).toString()).normalize();
-					AxolotlClientCommon.getInstance().getLogger().debug("Extracting profile file {} to {}", file, outPath);
+					DolphinClientCommon.getInstance().getLogger().debug("Extracting profile file {} to {}", file, outPath);
 					if (!outPath.startsWith(newProfile.getPath())) {
 						throw new AccessDeniedException(file.toString(), profileInfo.name(), null);
 					}
@@ -258,14 +281,14 @@ public class Profiles {
 					return super.visitFile(file, attrs);
 				}
 			});
-			AxolotlClientCommon.getInstance().getLogger().debug("Extracted profile {}", newProfile.name());
+			DolphinClientCommon.getInstance().getLogger().debug("Extracted profile {}", newProfile.name());
 			return newProfile;
 		} catch (AccessDeniedException e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Profile {} tried to escape its directory, aborting import.", p);
-			AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", p.getFileName());
+			DolphinClientCommon.getInstance().getLogger().warn("Profile {} tried to escape its directory, aborting import.", p);
+			DolphinClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", p.getFileName());
 		} catch (Exception e) {
-			AxolotlClientCommon.getInstance().getLogger().warn("Failed to import profile from {}:", p, e);
-			AxolotlClientCommon.getInstance().getNotificationProvider()
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to import profile from {}:", p, e);
+			DolphinClientCommon.getInstance().getNotificationProvider()
 				.addStatus("profiles.profile.import.notification.failed",
 					"profiles.profile.import.notification.failed.generic");
 		}
@@ -275,7 +298,9 @@ public class Profiles {
 	public List<ProfilePreset> findPresets() {
 		var mc = AxoMinecraftClient.getInstance();
 		var resourceManager = mc.br$getResourceManager();
-		var presetCandidates = resourceManager.br$listResources(AxolotlClientCommon.MODID, "profiles/presets", id -> id.br$getPath().endsWith(PROFILE_EXPORT_FILE_EXTENSION));
+		var presetCandidates = new LinkedHashMap<AxoIdentifier, AxoResource>();
+		presetCandidates.putAll(resourceManager.br$listResources(DolphinClientCommon.MODID, "profiles/presets", id -> id.br$getPath().endsWith(PROFILE_EXPORT_FILE_EXTENSION)));
+		presetCandidates.putAll(resourceManager.br$listResources(DolphinClientCommon.LEGACY_MODID, "profiles/presets", id -> id.br$getPath().endsWith(PROFILE_EXPORT_FILE_EXTENSION)));
 		List<ProfilePreset> foundPresets = new ArrayList<>();
 		presetCandidates.forEach((id, resource) -> {
 			try (var in = new ZipInputStream(resource.br$asStream())) {
@@ -286,7 +311,7 @@ public class Profiles {
 				var profileInfo = GsonHelper.GSON.fromJson(new InputStreamReader(in), ProfileInfo.class);
 				foundPresets.add(new ProfilePreset(profileInfo, id, resource));
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().warn("Failed to read profile preset from {}", id, e);
+				DolphinClientCommon.getInstance().getLogger().warn("Failed to read profile preset from {}", id, e);
 			}
 		});
 		return foundPresets;
@@ -307,8 +332,8 @@ public class Profiles {
 				Profiles.getInstance().saveProfiles();
 				Profiles.getInstance().switchTo(profile);
 			} catch (IOException e) {
-				AxolotlClientCommon.getInstance().getLogger().warn("Skipping bad profile file at {}, {}:", id(), info().name(), e);
-				AxolotlClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", info().name());
+				DolphinClientCommon.getInstance().getLogger().warn("Skipping bad profile file at {}, {}:", id(), info().name(), e);
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", info().name());
 			}
 		}
 	}
@@ -324,7 +349,7 @@ public class Profiles {
 		}
 
 		public Path getPath() {
-			return AxolotlClientCommon.resolveConfigFile("profiles").resolve(id());
+			return DolphinClientCommon.resolveConfigFile("profiles").resolve(id());
 		}
 
 		public String name() {

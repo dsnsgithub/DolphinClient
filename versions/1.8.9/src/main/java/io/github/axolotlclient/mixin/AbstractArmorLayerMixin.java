@@ -24,7 +24,7 @@ package io.github.axolotlclient.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.util.ClientColors;
 import net.minecraft.client.render.entity.layer.AbstractArmorLayer;
 import net.minecraft.client.render.entity.layer.EntityRenderLayer;
@@ -44,7 +44,7 @@ public abstract class AbstractArmorLayerMixin implements EntityRenderLayer<Livin
 	@WrapOperation(method = "renderArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/Model;render(Lnet/minecraft/entity/Entity;FFFFFF)V"))
 	private void hitColorOnArmor(Model instance, Entity entity, float walkAnimationProgress, float walkAnimationSpeed, float bob, float yaw, float pitch, float scale, Operation<Void> original) {
 		var hasOverlay = false;
-		if (entity instanceof LivingEntity l && AxolotlClient.config().hitColorOnArmor.get()) {
+		if (entity instanceof LivingEntity l && DolphinClient.config().hitColorOnArmor.get()) {
 			hasOverlay = setupOverlayColor(l);
 		}
 		original.call(instance, entity, walkAnimationProgress, walkAnimationSpeed, bob, yaw, pitch, scale);
@@ -84,7 +84,7 @@ public abstract class AbstractArmorLayerMixin implements EntityRenderLayer<Livin
 		GL11.glTexEnvi(8960, GLX.GL_COMBINE_ALPHA, 7681);
 		GL11.glTexEnvi(8960, GLX.GL_SOURCE0_ALPHA, GLX.GL_PREVIOUS);
 		GL11.glTexEnvi(8960, GLX.GL_OPERAND0_ALPHA, 770);
-		var c = AxolotlClient.config().hitColor.get().toInt();
+		var c = DolphinClient.config().hitColor.get().toInt();
 		GL11.glTexEnvfv(8960, 8705, new float[]{ClientColors.ARGB.redFloat(c), ClientColors.ARGB.greenFloat(c), ClientColors.ARGB.blueFloat(c), ClientColors.ARGB.alphaFloat(c)});
 		GlStateManager.activeTexture(GLX.GL_TEXTURE2);
 		GlStateManager.enableTexture();

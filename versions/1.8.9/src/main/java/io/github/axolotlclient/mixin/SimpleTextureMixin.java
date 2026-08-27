@@ -28,7 +28,7 @@ import java.io.InputStream;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.util.AltIcons;
 import net.minecraft.client.gui.GuiElement;
 import net.minecraft.client.render.texture.SimpleTexture;
@@ -51,7 +51,7 @@ public class SimpleTextureMixin {
 
 	@WrapOperation(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resource/Resource;asStream()Ljava/io/InputStream;"))
 	private InputStream getAltIcon(Resource instance, Operation<InputStream> original) {
-		if (AxolotlClientCommon.BADGE_PATH.equals(location) && !AxolotlClientCommon.getInstance().getConfig().noAltIcons.get()) {
+		if (DolphinClientCommon.BADGE_PATH.equals(location) && !DolphinClientCommon.getInstance().getConfig().noAltIcons.get()) {
 			return AltIcons.getAltIcon().orElseGet(() -> original.call(instance));
 		}
 		return original.call(instance);

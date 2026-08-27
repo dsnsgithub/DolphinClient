@@ -31,7 +31,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.api.handlers.*;
 import io.github.axolotlclient.api.requests.AccountSettingsRequest;
 import io.github.axolotlclient.api.requests.GlobalDataRequest;
@@ -53,7 +53,7 @@ public class API {
 	@Getter
 	private final Logger logger;
 	@Getter
-	private final NotificationProvider notificationProvider = AxolotlClientCommon.getInstance().getNotificationProvider();
+	private final NotificationProvider notificationProvider = DolphinClientCommon.getInstance().getNotificationProvider();
 
 	private final StatusUpdateProvider statusUpdateProvider;
 	@Getter
@@ -79,9 +79,9 @@ public class API {
 		if (Instance != null) {
 			throw new IllegalStateException("API may only be instantiated once!");
 		}
-		this.logger = AxolotlClientCommon.getInstance().getLogger();
+		this.logger = DolphinClientCommon.getInstance().getLogger();
 		this.statusUpdateProvider = statusUpdateProvider;
-		this.apiOptions = AxolotlClientCommon.getInstance().getApiOptions();
+		this.apiOptions = DolphinClientCommon.getInstance().getApiOptions();
 		handlers = new HashSet<>();
 		handlers.add(ChatHandler.getInstance());
 		handlers.add(new FriendRequestHandler());

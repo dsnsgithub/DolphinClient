@@ -27,7 +27,7 @@ import java.lang.invoke.MethodType;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.api.requests.UserRequest;
 import io.github.axolotlclient.bridge.AxoPlayerListEntry;
 import io.github.axolotlclient.bridge.util.AxoIdentifier;
@@ -38,13 +38,13 @@ public class BetterTabCompat implements Module {
 	@Override
 	public void init() {
 		if (FabricLoader.getInstance().isModLoaded("bettertab")) {
-			var logger = AxolotlClientCommon.getInstance().getLogger();
+			var logger = DolphinClientCommon.getInstance().getLogger();
 			try {
 				var badgeManagerClass = Class.forName("tab.bettertab.tabList.BadgeManager");
 				var handle = MethodHandles.lookup().findStatic(badgeManagerClass,"registerBadgeProvider", MethodType.methodType(void.class, BiConsumer.class));
 				var consumer = (BiConsumer<AxoPlayerListEntry, List<AxoIdentifier>>)(entry, list) -> {
-					if (AxolotlClientCommon.getInstance().getConfig().showBadges.get() && UserRequest.getOnline(entry.br$getId().toString())) {
-						list.add(AxolotlClientCommon.BADGE_PATH);
+					if (DolphinClientCommon.getInstance().getConfig().showBadges.get() && UserRequest.getOnline(entry.br$getId().toString())) {
+						list.add(DolphinClientCommon.BADGE_PATH);
 					}
 				};
 				handle.invoke(consumer);

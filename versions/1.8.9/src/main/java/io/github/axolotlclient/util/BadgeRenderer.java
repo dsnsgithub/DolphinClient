@@ -22,8 +22,8 @@
 
 package io.github.axolotlclient.util;
 
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.api.requests.UserRequest;
 import io.github.axolotlclient.modules.hypixel.NickHider;
 import net.minecraft.client.Minecraft;
@@ -40,7 +40,7 @@ public class BadgeRenderer {
 			return;
 		}
 
-		if (!AxolotlClient.config().showBadges.get() || !UserRequest.getOnline(entity.getUuid().toString())) {
+		if (!DolphinClient.config().showBadges.get() || !UserRequest.getOnline(entity.getUuid().toString())) {
 			return;
 		}
 
@@ -53,15 +53,15 @@ public class BadgeRenderer {
 				: (NickHider.getInstance().hideOtherNames.get() ? NickHider.getInstance().hiddenNameOthers.get()
 				: entity.getDisplayName().getFormattedString()))
 			/ 2
-			+ (AxolotlClient.config().customBadge.get() ? textRenderer
-			.getWidth(" " + AxolotlClient.config().badgeText.get()) : 10));
+			+ (DolphinClient.config().customBadge.get() ? textRenderer
+			.getWidth(" " + DolphinClient.config().badgeText.get()) : 10));
 
 		GlStateManager.color4f(1, 1, 1, 1);
 
-		if (AxolotlClient.config().customBadge.get())
-			textRenderer.draw(AxolotlClient.config().badgeText.get(), x, 0, -1, AxolotlClient.config().useShadows.get());
+		if (DolphinClient.config().customBadge.get())
+			textRenderer.draw(DolphinClient.config().badgeText.get(), x, 0, -1, DolphinClient.config().useShadows.get());
 		else {
-			Minecraft.getInstance().getTextureManager().bind((Identifier) AxolotlClientCommon.BADGE_PATH);
+			Minecraft.getInstance().getTextureManager().bind((Identifier) DolphinClientCommon.BADGE_PATH);
 			GuiElement.drawTexture(x, 0, 0, 0, 8, 8, 8, 8);
 		}
 	}

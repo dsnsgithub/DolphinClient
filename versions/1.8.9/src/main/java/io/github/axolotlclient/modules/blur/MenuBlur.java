@@ -24,8 +24,8 @@ package io.github.axolotlclient.modules.blur;
 
 import java.io.IOException;
 
-import io.github.axolotlclient.AxolotlClient;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClient;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
@@ -57,7 +57,7 @@ public class MenuBlur extends AbstractModule {
 	@Getter
 	private static final MenuBlur Instance = new MenuBlur();
 	public final BooleanOption enabled = new BooleanOption("enabled", false);
-	private final Identifier shaderLocation = new Identifier("axolotlclient", "shaders/post/menu_blur.json");
+	private final Identifier shaderLocation = new Identifier(DolphinClientCommon.MODID, "shaders/post/menu_blur.json");
 	private final IntegerOption strength = new IntegerOption("strength", 8, 0, 100);
 	private final IntegerOption fadeTime = new IntegerOption("fadeTime", 1, 0, 10);
 	private final ColorOption bgColor = new ColorOption("bgcolor", new Color(0x64000000));
@@ -76,7 +76,7 @@ public class MenuBlur extends AbstractModule {
 	public void init() {
 		category.add(enabled, strength, fadeTime, bgColor);
 
-		AxolotlClient.config().rendering.add(category);
+		DolphinClient.config().rendering.add(category);
 	}
 
 	public boolean renderScreen() {
@@ -101,7 +101,7 @@ public class MenuBlur extends AbstractModule {
 						client.getRenderTarget(), shaderLocation);
 					shader.resize(client.width, client.height);
 				} catch (IOException e) {
-					AxolotlClientCommon.getInstance().getLogger().error("Failed to load Menu Blur: ", e);
+					DolphinClientCommon.getInstance().getLogger().error("Failed to load Menu Blur: ", e);
 					return;
 				}
 			}

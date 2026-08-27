@@ -32,7 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Graphics;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.GraphicsOption;
@@ -146,7 +146,7 @@ public class Util {
 	}
 
 	public static Identifier getTexture(Graphics graphics, String name) {
-		Identifier id = new Identifier(AxolotlClientCommon.MODID, name.toLowerCase(Locale.ROOT));
+		Identifier id = new Identifier(DolphinClientCommon.MODID, name.toLowerCase(Locale.ROOT));
 		try {
 			DynamicTexture texture;
 			var previous = Minecraft.getInstance().getTextureManager().get(id);
@@ -166,7 +166,7 @@ public class Util {
 
 			texture.upload();
 		} catch (IOException e) {
-			AxolotlClientCommon.getInstance().getLogger().error("Failed to bind texture for " + id + ": ", e);
+			DolphinClientCommon.getInstance().getLogger().error("Failed to bind texture for " + id + ": ", e);
 		}
 		return id;
 	}

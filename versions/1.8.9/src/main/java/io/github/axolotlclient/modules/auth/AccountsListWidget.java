@@ -25,7 +25,7 @@ package io.github.axolotlclient.modules.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.util.DrawUtil;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
@@ -93,8 +93,8 @@ public class AccountsListWidget extends EntryListWidget {
 	@Environment(EnvType.CLIENT)
 	public static class Entry extends DrawUtil implements EntryListWidget.Entry {
 
-		private static final Identifier checkmark = new Identifier(AxolotlClientCommon.MODID, "textures/check.png");
-		private static final Identifier warningSign = new Identifier(AxolotlClientCommon.MODID, "textures/warning.png");
+		private static final Identifier checkmark = new Identifier(DolphinClientCommon.MODID, "textures/check.png");
+		private static final Identifier warningSign = new Identifier(DolphinClientCommon.MODID, "textures/warning.png");
 
 		private final AccountsScreen screen;
 		@Getter

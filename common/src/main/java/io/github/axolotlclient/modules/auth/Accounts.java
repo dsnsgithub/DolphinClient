@@ -31,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.github.axolotlclient.AxolotlClientCommon;
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.util.GsonHelper;
 import io.github.axolotlclient.util.Logger;
@@ -47,7 +47,7 @@ public abstract class Accounts {
 	protected MSApi msApi;
 
 	public void load() {
-		Path legacy = AxolotlClientCommon.resolveConfigFile("../accounts.json");
+		Path legacy = DolphinClientCommon.resolveConfigFile("../accounts.json");
 		Path saveFile = getAccountsSaveFile();
 		if (Files.exists(legacy)) {
 			try {
@@ -82,7 +82,7 @@ public abstract class Accounts {
 	}
 
 	protected Path getAccountsSaveFile() {
-		return AxolotlClientCommon.resolveConfigFile("accounts.json");
+		return DolphinClientCommon.resolveConfigFile("accounts.json");
 	}
 
 	public void addAccount(Account account) {
@@ -110,7 +110,7 @@ public abstract class Accounts {
 	}
 
 	private Logger getLogger() {
-		return AxolotlClientCommon.getInstance().getLogger();
+		return DolphinClientCommon.getInstance().getLogger();
 	}
 
 	protected boolean isContained(String uuid) {

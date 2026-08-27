@@ -23,7 +23,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.axolotlclient.AxolotlClient;
+import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.oldanimations.OldAnimations;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
@@ -171,16 +171,16 @@ public abstract class MinecraftMixin {
 
 		String title;
 		if (OldAnimationsConfig.instance.show1_7_10.get()) {
-			if (OldAnimations.AXOLOTLCLIENT && AxolotlClient.config().customWindowTitle.get()) {
-				title = "AxolotlClient 1.7.10";
+			if (OldAnimations.AXOLOTLCLIENT && DolphinClient.config().customWindowTitle.get()) {
+				title = "DolphinClient 1.7.10";
 			} else {
 				/* hell yeah */
 				title = "Minecraft 1.7.10";
 			}
 		} else {
 			/* might as well ensure the custom title gets updated even when the show1_7_10 feature is disabled! */
-			if (AxolotlClient.config().customWindowTitle.get()) {
-				title = "AxolotlClient 1.8.9";
+			if (DolphinClient.config().customWindowTitle.get()) {
+				title = "DolphinClient 1.8.9";
 			} else {
 				title = "Minecraft 1.8.9";
 			}

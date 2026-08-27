@@ -1,13 +1,8 @@
 # Dolphin Client
 
-Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod), focused on **Minecraft 1.8.9 (Ornithe)** and Hypixel.
+Dolphin Client is an **insanely optimized **Minecraft client for Hypixel 1.8.9. 
 
 Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClient-Fork/releases), then drag it into Prism Launcher to run.
-
-Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
-- 800 FPS on Lunar Client => ~3000 fps in Housing (/visit DSNS)
-- ~200 FPS on Lunar Client => ~600 fps in Duels Lobby
-- ~200 FPS on Lunar Client => ~1000 fps in Housing lobby
 
 <img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 
@@ -15,11 +10,16 @@ Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 Open the client menu in-game with **Right Shift**.
 
 
-To build:
+### Performance
 
-```
-./gradlew build
-```
+Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
+- 800 FPS on Lunar Client => ~3000 fps in Housing (/visit DSNS)
+- ~200 FPS on Lunar Client => ~600 fps in Duels Lobby
+- ~200 FPS on Lunar Client => ~1000 fps in Housing lobby
+
+## Credits
+
+Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod), with Dolphin Optimized including a potent combination of optimization mods.
 
 ---
 

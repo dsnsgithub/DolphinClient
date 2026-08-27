@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v7
 
       - name: Set up JDK 21
@@ -25,23 +25,32 @@ jobs:
         with:
           cache-provider: basic
 
-      - name: Build
+      - name: Build and test
         run: ./gradlew build --stacktrace
 
-      - name: Read mod version
+      - name: Resolve mod version
         id: version
         run: echo "version=$(grep -E '^version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
-      - name: Upload jars
+      - name: Stage release artifact
+        run: |
+          mkdir -p build/upload
+          find versions/*/build/libs -maxdepth 1 -name '*.jar' \
+            ! -name '*-dev*.jar' ! -name '*-sources*.jar' \
+            -exec cp -v {} build/upload/ \;
+          if [ -z "$(ls -A build/upload)" ]; then
+            echo "::error::No release jar found under versions/*/build/libs"
+            exit 1
+          fi
+
+      - name: Upload release artifact
         uses: actions/upload-artifact@v7
         with:
           name: DolphinClient-${{ steps.version.outputs.version }}-${{ github.sha }}
-          path: |
-            versions/*/build/libs/*.jar
-            !versions/*/build/libs/*-dev.jar
+          path: build/upload/
           if-no-files-found: error
 
-      - name: Upload test reports on failure
+      - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v7
         with:

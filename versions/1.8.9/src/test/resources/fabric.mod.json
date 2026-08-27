@@ -2,17 +2,25 @@
 	"schemaVersion": 1,
 	"id": "dolphinclient-test",
 	"version": "1.0.0",
-	"name": "Test Mod",
-	"description": "",
+	"name": "DolphinClient Test",
+	"description": "Insanely optimized Minecraft client for Hypixel 1.8.9.",
 	"authors": [
-		"moehreag",
 		"DSNS"
 	],
+	"contributors": [
+		"moehreag",
+		"YakisikliBaran",
+		"DragonEggBedrockBreaking",
+		"TheKodeToad",
+		"CornetPanique86",
+		"Mixces"
+	],
 	"contact": {
-		"sources": "https://codeberg.org/AxolotlClient/AxolotlClient-mod",
-		"issues": "https://codeberg.org/AxolotlClient/AxolotlClient-mod/issues"
+		"homepage": "https://github.com/dsnsgithub/DolphinClient/",
+		"sources": "https://github.com/dsnsgithub/DolphinClient/",
+		"issues": "https://github.com/dsnsgithub/DolphinClient/issues"
 	},
-	"license": "LGPL-3.0",
+	"license": "LGPL-3.0-or-later",
 	"icon": "assets/dolphinclient/icon.png",
 	"environment": "client",
 	"entrypoints": {

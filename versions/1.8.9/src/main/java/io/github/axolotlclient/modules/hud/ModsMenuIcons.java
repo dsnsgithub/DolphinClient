@@ -102,7 +102,7 @@ final class ModsMenuIcons {
 		put("nickhider", Items.NAME_TAG);
 		put("autoboop", Items.BONE);
 		put("skyblock", Items.EMERALD);
-		put("bedwars", Item.byBlock(Blocks.WOOL));
+		put("bedwars", Items.BED);
 		put("titles", Items.SIGN);
 
 		put("axolotlclient-oldanimations", Items.CLOCK);

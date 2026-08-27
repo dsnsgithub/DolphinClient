@@ -79,12 +79,9 @@ public class OldAnimationsConfig {
 	public final BooleanOption blockingArm = new BooleanOption("blockingArm", true);
 	public final BooleanOption droppedItemSprite = new BooleanOption("droppedItemSprite", true);
 	public final BooleanOption mirroredProjectiles = new BooleanOption("mirroredProjectiles", true);
-	public final BooleanOption disableAlexModel = new BooleanOption("disableAlexModel", true);
-	public final BooleanOption disableSkinLayers = new BooleanOption("disableSkinLayers", true);
 	public final BooleanOption flameOffset = new BooleanOption("flameOffset", true);
 	public final BooleanOption disableTitles = new BooleanOption("disableTitles", true);
 	public final BooleanOption oldItemPickup = new BooleanOption("oldItemPickup", true);
-	public final BooleanOption oldPickupArm = new BooleanOption("oldPickupArm", true);
 	public final BooleanOption oldGlint = new BooleanOption("oldGlint", true);
 	public final BooleanOption oldGuiGlint = new BooleanOption("oldGuiGlint", true);
 	public final BooleanOption oldGlintColor = new BooleanOption("oldGlintColor", true);
@@ -112,7 +109,6 @@ public class OldAnimationsConfig {
 	public final BooleanOption fastGrass = new BooleanOption("fastGrass", true);
 	public final BooleanOption difficultyLogic = new BooleanOption("difficultyLogic", true);
 	public final BooleanOption moveSprintKeybind = new BooleanOption("moveSprintKeybind", true);
-	public final BooleanOption oldFogGrayScale = new BooleanOption("oldFogGrayScale", true);
 	public final BooleanOption oldDamageTintLighting = new BooleanOption("oldDamageTintLighting", true);
 	public final BooleanOption refreshResourcesRegardless = new BooleanOption("refreshResourcesRegardless", true);
 	public final BooleanOption removeHitboxEyeLine = new BooleanOption("removeHitboxEyeLine", true);
@@ -120,14 +116,8 @@ public class OldAnimationsConfig {
 	public final BooleanOption disableGlintOnBlocks = new BooleanOption("disableGlintOnBlocks", true);
 	public final BooleanOption separateDamageTintFromGlint = new BooleanOption("separateDamageTintFromGlint", true);
 	public final BooleanOption doubleTapSneak = new BooleanOption("doubleTapSneak", true);
-	public final BooleanOption rotationVecYawFix = new BooleanOption("rotationVecYawFix", true);
 	public final BooleanOption framedItemLighting = new BooleanOption("framedItemLighting", true);
-	public final BooleanOption oldMapArms = new BooleanOption("oldMapArms", true);
-	public final BooleanOption oldGameModeCommand = new BooleanOption("oldGameModeCommand", true);
-	public final BooleanOption alwaysShowOutline = new BooleanOption("alwaysShowOutline", true);
-	public final BooleanOption blockEntityMiningProgress = new BooleanOption("blockEntityMiningProgress", true);
 	public final BooleanOption clientSideEntityMovement = new BooleanOption("clientSideEntityMovement", true);
-	public final BooleanOption oldFramerateChunkRendering = new BooleanOption("oldFramerateChunkRendering", true);
 	public final BooleanOption voidFog = new BooleanOption("voidFog", true);
 	public final BooleanOption dontSortTabEntries = new BooleanOption("dontSortTabEntries", true);
 	public final BooleanOption hideScoreboardHearts = new BooleanOption("hideScoreboardHearts", true);
@@ -137,15 +127,12 @@ public class OldAnimationsConfig {
 	public final BooleanOption dontUpdateEffectsHud = new BooleanOption("dontUpdateEffectsHud", true);
 	public final BooleanOption inventoryTextLighting = new BooleanOption("inventoryTextLighting", true);
 	public final BooleanOption oldJumpBoostPotionColor = new BooleanOption("oldJumpBoostPotionColor", true);
-	public final BooleanOption beaconRendering = new BooleanOption("beaconRendering", true);
 	public final BooleanOption controlsListButtonHeight = new BooleanOption("controlsListButtonHeight", true);
 	public final BooleanOption fire = new BooleanOption("fire", true);
 	public final BooleanOption eggEntityCollisionParticles = new BooleanOption("eggEntityCollisionParticles", true);
 	public final BooleanOption fallParticles = new BooleanOption("fallParticles", true);
-	public final BooleanOption skullLayerRendering = new BooleanOption("skullLayerRendering", true);
 	public final BooleanOption noSkullLayerDamageTint = new BooleanOption("noSkullLayerDamageTint", true);
 	public final BooleanOption fireChargeSound = new BooleanOption("fireChargeSound", true);
-	public final BooleanOption oldFlightSpeed = new BooleanOption("oldFlightSpeed", true);
 	public final BooleanOption skullBlockRendering = new BooleanOption("skullBlockRendering", true);
 	public final BooleanOption creeperOffset = new BooleanOption("creeperOffset", true);
 	public final BooleanOption hopperSound = new BooleanOption("hopperSound", true);
@@ -156,20 +143,17 @@ public class OldAnimationsConfig {
 	public final BooleanOption packFormatWarning = new BooleanOption("packFormatWarning", true);
 	public final BooleanOption goldenCarrotCreativeTab = new BooleanOption("goldenCarrotCreativeTab", true);
 	public final BooleanOption fastSmoothLighting = new BooleanOption("fastSmoothLighting", true);
-	public final BooleanOption skyAndCloudPerspective = new BooleanOption("skyAndCloudPerspective", true);
 	public final BooleanOption litFurnaceMinecart = new BooleanOption("litFurnaceMinecart", true);
 	public final BooleanOption tallBlockBreakSync = new BooleanOption("tallBlockBreakSync", true);
 	public final BooleanOption buggedChatOpacity = new BooleanOption("buggedChatOpacity", true);
 	public final BooleanOption modelShadeAndAmbientOcclusion = new BooleanOption("modelShadeAndAmbientOcclusion", true);
 	public final BooleanOption fenceGateItemModel = new BooleanOption("fenceGateItemModel", true);
 	public final BooleanOption fenceGateWallMode = new BooleanOption("fenceGateWallMode", true);
-	public final BooleanOption defaultWolfCollarColor = new BooleanOption("defaultWolfCollarColor", true);
 	public final BooleanOption itemModelSideQuadRendering = new BooleanOption("itemModelSideQuadRendering", false);
 	public final BooleanOption oldFastLeaves = new BooleanOption("oldFastLeaves", true);
 	public final BooleanOption opaqueLeavesTextures = new BooleanOption("opaqueLeavesTextures", true);
 	public final BooleanOption guiBlockItemsMipmap = new BooleanOption("guiBlockItemsMipmap", true);
 	public final BooleanOption tntZFighting = new BooleanOption("tntZFighting", true);
-	public final BooleanOption showMapArmsWhileInvisible = new BooleanOption("showMapArmsWhileInvisible", true);
 	public final BooleanOption shadowOffset = new BooleanOption("shadowOffset", true);
 	public final BooleanOption showShadowInInventory = new BooleanOption("showShadowInInventory", true);
 	public final BooleanOption removeHitboxEyeVector = new BooleanOption("removeHitboxEyeVector", true);
@@ -179,14 +163,10 @@ public class OldAnimationsConfig {
 	public final BooleanOption sleepEyeHeight = new BooleanOption("sleepEyeHeight", true);
 	public final BooleanOption mipmapPrecision = new BooleanOption("mipmapPrecision", true);
 	public final BooleanOption dispenserClickSound = new BooleanOption("dispenserClickSound", true);
-	public final BooleanOption replaceDestroyStageTexture = new BooleanOption("replaceDestroyStageTexture", true);
 	public final BooleanOption potionEntityOffset = new BooleanOption("potionEntityOffset", true);
 	public final BooleanOption playerEyeHeightOffset = new BooleanOption("playerEyeHeightOffset", true);
 	public final BooleanOption dontShowFallParticlesOnFences = new BooleanOption("dontShowFallParticlesOnFences", true);
-	public final BooleanOption removeGiantLayers = new BooleanOption("removeGiantLayers", true);
 	public final BooleanOption zombieVillagerHelmetOffset = new BooleanOption("zombieVillagerHelmetOffset", true);
-	public final BooleanOption suffocationScreen = new BooleanOption("suffocationScreen", true);
-	public final BooleanOption fireSuffocationOrder = new BooleanOption("fireSuffocationOrder", true);
 	public final BooleanOption mobSizeDimensions = new BooleanOption("mobSizeDimensions", true);
 	public final BooleanOption droppedItemsFacePlayer = new BooleanOption("droppedItemsFacePlayer", true);
 	public final BooleanOption dontAsyncReloadResources = new BooleanOption("dontAsyncReloadResources", true);
@@ -220,7 +200,6 @@ public class OldAnimationsConfig {
 		guiBlockItemsMipmap::get,
 		mipmapPrecision::get,
 //		creeperOffset::get,
-//		removeGiantLayers::get,
 //		zombieVillagerHelmetOffset::get,
 		inventoryPressurePlateDimensions::get,
 		mipmapAllBlocks::get,
@@ -240,7 +219,6 @@ public class OldAnimationsConfig {
 		guiBlockItemsMipmap.get(),
 		mipmapPrecision.get(),
 //		creeperOffset.get(),
-//		removeGiantLayers.get(),
 //		zombieVillagerHelmetOffset.get(),
 		inventoryPressurePlateDimensions.get(),
 		mipmapAllBlocks.get(),

@@ -162,9 +162,8 @@ public final class MenuCatalog {
 	}
 
 	/**
-	 * The 1.7 tab lists the feature groups directly. The parent category only
-	 * ever carried the master toggle, which is gone now that every 1.7 feature
-	 * is individually configurable.
+	 * The 1.7 tab lists the feature groups directly. The parent category and
+	 * Misc grab bag are gone, so only the remaining configurable groups appear.
 	 */
 	private static void absorbAnimations(List<Module> modules, OptionCategory category) {
 		for (OptionCategory child : category.getSubCategories()) {

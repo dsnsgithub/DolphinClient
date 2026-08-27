@@ -20,8 +20,6 @@ package io.github.axolotlclient.oldanimations.mixin;
 
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -29,26 +27,20 @@ import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.ItemUtil;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
 import net.minecraft.block.*;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.ItemInHandRenderer;
 import net.minecraft.client.render.entity.ItemRenderer;
-import net.minecraft.client.render.entity.PlayerRenderer;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.client.render.platform.GlStateManager;
-import net.minecraft.client.render.texture.TextureAtlasSprite;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -67,12 +59,6 @@ public abstract class ItemInHandRendererMixin {
 	@Shadow
 	@Final
 	private Minecraft minecraft;
-
-	@Shadow
-	protected abstract void renderInWallEffect(float tickDelta, TextureAtlasSprite sprite);
-
-	@Shadow
-	protected abstract void renderOnFireEffect(float tickDelta);
 
 	@ModifyArg(method = "renderInFirstPerson",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/ItemInHandRenderer;applyFirstPersonTransform(FF)V"),
@@ -200,103 +186,5 @@ public abstract class ItemInHandRendererMixin {
 			return PlayerUtil.INSTANCE.getEyeHeight();
 		}
 		return original.call(instance);
-	}
-
-	@WrapMethod(method = "renderLeftArm")
-	private void axolotlclient$wrapLeftMapArm(PlayerRenderer playerRenderer, Operation<Void> original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldMapArms.get()) {
-			//todo: find the bug report
-			axolotlclient$renderMapArm(playerRenderer, 0);
-		} else {
-			original.call(playerRenderer);
-		}
-	}
-
-	@WrapMethod(method = "renderRightArm")
-	private void axolotlclient$wrapRightMapArm(PlayerRenderer playerRenderer, Operation<Void> original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldMapArms.get()) {
-			axolotlclient$renderMapArm(playerRenderer, 1);
-		} else {
-			original.call(playerRenderer);
-		}
-	}
-
-	@WrapOperation(method = "renderArms", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/living/player/ClientPlayerEntity;isInvisible()Z"))
-	private boolean axolotlclient$showMapArmsWhileInvisible(ClientPlayerEntity instance, Operation<Boolean> original) {
-		/* interesting. MC-404 */
-		return (!OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.showMapArmsWhileInvisible.get()) && original.call(instance);
-	}
-
-	@ModifyExpressionValue(method = "renderScreenEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/living/player/LocalClientPlayerEntity;isInWall()Z"))
-	private boolean axolotlclient$oldSuffocationScreen(boolean original, @Local(argsOnly = true) float tickDelta) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.suffocationScreen.get()) {
-			PlayerEntity playerEntity = minecraft.player;
-			if (playerEntity.isInWall()) {
-				int i = MathHelper.floor(playerEntity.x);
-				int j = MathHelper.floor(playerEntity.y + playerEntity.getEyeHeight() /* pretty sure we don't need smooth sneaking here */);
-				int k = MathHelper.floor(playerEntity.z);
-				BlockState blockState = minecraft.world.getBlockState(new BlockPos(i, j, k));
-				if (blockState.getBlock().isViewBlocking()) {
-					renderInWallEffect(tickDelta, minecraft.getBlockRenderDispatcher().getModelShaper().getParticleIcon(blockState));
-				} else {
-					for (int l = 0; l < 8; l++) {
-						float f = ((l) % 2 - 0.5F) * playerEntity.width * 0.9F;
-						float g = ((l >> 1) % 2 - 0.5F) * playerEntity.height * 0.2F;
-						float h = ((l >> 2) % 2 - 0.5F) * playerEntity.width * 0.9F;
-						int m = MathHelper.floor(i + f);
-						int n = MathHelper.floor(j + g);
-						int o = MathHelper.floor(k + h);
-						BlockState blockState2 = minecraft.world.getBlockState(new BlockPos(m, n, o));
-						if (blockState2.getBlock().isSolid()) {
-							blockState = blockState2;
-						}
-					}
-				}
-				if (blockState.getBlock().getRenderType() != -1) {
-					renderInWallEffect(tickDelta, minecraft.getBlockRenderDispatcher().getModelShaper().getParticleIcon(blockState));
-				}
-			}
-			return false;
-		}
-		return original;
-	}
-
-	@Inject(method = "renderScreenEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;disableAlphaTest()V", shift = At.Shift.AFTER))
-	private void axolotlclient$moveFireOverlay(float tickDelta, CallbackInfo ci) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.fireSuffocationOrder.get() &&
-			!minecraft.player.isSpectator() && minecraft.player.isOnFire()) {
-			/* MC-5270 */
-			/* yay bugs */
-			renderOnFireEffect(tickDelta);
-		}
-	}
-
-	@ModifyExpressionValue(method = "renderScreenEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/living/player/LocalClientPlayerEntity;isOnFire()Z"))
-	private boolean axolotlclient$disableFireOverlay(boolean original) {
-		return (!OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.fireSuffocationOrder.get()) && original;
-	}
-
-	@WrapWithCondition(method = "renderOnFireEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;depthFunc(I)V"))
-	private boolean axolotlclient$disableFireOverlayDepth(int func) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.fireSuffocationOrder.get();
-	}
-
-	@WrapWithCondition(method = "renderOnFireEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;depthMask(Z)V"))
-	private boolean axolotlclient$disableFireOverlayDepth2(boolean mask) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.fireSuffocationOrder.get();
-	}
-
-	@Unique
-	private void axolotlclient$renderMapArm(PlayerRenderer playerRenderer, int ordinal) {
-		/* in 1.7, for some reason, the arms are oriented incorrectly... they're mirrored compared to 1.8 lol */
-		int side = ordinal * 2 - 1;
-		GlStateManager.pushMatrix();
-		GlStateManager.translatef(0.0F, -0.6F, 1.1F * side);
-		GlStateManager.rotatef(-45 * side, 1.0F, 0.0F, 0.0F);
-		GlStateManager.rotatef(-90.0F, 0.0F, 0.0F, 1.0F);
-		GlStateManager.rotatef(59.0F, 0.0F, 0.0F, 1.0F);
-		GlStateManager.rotatef(-65 * side, 0.0F, 1.0F, 0.0F);
-		playerRenderer.renderRightHand(minecraft.player);
-		GlStateManager.popMatrix();
 	}
 }

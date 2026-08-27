@@ -18,7 +18,6 @@
 
 package io.github.axolotlclient.oldanimations.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -48,11 +47,5 @@ public class PlayerModelMixin extends HumanoidModel {
 		/* this secretly changes the cape's y position. we need to remove it */
 		/* optifine already removes it and places its own sneak translation in CapeLayer */
 		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.thirdPersonSneaking.get();
-	}
-
-	@ModifyExpressionValue(method = "translateRightArm", at = @At(value = "CONSTANT", args = "floatValue=1.0F"))
-	private float axolotlclient$fixAlexArmOffset(float original) {
-		/* this modification isn't exactly related to 1.7 visuals, but it's close enough that i should include it :P */
-		return original / (!OldAnimationsConfig.isEnabled() || OldAnimationsConfig.instance.disableAlexModel.get() ? 1.0F : 2.0F);
 	}
 }

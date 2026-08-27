@@ -24,6 +24,7 @@ package io.github.axolotlclient.config.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -156,6 +157,7 @@ public final class MenuCatalog {
 			absorb(modules, category, tab);
 		}
 
+		modules.sort(Comparator.comparing(Module::displayName, String.CASE_INSENSITIVE_ORDER));
 		return modules;
 	}
 

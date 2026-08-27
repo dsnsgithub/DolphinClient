@@ -23,7 +23,7 @@
 package io.github.axolotlclient.config.ui;
 
 /**
- * Compact Lunar-inspired palette for the centered Right Shift menu.
+ * Lunar-inspired palette and layout for the centered Right Shift menu.
  */
 public final class MenuTheme {
 	private MenuTheme() {
@@ -46,31 +46,36 @@ public final class MenuTheme {
 	public static final int OUTLINE = 0x18FFFFFF;
 	public static final int SCROLLBAR = 0x884C9DFF;
 
-	public static final float PANEL_RADIUS = 8f;
-	public static final float CONTROL_RADIUS = 3.5f;
+	public static final float PANEL_RADIUS = 10f;
+	public static final float CONTROL_RADIUS = 4f;
 
-	public static final int MAX_PANEL_W = 348;
-	public static final int MAX_PANEL_H = 208;
-	public static final int MIN_PANEL_W = 280;
-	public static final int MIN_PANEL_H = 168;
-	public static final int HEADER_H = 16;
-	public static final int SEARCH_H = 14;
-	public static final int TAB_H = 14;
-	public static final int MODULE_H = 26;
-	public static final int OPTION_H = 18;
-	public static final int SECTION_H = 14;
-	public static final int FOOTER_H = 20;
-	public static final int PAD = 8;
-	public static final int TILE_GAP = 6;
+	public static final int MAX_PANEL_W = 580;
+	public static final int MAX_PANEL_H = 380;
+	public static final int MIN_PANEL_W = 320;
+	public static final int MIN_PANEL_H = 200;
+	public static final int HEADER_H = 20;
+	public static final int SEARCH_H = 16;
+	public static final int TAB_H = 16;
+	public static final int MODULE_H = 30;
+	public static final int OPTION_H = 22;
+	public static final int SECTION_H = 16;
+	public static final int FOOTER_H = 30;
+	public static final int PAD = 12;
+	public static final int STACK_GAP = 6;
+	public static final int TAB_GAP = 3;
+	public static final int TILE_GAP = 8;
 	public static final int COLS = 2;
-	public static final int TOGGLE_W = 22;
-	public static final int TOGGLE_H = 11;
-	public static final int TOGGLE_INSET = 8;
+	public static final int TOGGLE_W = 24;
+	public static final int TOGGLE_H = 12;
+	public static final int TOGGLE_INSET = 10;
 	public static final int ICON_SIZE = 16;
 	public static final int ICON_TEXT_GAP = 18;
-	public static final int CONTROL_W = 78;
-	public static final int HEADER_BTN = 12;
-	public static final int HEADER_BTN_INSET = 14;
-	public static final int COLLAPSED_W = 96;
-	public static final int COLLAPSED_H = 16;
+	public static final int CONTROL_W = 96;
+	public static final int HEADER_BTN = 14;
+	public static final int HEADER_BTN_INSET = 16;
+	public static final int FOOTER_BTN_W = 52;
+	public static final int FOOTER_BTN_H = 18;
+	public static final int BACK_BTN_W = 52;
+	public static final int COLLAPSED_W = 112;
+	public static final int COLLAPSED_H = 18;
 }

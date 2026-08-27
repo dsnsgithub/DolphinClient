@@ -34,7 +34,6 @@ import net.ornithemc.osl.lifecycle.api.client.MinecraftClientEvents;
 public class OldAnimationsConfig {
 
 	public static OldAnimationsConfig instance = new OldAnimationsConfig();
-	private final BooleanOption enabled = new BooleanOption("enabled", true);
 
 	/* reloading resources does not reload certain niche things like the potion color cache */
 	public boolean reloadPotionColors;
@@ -58,7 +57,6 @@ public class OldAnimationsConfig {
 	private final OptionCategory categoryEnchantmentGlint = OptionCategory.create("enchantmentGlint");
 	private final OptionCategory categoryHitbox = OptionCategory.create("hitbox");
 	private final OptionCategory categoryOffsets = OptionCategory.create("offsets");
-	private final OptionCategory categoryMisc = OptionCategory.create("misc");
 
 	public final BooleanOption useAndMine = new BooleanOption("useAndMine", true);
 	public final BooleanOption useAndMineParticles = new BooleanOption("useAndMineParticles", true);
@@ -209,7 +207,6 @@ public class OldAnimationsConfig {
 	public final BooleanOption framedItemRotationOffset = new BooleanOption("framedItemRotationOffset", true);
 
 	private final BooleanSupplier[] suppliers = new BooleanSupplier[]{
-		enabled::get,
 		skullModel::get,
 		fastGrass::get,
 		fire::get,
@@ -230,7 +227,6 @@ public class OldAnimationsConfig {
 		trapDoorItemPosition::get
 	};
 	private final boolean[] previousStates = {
-		enabled.get(),
 		skullModel.get(),
 		fastGrass.get(),
 		fire.get(),
@@ -251,14 +247,15 @@ public class OldAnimationsConfig {
 		trapDoorItemPosition.get()
 	};
 
+	/**
+	 * The 1.7 features no longer have a master switch: every one of them is
+	 * individually configurable, which makes a global toggle redundant.
+	 */
 	public static boolean isEnabled() {
-		return instance.enabled.get();
+		return true;
 	}
 
 	public void initConfig() {
-		category.add(
-			enabled
-		);
 		category.add(blockingItemUsing);
 		blockingItemUsing.add(
 			blockHitting,
@@ -436,29 +433,6 @@ public class OldAnimationsConfig {
 			zombieVillagerHelmetOffset,
 			framedItemRotationOffset
 		);
-		category.add(categoryMisc);
-		categoryMisc.add(
-			disableSkinLayers,
-			disableAlexModel,
-			oldPickupArm,
-			skullLayerRendering,
-			oldMapArms,
-			showMapArmsWhileInvisible,
-			oldFogGrayScale,
-			skyAndCloudPerspective,
-			rotationVecYawFix,
-			oldGameModeCommand,
-			alwaysShowOutline,
-			blockEntityMiningProgress,
-			oldFramerateChunkRendering,
-			beaconRendering,
-			oldFlightSpeed,
-			defaultWolfCollarColor,
-			replaceDestroyStageTexture,
-			removeGiantLayers,
-			suffocationScreen,
-			fireSuffocationOrder
-		);
 
 		ConfigManager configManager = new VersionedJsonConfigManager(FabricLoader.getInstance().getConfigDir().resolve(OldAnimations.MODID + ".json"),
 			category, 1, (configVersion, configVersion1, optionCategory, jsonObject) -> jsonObject);
@@ -484,9 +458,9 @@ public class OldAnimationsConfig {
 				boolean current = suppliers[i].getAsBoolean();
 				if (current != previousStates[i]) {
 					previousStates[i] = current;
-					if (i == 4) {
+					if (i == 3) {
 						reloadPotionCache = true;
-					} else if (i == 2 || i == 5 || i == 8 || i == 10) {
+					} else if (i == 1 || i == 4 || i == 7 || i == 9) {
 						reloadWorld = true;
 					} else {
 						needsReload = true;

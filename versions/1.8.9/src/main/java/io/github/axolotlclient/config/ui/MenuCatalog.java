@@ -161,9 +161,12 @@ public final class MenuCatalog {
 		return modules;
 	}
 
+	/**
+	 * The 1.7 tab lists the feature groups directly. The parent category only
+	 * ever carried the master toggle, which is gone now that every 1.7 feature
+	 * is individually configurable.
+	 */
 	private static void absorbAnimations(List<Module> modules, OptionCategory category) {
-		BooleanOption enabled = firstEnabled(category.getOptions());
-		modules.add(moduleFrom(category.getName(), Tab.ANIMATIONS, enabled, optionNodes(category.getOptions())));
 		for (OptionCategory child : category.getSubCategories()) {
 			modules.add(moduleFrom(child.getName(), Tab.ANIMATIONS, firstEnabled(child.getOptions()), nodesFrom(child, false)));
 		}

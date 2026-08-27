@@ -25,20 +25,30 @@ package io.github.axolotlclient.modules.hud;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.axolotlclient.DolphinClientCommon;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.resource.Identifier;
 
 /**
  * Item icons used by the centered mods menu. Minecraft items stay readable at
- * small sizes and avoid extra texture assets.
+ * small sizes and avoid extra texture assets. A few entries use a bundled
+ * texture instead, where no item reads as the thing it configures.
  */
 final class ModsMenuIcons {
+	/** DSNS' head, pre-composited from the skin's head and hat layers. */
+	private static final Identifier DSNS_HEAD = new Identifier(DolphinClientCommon.MODID, "textures/gui/dsns_head.png");
+
 	private static final Map<String, ItemStack> BY_KEY = new HashMap<>();
+	private static final Map<String, Identifier> TEXTURES_BY_KEY = new HashMap<>();
 	private static final ItemStack FALLBACK = new ItemStack(Items.PAPER);
 
 	static {
+		TEXTURES_BY_KEY.put("tab_overlay_hud", DSNS_HEAD);
+		TEXTURES_BY_KEY.put("tabOverlay", DSNS_HEAD);
+
 		put("fpshud", Items.CLOCK);
 		put("cpshud", Items.BOW);
 		put("armorhud", Items.IRON_CHESTPLATE);
@@ -61,7 +71,6 @@ final class ModsMenuIcons {
 		put("daycounterhud", Items.CLOCK);
 		put("inventoryhud", Item.byBlock(Blocks.CHEST));
 		put("xphud", Items.EXPERIENCE_BOTTLE);
-		put("tab_overlay_hud", new ItemStack(Items.SKULL, 1, 3));
 		put("subtitleshud", Items.BOOK);
 		put("actionbarhud", Items.SIGN);
 		put("bossbarhud", Items.NETHER_STAR);
@@ -105,7 +114,6 @@ final class ModsMenuIcons {
 		put("bedwars", Items.BED);
 		put("titles", Items.SIGN);
 
-		put("axolotlclient-oldanimations", Items.CLOCK);
 		put("blockingItemUsing", Items.IRON_SWORD);
 		put("sneaking", Items.IRON_BOOTS);
 		put("items", Items.DIAMOND);
@@ -118,14 +126,19 @@ final class ModsMenuIcons {
 		put("combat", Items.DIAMOND_SWORD);
 		put("gui", Items.SIGN);
 		put("debugOverlay", Items.COMPASS);
-		put("tabOverlay", new ItemStack(Items.SKULL, 1, 3));
 		put("enchantmentGlint", Items.EXPERIENCE_BOTTLE);
 		put("hitbox", Items.SLIME_BALL);
 		put("offsets", Items.COMPASS);
-		put("misc", Items.PAPER);
 	}
 
 	private ModsMenuIcons() {
+	}
+
+	/**
+	 * The texture icon for this key, or null when the key uses an item icon.
+	 */
+	static Identifier textureForKey(String key) {
+		return TEXTURES_BY_KEY.get(key);
 	}
 
 	static ItemStack forKey(String key) {

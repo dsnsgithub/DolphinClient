@@ -1,7 +1,5 @@
 {
 	"axolotlclient-oldanimations": "Old Animations",
-	"enabled": "Enabled",
-	"enabled.tooltip": "Toggling this will reload the game resources!",
 	"blockingItemUsing": "Blocking/Item Using",
 	"sneaking": "Sneaking",
 	"items": "Items",
@@ -19,7 +17,6 @@
 	"enchantmentGlint": "Enchantment Glint",
 	"hitbox": "Hitbox",
 	"offsets": "Offsets / Eye Height",
-	"misc": "Misc",
 	"useAndMine": "Use and Mine Animation",
 	"useAndMine.tooltip": "Animates the item while the player holds down right mouse button then left mouse button while aiming at the ground.",
 	"useAndMineParticles": "Use and Mine Particles",

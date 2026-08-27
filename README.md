@@ -22,7 +22,7 @@ Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 
 ## Credits
 
-Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod), with Dolphin Optimized including a potent combination of optimization mods.
+Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod) (with rewritten configuration + tweaks), while Dolphin Optimized also includes a potent combination of optimization mods.
 
 For those nerdy and curious to care, Dolphin Optimized is built on:
 

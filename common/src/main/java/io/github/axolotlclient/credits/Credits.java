@@ -1,7 +1,8 @@
 /*
  * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of AxolotlClient.
+ * This file is part of DolphinClient, a fork of AxolotlClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +35,7 @@ public class Credits {
 
 	static {
 		contributor("moehreag", "Author, Programming", "https://github.com/moehreag");
+		contributor("DSNS", "DolphinClient fork", "https://seung.dev");
 		contributor("TheKodeToad", "Contributor", "Motion Blur", "Freelook", "Zoom", "Old Animations");
 		contributor("Mixces", "Old Animations");
 		contributor("DragonEggBedrockBreaking", "Bugfixes", "Inspiration of new Features");

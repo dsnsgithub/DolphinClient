@@ -44,15 +44,16 @@ For those nerdy and curious to care, Dolphin Optimized is built on:
 <details>
 
 <summary>
-Licensing (from AxolotlClient)
+Licensing
 </summary>
 
-This mod is licensed under the LGPL-3.0 License.
-For more information see the [LICENSE](LICENSE) file.
+DolphinClient is a fork of AxolotlClient and is licensed under the LGPL-3.0-or-later License.
+Original AxolotlClient copyright is retained. For more information see the [LICENSE](LICENSE) file.
 
 ```
-AxolotlClient-mod
+DolphinClient (fork of AxolotlClient)
 Copyright (C) 2021-present moehreag + Contributors
+Copyright (C) 2026 DSNS <dominic@seung.dev>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

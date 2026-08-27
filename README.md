@@ -29,13 +29,13 @@ For those nerdy and curious to care, Dolphin Optimized is built on:
 
 - Argentum (Sodium for 1.8.9)
 - Argentum Extras (Sodium Tweaks for 1.8.9)
-- Async Logger (improved Minecraft logging)
+- [Async Logger](https://modrinth.com/mod/asynclogger) (improved Minecraft logging)
 - Cera (OptiFine compatability)
-- DolphinClient (a Lunar Client HUD replacement: Hypixel mods, clean scoreboard, 1.7 Animations, and so much more)
-- Legacy LWJGL3 (upgraded from LWJGL2 to modern LWJGL3, performance boost and compatability)
+- [DolphinClient](https://github.com/dsnsgithub/DolphinClient) (a Lunar Client HUD replacement: Hypixel mods, clean scoreboard, 1.7 Animations, and so much more)
+- [Legacy LWJGL3](https://modrinth.com/mod/moehreag-legacy-lwjgl3) (upgraded from LWJGL2 to modern LWJGL3, performance boost and compatability)
 - NettyFix (allow multiplayer connection with newest Java)
-- Ornithe Standard Libraries (required for Ornithe, which is backported Fabric for 1.8.9)
-- SoundFix (brings new sound system to 1.8.9)
+- [Ornithe Standard Libraries](https://modrinth.com/mod/osl) (required for Ornithe, which is backported Fabric for 1.8.9)
+- [SoundFix](https://modrinth.com/mod/soundfix) (brings new sound system to 1.8.9)
 - Zirconium (brings modern optimizations to 1.8.9)
 
 

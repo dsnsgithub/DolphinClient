@@ -42,7 +42,7 @@ public class GlobalDataRequest {
 
 	public static CompletableFuture<GlobalData> get(boolean forceRequest) {
 		return CompletableFuture.supplyAsync(() -> {
-			if (API.getInstance().getApiOptions().enabled.get()) {
+			if (API.getInstance().getApiOptions().privacyAccepted.get().isAccepted()) {
 				try {
 					lock.acquire();
 				} catch (InterruptedException ignored) {

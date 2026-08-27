@@ -30,7 +30,6 @@ import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.bridge.AxoPerspective;
 import io.github.axolotlclient.modules.hypixel.LevelHead;
 import io.github.axolotlclient.modules.hypixel.bedwars.BedwarsMod;
-import io.github.axolotlclient.util.BadgeRenderer;
 import io.github.axolotlclient.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
@@ -63,12 +62,6 @@ public abstract class EntityRendererMixin<T extends Entity> {
 		if (Minecraft.getInstance().options.perspective == AxoPerspective.THIRD_PERSON_FRONT.ordinal()) {
 			GlStateManager.rotatef(-this.dispatcher.cameraPitch * 2, 1.0F, 0.0F, 0.0F);
 		}
-	}
-
-	@Inject(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;draw(Ljava/lang/String;III)I", ordinal = 1))
-	public void axolotlclient$addBadges(T entity, String string, double d, double e, double f, int i, CallbackInfo ci) {
-		if (entity instanceof ClientPlayerEntity && string.equals(entity.getDisplayName().getFormattedString()))
-			BadgeRenderer.renderNametagBadge(entity);
 	}
 
 	@WrapOperation(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TextRenderer;draw(Ljava/lang/String;III)I", ordinal = 1))

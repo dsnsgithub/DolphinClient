@@ -196,7 +196,7 @@ public class StatsOverlay extends TextHudEntry {
 		stats = new HashMap<>();
 		shouldRender = toggleKey.get() && autoActivate.get();
 
-		if (!API.getInstance().getApiOptions().enabled.get()) {
+		if (!API.getInstance().getApiOptions().privacyAccepted.get().isAccepted()) {
 			errorMessage = "API Not Enabled!";
 			return;
 		}

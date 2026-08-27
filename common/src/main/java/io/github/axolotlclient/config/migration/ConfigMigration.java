@@ -40,10 +40,10 @@ public interface ConfigMigration {
 		new V3Migration(),
 		new V4Migration(),
 		new V5Migration(),
-		new V6Migration(),
 		new V7Migration(),
 		new V8Migration(),
-		new V9Migration()
+		new V9Migration(),
+		new V10Migration()
 	));
 
 	static void apply(int oldVersion, JsonObject config) {

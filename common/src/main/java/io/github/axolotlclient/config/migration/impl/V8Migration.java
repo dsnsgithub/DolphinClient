@@ -37,21 +37,12 @@ public class V8Migration implements ConfigMigration {
 			var showOwnNametag = getBooleanOrFalse(n, "showOwnNametag");
 			var shadows = getBooleanOrFalse(n, "useShadows");
 			var nametagBackground = getBooleanOrFalse(n, "nametagBackground");
-			var badges = getBooleanOrFalse(n, "showBadges");
-			var customBadge = getBooleanOrFalse(n, "customBadge");
-			var customBadgeText = getString(n, "customBadgeText");
 			var rendering = getOrAddObject(config, "rendering");
 			var nametagRenderingOptions = new JsonObject();
 			rendering.add("nametagOptions", nametagRenderingOptions);
 			nametagRenderingOptions.addProperty("showOwnNametag", showOwnNametag);
 			nametagRenderingOptions.addProperty("useShadows", shadows);
 			nametagRenderingOptions.addProperty("nametagBackground", nametagBackground);
-			var apiOptions = getOrAddObject(config, "api.category");
-			var badgeOptions = new JsonObject();
-			apiOptions.add("api.badge_options", badgeOptions);
-			badgeOptions.addProperty("showBadges", badges);
-			badgeOptions.addProperty("customBadge", customBadge);
-			customBadgeText.ifPresent(s -> badgeOptions.addProperty("customBadgeText", s));
 		});
 	}
 }

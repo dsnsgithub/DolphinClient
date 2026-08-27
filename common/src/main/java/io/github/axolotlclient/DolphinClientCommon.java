@@ -56,7 +56,6 @@ import io.github.axolotlclient.modules.zoom.Zoom;
 import io.github.axolotlclient.util.FeatureDisablerCommon;
 import io.github.axolotlclient.util.Logger;
 import io.github.axolotlclient.util.OSUtil;
-import io.github.axolotlclient.util.compat.BetterTabCompat;
 import io.github.axolotlclient.util.notifications.NotificationProvider;
 import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
@@ -162,7 +161,6 @@ public abstract class DolphinClientCommon {
 		registerModule(DiscordRPC.getInstance());
 		registerModule(getApiOptions());
 		registerModule(Zoom.getInstance());
-		registerModule(new BetterTabCompat());
 	}
 
 	// init logic

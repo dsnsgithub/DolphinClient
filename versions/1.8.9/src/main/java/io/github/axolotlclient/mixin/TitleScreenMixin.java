@@ -28,28 +28,18 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.DolphinClientConfigCommon;
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.api.APIOptions;
-import io.github.axolotlclient.api.FriendsScreen;
-import io.github.axolotlclient.api.NewsScreen;
-import io.github.axolotlclient.api.chat.ChatListScreen;
-import io.github.axolotlclient.api.requests.GlobalDataRequest;
 import io.github.axolotlclient.modules.auth.AccountsScreen;
 import io.github.axolotlclient.modules.auth.Auth;
 import io.github.axolotlclient.modules.auth.AuthWidget;
 import io.github.axolotlclient.modules.hud.HudEditScreen;
-import io.github.axolotlclient.util.OSUtil;
-import io.github.axolotlclient.util.ThreadExecuter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -74,46 +64,10 @@ public abstract class TitleScreenMixin extends Screen {
 	@Inject(method = "initWidgetsNormal", at = @At("TAIL"))
 	private void axolotlclient$replaceRealmsButton(int i, int j, CallbackInfo ci) {
 		List<ButtonWidget> buttons = new ArrayList<>();
-		int leftButtonY = 10;
 		if (Auth.getInstance().showButton.get()) {
-			buttons.add(new AuthWidget(10, leftButtonY));
-			leftButtonY += 24;
+			buttons.add(new AuthWidget(10, 10));
 		}
 		this.buttons.addAll(buttons);
-		if (APIOptions.getInstance().addShortcutButtons.get()) {
-			int y = leftButtonY;
-			Runnable addApiButtons = () -> {
-				ButtonWidget friends = new ButtonWidget(142, 10, y, 50, 20, I18n.translate("api.friends"));
-				this.buttons.add(friends);
-				buttons.add(friends);
-				ButtonWidget chats = new ButtonWidget(42, 10, y + 24, 50, 20, I18n.translate("api.chats"));
-				this.buttons.add(chats);
-				buttons.add(chats);
-			};
-			if (API.getInstance().isSocketConnected()) {
-				addApiButtons.run();
-			} else {
-				API.addStartupListener(() -> minecraft.executeTask(addApiButtons), API.ListenerType.ONCE);
-			}
-		}
-		ThreadExecuter.scheduleTask(() -> GlobalDataRequest.get().thenAccept(data -> {
-			int buttonY = 10;
-			if (APIOptions.getInstance().updateNotifications.get() &&
-				data.success() &&
-				data.latestVersion().isNewerThan(DolphinClientCommon.VERSION)) {
-				ButtonWidget newVersion = new ButtonWidget(182, width - 90, buttonY, 80, 20, I18n.translate("api.new_version_available"));
-				this.buttons.add(newVersion);
-				buttons.add(newVersion);
-				buttonY += 24;
-			}
-			if (APIOptions.getInstance().displayNotes.get() &&
-				data.success() && !data.notes().isEmpty()) {
-				ButtonWidget notes = new ButtonWidget(253, width - 90, buttonY, 80, 20,
-					I18n.translate("api.notes"));
-				this.buttons.add(notes);
-				buttons.add(notes);
-			}
-		}));
 
 		if (FabricLoader.getInstance().isModLoaded("modmenu")) {
 			try {
@@ -158,17 +112,6 @@ public abstract class TitleScreenMixin extends Screen {
 			Minecraft.getInstance().openScreen(new HudEditScreen(this));
 		else if (button.id == 242)
 			Minecraft.getInstance().openScreen(new AccountsScreen(Minecraft.getInstance().screen));
-		else if (button.id == 182)
-			Minecraft.getInstance().openScreen(new ConfirmChatLinkScreen((bl, i) -> {
-				if (bl && i == 353) {
-					OSUtil.getOS().open(URI.create("https://modrinth.com/mod/axolotlclient/versions"));
-				}
-				Minecraft.getInstance().openScreen(this);
-			}, "https://modrinth.com/mod/axolotlclient/versions", 353, true));
-		else if (button.id == 253)
-			Minecraft.getInstance().openScreen(new NewsScreen(this));
-		else if (button.id == 142) minecraft.openScreen(new FriendsScreen(this));
-		else if (button.id == 42) minecraft.openScreen(new ChatListScreen(this));
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawString(Lnet/minecraft/client/render/TextRenderer;Ljava/lang/String;III)V", ordinal = 0))

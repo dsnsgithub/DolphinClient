@@ -25,19 +25,22 @@ package io.github.axolotlclient.api;
 
 import java.net.ConnectException;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import io.github.axolotlclient.DolphinClientCommon;
-import io.github.axolotlclient.api.handlers.*;
-import io.github.axolotlclient.api.requests.AccountSettingsRequest;
 import io.github.axolotlclient.api.requests.GlobalDataRequest;
-import io.github.axolotlclient.api.types.*;
-import io.github.axolotlclient.api.util.*;
+import io.github.axolotlclient.api.util.Authentication;
+import io.github.axolotlclient.api.util.MojangAuth;
 import io.github.axolotlclient.modules.auth.Account;
 import io.github.axolotlclient.util.GsonHelper;
 import io.github.axolotlclient.util.Logger;
@@ -45,8 +48,10 @@ import io.github.axolotlclient.util.NetworkUtil;
 import io.github.axolotlclient.util.ThreadExecuter;
 import io.github.axolotlclient.util.notifications.NotificationProvider;
 import lombok.Getter;
-import lombok.Setter;
 
+/**
+ * Client for the backend the Hypixel modules and image sharing talk to.
+ */
 public class API {
 
 	@Getter
@@ -56,60 +61,27 @@ public class API {
 	@Getter
 	private final NotificationProvider notificationProvider = DolphinClientCommon.getInstance().getNotificationProvider();
 
-	private final StatusUpdateProvider statusUpdateProvider;
 	@Getter
 	private final Options apiOptions;
-	private final Collection<SocketMessageHandler> handlers;
-	private WebSocket socket;
+	/**
+	 * The undashed UUID of the account this session is authenticated as, or {@code null} while unauthenticated.
+	 */
 	@Getter
-	private User self;
+	private String selfUuid;
 	private Account account;
 	private Authentication auth;
-	@Getter
-	@Setter
-	private AccountSettings settings;
 	private HttpClient client;
 	private CompletableFuture<?> restartingFuture;
 	private int nextRestartSecs;
-	private Future<?> statusUpdateFuture;
-	private final ScheduledExecutorService statusUpdateExecutor;
-	private static final List<BiContainer<Runnable, ListenerType>> afterStartupListeners = new ArrayList<>();
 	private final AtomicBoolean starting = new AtomicBoolean();
 
-	public API(StatusUpdateProvider statusUpdateProvider) {
+	public API() {
 		if (Instance != null) {
 			throw new IllegalStateException("API may only be instantiated once!");
 		}
 		this.logger = DolphinClientCommon.getInstance().getLogger();
-		this.statusUpdateProvider = statusUpdateProvider;
 		this.apiOptions = DolphinClientCommon.getInstance().getApiOptions();
-		handlers = new HashSet<>();
-		handlers.add(ChatHandler.getInstance());
-		handlers.add(new FriendRequestHandler());
-		handlers.add(new FriendRequestReactionHandler());
-		handlers.add(new StatusUpdateHandler());
-		handlers.add(new ChannelInviteHandler());
 		Instance = this;
-		statusUpdateExecutor = Executors.newSingleThreadScheduledExecutor();
-	}
-
-	public static void addStartupListener(Runnable listener) {
-		afterStartupListeners.add(BiContainer.of(listener, ListenerType.REPEATING));
-	}
-
-	public static void addStartupListener(Runnable listener, ListenerType type) {
-		afterStartupListeners.add(BiContainer.of(listener, type));
-	}
-
-	public enum ListenerType {
-		ONCE, REPEATING
-	}
-
-	public void onOpen(WebSocket channel) {
-		logger.debug("API connected!");
-		afterStartupListeners.forEach(p -> p.getLeft().run());
-		afterStartupListeners.removeIf(p -> p.getRight() == ListenerType.ONCE);
-		this.socket = channel;
 	}
 
 	private CompletableFuture<?> authenticate() {
@@ -156,30 +128,8 @@ public class API {
 			}
 
 			auth = new Authentication(response.getBody("access_token"));
+			selfUuid = sanitizeUUID(account.getUuid());
 			logDetailed("Obtained token!");
-			CompletableFuture.allOf(get(Request.Route.ACCOUNT.builder().build())
-					.thenAccept(r -> {
-						self = new User(sanitizeUUID(r.getBody("uuid")),
-							r.getBody("username"), Relation.NONE,
-							r.getBody("registered", Instant::parse),
-							Status.UNKNOWN,
-							r.ifBodyHas("previous_usernames", () -> {
-								List<Map<?, ?>> previous = r.getBody("previous_usernames");
-								return previous.stream().map(m -> new User.OldUsername((String) m.get("username"), (boolean) m.get("public")))
-									.collect(Collectors.toList());
-							}));
-						self.setSystem(PkSystem.fromToken(apiOptions.pkToken.get()).join());
-						logDetailed("Created self user!");
-					}),
-				AccountSettingsRequest.get().thenAccept(r -> {
-					apiOptions.retainUsernames.set(r.retainUsernames());
-					apiOptions.showActivity.set(r.showActivity());
-					apiOptions.showLastOnline.set(r.showLastOnline());
-					apiOptions.showRegistered.set(r.showRegistered());
-					apiOptions.allowFriendsImageAccess.set(r.allowFriendsImageAccess());
-				})).thenRun(() -> logDetailed("completed data requests")).join();
-			createSession();
-			startStatusUpdateThread();
 		});
 	}
 
@@ -200,9 +150,6 @@ public class API {
 	}
 
 	private CompletableFuture<Response> request(Request request, String method) {
-		if (!getApiOptions().enabled.get()) {
-			return CompletableFuture.completedFuture(Response.builder().status(0).body("{\"description\":\"Integration disabled!\"}").build());
-		}
 		if (!getApiOptions().privacyAccepted.get().isAccepted()) {
 			return CompletableFuture.completedFuture(Response.CLIENT_ERROR);
 		}
@@ -253,12 +200,10 @@ public class API {
 				String body = response.body();
 
 				int code = response.statusCode();
-				if (apiOptions.detailedLogging.get()) {
-					if (!url.getPath().endsWith(Request.Route.AUTHENTICATE.getPath())) {
-						logDetailed("Response: code: " + code + " body: " + body);
-					} else {
-						logDetailed("Response: code: " + code + " body: " + String.valueOf(body).replaceAll("(\"access_token\": ?\")[^\"]+(\")", "$1[token redacted]$2"));
-					}
+				if (!url.getPath().endsWith(Request.Route.AUTHENTICATE.getPath())) {
+					logDetailed("Response: code: " + code + " body: " + body);
+				} else {
+					logDetailed("Response: code: " + code + " body: " + String.valueOf(body).replaceAll("(\"access_token\": ?\")[^\"]+(\")", "$1[token redacted]$2"));
 				}
 				return Response.builder().body(body).status(code).headers(response.headers().map()).build();
 			} catch (ConnectException | HttpTimeoutException e) {
@@ -296,27 +241,15 @@ public class API {
 			restartingFuture.cancel(true);
 			restartingFuture = null;
 		}
-		if (statusUpdateFuture != null) {
-			statusUpdateFuture.cancel(true);
-			statusUpdateExecutor.shutdown();
-			statusUpdateFuture = null;
-		}
 		if (isAuthenticated()) {
 			logger.debug("Shutting down API");
-			if (isSocketConnected()) {
-				socket.sendClose(WebSocket.NORMAL_CLOSURE, "Shutdown");
-				socket = null;
-			}
 			// We have to rely on the gc to collect previous client objects as close() was only implemented in java 21.
 			// However, we are currently compiling against java 17.
 			//client.close();
 			auth = null;
+			selfUuid = null;
 		}
 		client = null;
-	}
-
-	public boolean isSocketConnected() {
-		return socket != null;
 	}
 
 	public boolean isAuthenticated() {
@@ -324,50 +257,15 @@ public class API {
 	}
 
 	public int getIndicatorColor() {
-		int color = isAuthenticated() ? 0xFFFFCC00 : 0xFFFF0000;
-		if (isSocketConnected()) {
-			color = 0xFF009000;
-		}
-		return color;
+		return isAuthenticated() ? 0xFF009000 : 0xFFFF0000;
 	}
 
 	public void logDetailed(String message, Object... args) {
-		if (apiOptions.detailedLogging.get()) {
-			logger.debug("[DETAIL] " + message, args);
-		}
-	}
-
-	public void onMessage(String message) {
-		logDetailed("Handling socket message: {}", message);
-
-		Response res = Response.builder().status(200).body(message).build();
-		String target = res.getBody("target");
-		boolean handled = false;
-		for (SocketMessageHandler handler : handlers) {
-			if (handler.isApplicable(target)) {
-				handler.handle(res);
-				handled = true;
-			}
-		}
-		if (!handled) {
-			logger.warn("Unhandled socket message target {}! This may be caused by using an outdated client.", target);
-		}
+		logger.debug("[DETAIL] " + message, args);
 	}
 
 	public void onError(Throwable throwable) {
 		logger.error("Error while handling API traffic:", throwable);
-	}
-
-	public void onClose(int statusCode, String reason) {
-		logDetailed("Session closed! code: " + statusCode + " reason: " + reason);
-		int[] error_codes = new int[]{
-			1011,
-			1007,
-			1014
-		};
-		if (Arrays.stream(error_codes).anyMatch(i -> i == statusCode) && apiOptions.enabled.get()) {
-			scheduleRestart();
-		}
 	}
 
 	private CompletableFuture<?> scheduleRestart() {
@@ -384,31 +282,10 @@ public class API {
 		return restartingFuture;
 	}
 
-	private void createSession() {
-		if (!Constants.TESTING) {
-			try {
-				logDetailed("Connecting to websocket..");
-				URI gateway = Request.Route.GATEWAY.create().resolve();
-				String uri = (gateway.getScheme().endsWith("s") ? "wss" : "ws") + gateway.toString().substring(gateway.getScheme().length());
-				socket = client.newWebSocketBuilder()
-					.header("Authorization", auth.token())
-					.header("User-Agent", NetworkUtil.getUserAgent())
-					.buildAsync(URI.create(uri), new ClientEndpoint()).join();
-				logDetailed("Socket connected");
-			} catch (Exception e) {
-				logger.error("Failed to start Socket! ", e);
-			}
-		}
-	}
-
 	public void restart() {
-		if (isSocketConnected()) {
-			shutdown();
-		}
+		shutdown();
 		if (account != null) {
 			startup(account);
-		} else {
-			apiOptions.enabled.set(false);
 		}
 	}
 
@@ -422,58 +299,35 @@ public class API {
 			return CompletableFuture.failedFuture(new UnsupportedOperationException("Account is offline"));
 		}
 
-
-		if (apiOptions.enabled.get()) {
-			switch (apiOptions.privacyAccepted.get()) {
-				case UNSET -> {
-					return apiOptions.openPrivacyNoteScreen.get().thenCompose(v ->
-						v ? startupAPI() : CompletableFuture.failedStage(new UnsupportedOperationException("Terms not accepted")));
-				}
-				case ACCEPTED -> {
-					return startupAPI();
-				}
+		switch (apiOptions.privacyAccepted.get()) {
+			case UNSET -> {
+				return apiOptions.openPrivacyNoteScreen.get().thenCompose(v ->
+					v ? startupAPI() : CompletableFuture.failedStage(new UnsupportedOperationException("Terms not accepted")));
+			}
+			case ACCEPTED -> {
+				return startupAPI();
 			}
 		}
 		return CompletableFuture.failedFuture(new UnsupportedOperationException("API is disabled"));
 	}
 
 	private CompletableFuture<?> startupAPI() {
-		if (!isSocketConnected()) {
-			if (Constants.TESTING) {
-				return CompletableFuture.failedFuture(new UnsupportedOperationException("API is disabled for testing!"));
-			}
-			if (starting.getAndSet(true)) {
-				return CompletableFuture.completedFuture(null);
-			}
-
-			logger.info("Starting API...");
-			return CompletableFuture.runAsync(() -> {
-				this.authenticate().join();
-				starting.set(false);
-			}, ThreadExecuter.service());
-		} else {
+		if (isAuthenticated()) {
 			logger.warn("API is already running!");
+			return CompletableFuture.failedFuture(new UnsupportedOperationException("API is already running"));
 		}
-		return CompletableFuture.failedFuture(new UnsupportedOperationException("API is already running"));
-	}
+		if (Constants.TESTING) {
+			return CompletableFuture.failedFuture(new UnsupportedOperationException("API is disabled for testing!"));
+		}
+		if (starting.getAndSet(true)) {
+			return CompletableFuture.completedFuture(null);
+		}
 
-	private void startStatusUpdateThread() {
-		statusUpdateProvider.initialize();
-		if (statusUpdateFuture != null) {
-			statusUpdateFuture.cancel(true);
-		}
-		statusUpdateFuture = statusUpdateExecutor.scheduleAtFixedRate(() -> {
-			try {
-				if (apiOptions.sendStatusUpdates.get()) {
-					Request request = statusUpdateProvider.getStatus();
-					if (request != null) {
-						post(request);
-					}
-				}
-			} catch (Throwable e) {
-				logger.warn("Failed to send status update! Skipping... ", e);
-			}
-		}, 50, Constants.STATUS_UPDATE_DELAY * 1000, TimeUnit.MILLISECONDS);
+		logger.info("Starting API...");
+		return CompletableFuture.runAsync(() -> {
+			this.authenticate().join();
+			starting.set(false);
+		}, ThreadExecuter.service());
 	}
 
 	public static String sanitizeUUID(String uuid) {

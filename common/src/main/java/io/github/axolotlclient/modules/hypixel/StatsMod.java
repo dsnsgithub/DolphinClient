@@ -197,7 +197,7 @@ public class StatsMod implements AbstractHypixelMod {
 
 		for (Entry handler : HANDLERS) {
 			command.then(Commands.literal(handler.name()).then(argument("player", PlayerArgument.player()).executes(c -> {
-				if (!API.getInstance().getApiOptions().enabled.get()) {
+				if (!API.getInstance().getApiOptions().privacyAccepted.get().isAccepted()) {
 					c.getSource().br$sendError(translatable("playerstats.error.api_disabled").br$color(RED));
 					return -1;
 				}

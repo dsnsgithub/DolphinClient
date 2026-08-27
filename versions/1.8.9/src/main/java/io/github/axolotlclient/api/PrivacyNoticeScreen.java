@@ -81,7 +81,6 @@ public class PrivacyNoticeScreen extends Screen {
 	protected void buttonClicked(ButtonWidget buttonWidget) {
 		if (buttonWidget.id == 0) {
 			minecraft.openScreen(parent);
-			APIOptions.getInstance().enabled.set(false);
 			APIOptions.getInstance().privacyAccepted.set(Options.PrivacyPolicyState.DENIED);
 			accepted.complete(false);
 		} else if (buttonWidget.id == 1) {

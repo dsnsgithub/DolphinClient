@@ -244,7 +244,7 @@ public final class MenuCatalog {
 	}
 
 	private static boolean isSettings(String name) {
-		return "general".equals(name) || "api.category".equals(name);
+		return "general".equals(name);
 	}
 
 	private static OptionCategory find(Collection<OptionCategory> categories, String name) {

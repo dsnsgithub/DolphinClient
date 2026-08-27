@@ -57,9 +57,7 @@ public class UUIDHelper {
 						return Optional.of(obj.get(jsonKey).getAsString());
 					}
 
-					if (API.getInstance().getApiOptions().detailedLogging.get()) {
-						API.getInstance().getLogger().warn("Conversion {} failed: {}", log, obj);
-					}
+					API.getInstance().getLogger().debug("Conversion {} failed: {}", log, obj);
 
 					return Optional.empty();
 				});

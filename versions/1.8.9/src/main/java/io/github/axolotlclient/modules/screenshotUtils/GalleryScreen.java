@@ -31,9 +31,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Colors;
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.api.requests.FriendRequest;
-import io.github.axolotlclient.api.requests.UserRequest;
 import io.github.axolotlclient.util.DrawUtil;
 import io.github.axolotlclient.util.MathUtil;
 import io.github.axolotlclient.util.Watcher;
@@ -81,17 +78,6 @@ public class GalleryScreen extends Screen {
 			}
 		}, ImageInstance.LocalImpl::new);
 
-		private static final Tab<String> SHARED = of(I18n.translate("gallery.title.shared"), () ->
-			FriendRequest.getInstance().getFriendUuids()
-				.thenApply(res -> res.stream().map(UserRequest::getUploadedImages)
-					.map(CompletableFuture::join)
-					.filter(Optional::isPresent)
-					.map(Optional::get)
-					.reduce(new ArrayList<>(), (l1, l2) -> {
-						l1.addAll(l2);
-						return l1;
-					})).join(), url -> ImageShare.getInstance().downloadImage(url).join());
-
 		interface Loader<T> {
 			ImageInstance load(T obj) throws Exception;
 		}
@@ -120,7 +106,7 @@ public class GalleryScreen extends Screen {
 		entryHeight = 75,
 		marginLeftRight = 10;
 
-	private boolean isError, online;
+	private boolean isError;
 	private ImageList area;
 
 	@Override
@@ -129,12 +115,7 @@ public class GalleryScreen extends Screen {
 		area.render(mouseX, mouseY, delta);
 		super.render(mouseX, mouseY, delta);
 
-		if (online) {
-			drawCenteredString(textRenderer, title, width / 2, 40 / 2 - 2 - textRenderer.fontHeight, -1);
-			drawCenteredString(textRenderer, current.title(), width / 2, 40 / 2 + 2, -1);
-		} else {
-			drawCenteredString(textRenderer, title, width / 2, 40 / 2 - textRenderer.fontHeight / 2, -1);
-		}
+		drawCenteredString(textRenderer, title, width / 2, 40 / 2 - textRenderer.fontHeight / 2, -1);
 
 		if (isError) {
 			drawCenteredString(textRenderer, I18n.translate("gallery.error.loading"), width / 2, 36, -1);
@@ -161,8 +142,6 @@ public class GalleryScreen extends Screen {
 
 	@Override
 	public void init() {
-		online = API.getInstance().isAuthenticated();
-
 		int columnCount = (width - (marginLeftRight * 2) + entrySpacing - 13) / (entryWidth + entrySpacing); // -13 to always have enough space for the scrollbar
 
 		area = new ImageList(minecraft, width, height, 33, height - 40, entryHeight + entrySpacing, columnCount);
@@ -177,19 +156,9 @@ public class GalleryScreen extends Screen {
 			}
 		});
 
-		int buttonWidth = columnCount <= 5 && online ? 100 : 150;
-		int footerButtonX = online ? width / 2 - buttonWidth - buttonWidth / 2 - 4 : width / 2 - buttonWidth - 2;
+		int buttonWidth = 150;
+		int footerButtonX = width / 2 - buttonWidth - 2;
 		int footerButtonY = height - 33 / 2 - 10;
-		if (online) {
-			ButtonWidget switchTab;
-			if (current == Tab.SHARED) {
-				switchTab = new ButtonWidget(1, footerButtonX, footerButtonY, buttonWidth, 20, I18n.translate("gallery.tab.local"));
-			} else {
-				switchTab = new ButtonWidget(2, footerButtonX, footerButtonY, buttonWidth, 20, I18n.translate("gallery.tab.shared"));
-			}
-			buttons.add(switchTab);
-			footerButtonX += buttonWidth + 4;
-		}
 		buttons.add(new ButtonWidget(3, footerButtonX, footerButtonY, buttonWidth, 20, I18n.translate("gallery.download_external")));
 		footerButtonX += buttonWidth + 4;
 		buttons.add(new ButtonWidget(4, footerButtonX, footerButtonY, buttonWidth, 20, I18n.translate("gui.back")));
@@ -199,8 +168,6 @@ public class GalleryScreen extends Screen {
 	protected void buttonClicked(ButtonWidget buttonWidget) {
 		switch (buttonWidget.id) {
 			case 0 -> init(minecraft, width, height);
-			case 1 -> setTab(Tab.LOCAL);
-			case 2 -> setTab(Tab.SHARED);
 			case 3 -> minecraft.openScreen(new DownloadImageScreen(this));
 			case 4 -> {
 				Tab.LOCAL.loadingCache().forEach((path, instance) -> {
@@ -209,21 +176,10 @@ public class GalleryScreen extends Screen {
 					}
 				});
 				Tab.LOCAL.loadingCache().clear();
-				Tab.SHARED.loadingCache().forEach((s, instance) -> {
-					if (instance != null) {
-						minecraft.getTextureManager().close(instance.id());
-					}
-				});
-				Tab.SHARED.loadingCache().clear();
 				Watcher.close(watcher);
 				minecraft.openScreen(parent);
 			}
 		}
-	}
-
-	private void setTab(Tab<?> tab) {
-		current = tab;
-		init(minecraft, width, height);
 	}
 
 	private <T> void loadTab(Tab<T> tab, int columnCount, ImageList area) throws Exception {

@@ -29,10 +29,6 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.DolphinClientConfigCommon;
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.api.APIOptions;
-import io.github.axolotlclient.api.ChatsSidebar;
-import io.github.axolotlclient.api.FriendsScreen;
 import io.github.axolotlclient.modules.hud.HudEditScreen;
 import io.github.axolotlclient.modules.hypixel.HypixelAbstractionLayer;
 import io.github.axolotlclient.modules.hypixel.HypixelMods;
@@ -63,15 +59,6 @@ public abstract class GameMenuScreenMixin extends Screen {
 
 	@Inject(method = "init", at = @At("RETURN"))
 	public void axolotlclient$addConfigButton(CallbackInfo ci) {
-		if (API.getInstance().isAuthenticated()) {
-			int buttonY = height - 30;
-			if (APIOptions.getInstance().addShortcutButtons.get()) {
-				buttons.add(new ButtonWidget(134, 10, buttonY, 75, 20, I18n.translate("api.friends")));
-				buttonY -= 25;
-			}
-			buttons.add(new ButtonWidget(234, 10, buttonY, 75, 20, I18n.translate("api.chats")));
-		}
-
 		if (!DolphinClientConfigCommon.instance().gameMenuScreenOptionButtonMode.get().showButton())
 			return;
 
@@ -118,10 +105,6 @@ public abstract class GameMenuScreenMixin extends Screen {
 				HypixelMods.HypixelApiCacheMode.ON_CLIENT_DISCONNECT)) {
 				HypixelAbstractionLayer.getInstance().clearPlayerData();
 			}
-		} else if (button.id == 234) {
-			minecraft.openScreen(new ChatsSidebar(this));
-		} else if (button.id == 134) {
-			minecraft.openScreen(new FriendsScreen(this));
 		}
 	}
 

@@ -44,7 +44,7 @@ public class AuthWidget extends ButtonWidget {
 		drawTexture(x + 1, y + 1, 8, 8, 8, 8, height - 2, height - 2, 64, 64);
 		drawTexture(x + 1, y + 1, 40, 8, 8, 8, height - 2, height - 2, 64, 64);
 		GlStateManager.disableBlend();
-		if (API.getInstance().getApiOptions().enabled.get()) {
+		if (API.getInstance().getApiOptions().privacyAccepted.get().isAccepted()) {
 			GlStateManager.pushMatrix();
 			GlStateManager.translatef(x + height - 1, y + height - 1, 0);
 			GlStateManager.scalef(0.25f, 0.25f, 1);

@@ -160,7 +160,7 @@ public class ImageScreen extends Screen {
 					if (s.isEmpty()) {
 						Notifications.getInstance().addStatus("gallery.image.upload.failure", "gallery.image.upload.failure.description");
 					} else {
-						minecraft.executeTask(() -> minecraft.openScreen(new ImageScreen(parent, local.toShared(s, API.getInstance().getSelf().getUuid(), Instant.now()), freeOnClose)));
+						minecraft.executeTask(() -> minecraft.openScreen(new ImageScreen(parent, local.toShared(s, API.getInstance().getSelfUuid(), Instant.now()), freeOnClose)));
 						setClipboard(s);
 						Notifications.getInstance().addStatus("gallery.image.upload.success", "gallery.image.upload.success.description", s);
 					}

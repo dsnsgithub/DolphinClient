@@ -26,7 +26,6 @@ package io.github.axolotlclient;
 import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.api.APIOptions;
 import io.github.axolotlclient.api.Options;
-import io.github.axolotlclient.api.StatusUpdateProviderImpl;
 import io.github.axolotlclient.bridge.impl.Bridge;
 import io.github.axolotlclient.config.AxolotlClientConfig;
 import io.github.axolotlclient.modules.ModuleLoader;
@@ -75,7 +74,7 @@ public class DolphinClient extends DolphinClientCommon {
 		addExternalModules();
 
 		init(Notifications.getInstance());
-		new API(new StatusUpdateProviderImpl());
+		new API();
 
 		getLogger().debug("Debug Output enabled, Logs will be quite verbose!");
 		getLogger().info("DolphinClient Initialized");

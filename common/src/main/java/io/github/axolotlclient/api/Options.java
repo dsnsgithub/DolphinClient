@@ -25,103 +25,46 @@ package io.github.axolotlclient.api;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.manager.ConfigManager;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.managers.JsonConfigManager;
-import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
-import io.github.axolotlclient.AxolotlClientConfig.impl.options.StringOption;
-import io.github.axolotlclient.api.requests.AccountSettingsRequest;
-import io.github.axolotlclient.api.types.AccountSettings;
-import io.github.axolotlclient.api.types.PkSystem;
 import io.github.axolotlclient.modules.Module;
-import io.github.axolotlclient.util.ThreadExecuter;
 
+/**
+ * Configuration of the backend connection.
+ * <p>
+ * The social features this used to configure have been removed; what remains is
+ * the consent gate for the requests the client still makes (Hypixel data and
+ * image sharing). It is answered through {@code openPrivacyNoteScreen} rather
+ * than through a settings entry, and only acceptance is remembered.
+ */
 public abstract class Options implements Module {
 
 	protected Supplier<CompletableFuture<Boolean>> openPrivacyNoteScreen = () -> CompletableFuture.completedFuture(false);
-	public EnumOption<PrivacyPolicyState> privacyAccepted = new EnumOption<>("api.privacy_policy_accepted", PrivacyPolicyState.class, PrivacyPolicyState.UNSET, val -> {
-		if (!val.isAccepted() && API.getInstance().isAuthenticated()) {
+
+	private final OptionCategory apiConfig = OptionCategory.create("api");
+	private final ConfigManager apiConfigManager = new JsonConfigManager(DolphinClientCommon.resolveConfigFile("api.json"), apiConfig);
+
+	public final EnumOption<PrivacyPolicyState> privacyAccepted = new EnumOption<>("api.privacy_policy_accepted", PrivacyPolicyState.class, PrivacyPolicyState.UNSET, val -> {
+		if (!val.isAccepted() && API.getInstance() != null && API.getInstance().isAuthenticated()) {
 			API.getInstance().shutdown();
 		}
-		DolphinClientCommon.getInstance().saveConfig();
-	});
-	public final BooleanOption sendStatusUpdates = new BooleanOption("api.send_status_updates", true);
-	public final BooleanOption statusUpdateNotifs = new BooleanOption("statusUpdateNotifs", true);
-	public final BooleanOption friendRequestsEnabled = new BooleanOption("friendRequestsEnabled", true);
-	public final BooleanOption channelInvitesEnabled = new BooleanOption("api.channels.invites.enabled", false);
-	public final BooleanOption detailedLogging = new BooleanOption("detailedLogging", false);
-	public final BooleanOption enabled = new BooleanOption("enabled", true, value -> {
-		if (value) {
-			if (!privacyAccepted.get().isAccepted()) {
-				openPrivacyNoteScreen.get().thenAccept(v -> {
-					if (v) ThreadExecuter.scheduleTask(() -> API.getInstance().restart());
-				});
-			} else {
-				ThreadExecuter.scheduleTask(() -> API.getInstance().restart());
-			}
-		} else {
-			ThreadExecuter.scheduleTask(() -> API.getInstance().shutdown());
+		// Only acceptance is remembered. Declining means "not right now": since there is no
+		// settings entry left to revisit the decision through, persisting it would turn the
+		// remaining online features off for good.
+		if (val.isAccepted()) {
+			apiConfigManager.save();
 		}
 	});
-	public final BooleanOption updateNotifications = new BooleanOption("api.update_notifications", false);
-	public final BooleanOption displayNotes = new BooleanOption("api.display_notes", true);
-	public final BooleanOption addShortcutButtons = new BooleanOption("api.add_shortcut_buttons", true);
-	public final BooleanOption allowFriendsServerJoin = new BooleanOption("api.allow_friends_server_join", false);
-	private final OptionCategory pkConfig = OptionCategory.create("pluralkit_sensitive");
-	private final ConfigManager pkConfigManager = new JsonConfigManager(DolphinClientCommon.resolveConfigFile("pluralkit_sensitive.json"), pkConfig);
-	public final StringOption pkToken = new StringOption("api.pk_token", "", s -> {
-		PkSystem.fromToken(s).thenAccept(sys -> {
-			if (sys != null) {
-				API.getInstance().getSelf().setSystem(sys);
-			}
-		});
-		pkConfigManager.save();
-	});
-	public final BooleanOption autoproxy = new BooleanOption("api.pk_autoproxy", false);
-	public final EnumOption<PkSystem.ProxyMode> autoproxyMode = new EnumOption<>("api.pk_proxymode", PkSystem.ProxyMode.class, PkSystem.ProxyMode.PROXY_OFF);
-	public final StringOption autoproxyMember = new StringOption("api.pk_autoproxy_member", "", s -> {
-		if (API.getInstance().getSelf() != null && API.getInstance().getSelf().getSystem() != null) {
-			API.getInstance().getSelf().getSystem().updateAutoproxyMember(s);
-		}
-	});
-	Consumer<Boolean> settingUpdated = b -> {
-	};
-	public final BooleanOption showRegistered = new BooleanOption("api.account.settings.show_registered", true, settingUpdated::accept);
-	public final BooleanOption retainUsernames = new BooleanOption("api.account.settings.retain_usernames", true, settingUpdated::accept);
-	public final BooleanOption showLastOnline = new BooleanOption("api.account.settings.show_last_online", true, settingUpdated::accept);
-	public final BooleanOption showActivity = new BooleanOption("api.account.settings.show_activity", true, settingUpdated::accept);
-	public final BooleanOption allowFriendsImageAccess = new BooleanOption("api.account.settings.allow_friends_image_access", true, settingUpdated::accept);
-
-	protected final OptionCategory category = OptionCategory.create("api.category");
-	protected final OptionCategory badgeOptions = OptionCategory.create("api.badge_options");
-	protected final OptionCategory pluralkit = OptionCategory.create("api.pluralkit");
-	protected final OptionCategory account = OptionCategory.create("api.account");
 
 	@Override
 	public void init() {
-		settingUpdated = b -> AccountSettingsRequest.update(new AccountSettings(
-			showRegistered.get(),
-			retainUsernames.get(),
-			showLastOnline.get(),
-			showActivity.get(),
-			allowFriendsImageAccess.get()
-		));
-		pkToken.setMaxLength(65);
-		pkConfig.add(pkToken);
-		pkConfigManager.load();
-		pluralkit.add(pkToken, false);
-		pluralkit.add(autoproxy, autoproxyMode, autoproxyMember);
-		account.add(showRegistered, retainUsernames, showLastOnline, showActivity, allowFriendsImageAccess);
-		var globalConfig = DolphinClientCommon.getInstance().getConfig();
-		badgeOptions.add(globalConfig.showBadges, globalConfig.customBadge, globalConfig.badgeText, globalConfig.tabBadgeMode);
-		category.add(pluralkit, badgeOptions);
-		category.add(account, false);
-		category.add(enabled, privacyAccepted, friendRequestsEnabled, sendStatusUpdates, statusUpdateNotifs, channelInvitesEnabled, detailedLogging, updateNotifications, displayNotes, addShortcutButtons, allowFriendsServerJoin);
+		apiConfig.add(privacyAccepted);
+		apiConfigManager.load();
 	}
 
 	public enum PrivacyPolicyState {

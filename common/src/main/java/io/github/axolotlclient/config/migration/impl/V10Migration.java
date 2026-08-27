@@ -1,8 +1,7 @@
 /*
- * Copyright © 2025 moehreag <moehreag@gmail.com> & Contributors
  * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of DolphinClient, a fork of AxolotlClient.
+ * This file is part of DolphinClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,21 +22,40 @@
 
 package io.github.axolotlclient.config.migration.impl;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import com.google.gson.JsonObject;
 import io.github.axolotlclient.DolphinClientCommon;
+import io.github.axolotlclient.api.Options;
 import io.github.axolotlclient.config.migration.ConfigMigration;
 
-public class V6Migration implements ConfigMigration {
+/**
+ * Drops the removed "Social Options" category, carrying the privacy policy
+ * decision over to the standalone api config so users are not asked again.
+ */
+public class V10Migration implements ConfigMigration {
+	private static final String CATEGORY = "api.category";
+	private static final String PRIVACY_POLICY = "api.privacy_policy_accepted";
+
 	@Override
 	public int version() {
-		return 6;
+		return 10;
 	}
 
 	@Override
-	public void apply(JsonObject json) {
-		getObject(json, "api.category")
-			.flatMap(api -> getObject(api, "api.pluralkit"))
-			.flatMap(pk -> getString(pk, "api.pk_token"))
-			.ifPresent(DolphinClientCommon.getInstance().getApiOptions().pkToken::set);
+	public void apply(JsonObject config) {
+		getObject(config, CATEGORY).ifPresent(api -> {
+			getString(api, PRIVACY_POLICY)
+				.flatMap(V10Migration::parseState)
+				.ifPresent(DolphinClientCommon.getInstance().getApiOptions().privacyAccepted::set);
+			config.remove(CATEGORY);
+		});
+	}
+
+	private static Optional<Options.PrivacyPolicyState> parseState(String serialized) {
+		return Arrays.stream(Options.PrivacyPolicyState.values())
+			.filter(state -> state.toString().equals(serialized) || state.name().equalsIgnoreCase(serialized))
+			.findFirst();
 	}
 }

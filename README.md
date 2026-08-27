@@ -21,6 +21,18 @@ Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 
 Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod), with Dolphin Optimized including a potent combination of optimization mods.
 
+For those nerdy and curious to care, Dolphin Optimized is built on:
+```
+- Argentum (Sodium for 1.8.9)
+- Argentum Extras (Sodium Tweaks for 1.8.9)
+- Async Logger (improved Minecraft logging)
+- Cera (Optifine compatability)
+- DolphinClient (a Lunar Client HUD replacement: Hypixel mods, clean scoreboard, 1.7 Animations, and so much more)
+- Legacy LWJGL3 (upgraded from LWJGL2 to modern LWJGL3, performance boost and compatability)
+- NettyFix (allow multiplayer connection with newest Java)
+- Ornithe Standard Libraries (required for Ornithe, which is backported Fabric for 1.8.9)
+- SoundFix (brings new sound system to 1.8.9)
+- Zirconium (brings modern optimizations to 1.8.9)
 ---
 
 <details>

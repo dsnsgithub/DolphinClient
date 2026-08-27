@@ -11,11 +11,14 @@ Open the client menu in-game with **Right Shift**.
 
 
 ### Performance
+When I say **insanely optimized**, I mean it. The combination of these optimizations + the relatively lightweight 1.8 smoke every other popular 1.8.9 client.
+<img width="2560" height="1440" alt="2026-08-26_18 26 41" src="https://github.com/user-attachments/assets/dca9b006-ef06-4f96-8f7d-8ea288e372dd" />
 
 Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 - 800 FPS on Lunar Client => ~3000 fps in Housing (/visit DSNS)
 - ~200 FPS on Lunar Client => ~600 fps in Duels Lobby
 - ~200 FPS on Lunar Client => ~1000 fps in Housing lobby
+
 
 ## Credits
 
@@ -34,7 +37,6 @@ For those nerdy and curious to care, Dolphin Optimized is built on:
 - SoundFix (brings new sound system to 1.8.9)
 - Zirconium (brings modern optimizations to 1.8.9)
 
-</details>
 
 ---
 

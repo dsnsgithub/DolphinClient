@@ -22,6 +22,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
+import io.github.axolotlclient.util.GuiLayout;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -39,6 +40,8 @@ public class DisconnectedScreenMixin extends Screen {
 		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.disconnectScreen.get()) {
 			/* reposition the button slightly to match 1.7 */
 			k = height / 4 + 120 + 12;
+			int fontHeight = textRenderer != null ? textRenderer.fontHeight : 9;
+			k = GuiLayout.moveBelowIfOverlapping(k, 20, height / 2 - 50, fontHeight, 8);
 			/* this text still exists within the lang file!! */
 			string = I18n.translate("gui.toTitle");
 		}

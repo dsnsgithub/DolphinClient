@@ -67,6 +67,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.platform.GlStateManager;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.resource.Identifier;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -313,7 +314,14 @@ public class HudEditScreen extends Screen {
 		GlStateManager.color4f(1f, 1f, 1f, 1f);
 		int iconX = x + 4;
 		int iconY = y + (h - MenuTheme.ICON_SIZE) / 2;
-		ItemUtil.renderGuiItemModel(ModsMenuIcons.forKey(module.getNameKey()), iconX, iconY);
+		Identifier iconTexture = ModsMenuIcons.textureForKey(module.getNameKey());
+		if (iconTexture != null) {
+			GlStateManager.enableTexture();
+			GlStateManager.enableBlend();
+			DrawUtil.blitSprite(iconTexture, iconX, iconY, MenuTheme.ICON_SIZE, MenuTheme.ICON_SIZE);
+		} else {
+			ItemUtil.renderGuiItemModel(ModsMenuIcons.forKey(module.getNameKey()), iconX, iconY);
+		}
 		GlStateManager.color4f(1f, 1f, 1f, 1f);
 		GlStateManager.disableLighting();
 		GlStateManager.enableBlend();

@@ -183,7 +183,7 @@ public class ChatHud extends TextHudEntry {
 		DrawPosition pos = getPos();
 		if (Minecraft.getInstance().player != null) {
 			client.textRenderer.drawWithShadow(Minecraft.getInstance().player.getDisplayName().getFormattedString()
-				+ "We love Dolphin Client!", pos.x + 1, pos.y + getHeight() - 9, -1);
+				+ " We love Dolphin Client!", pos.x + 1, pos.y + getHeight() - 9, -1);
 		} else {
 			client.textRenderer.drawWithShadow("This is where your new and fresh looking chat will be!", pos.x + 1,
 				pos.y + getHeight() - 9, -1);

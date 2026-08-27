@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Cloud Agent install step for AxolotlClient (1.8.9 / Ornithe).
+# Cloud Agent install step for DolphinClient (1.8.9 / Ornithe).
 #
 # Installs the system packages needed to (a) build the mod and (b) run the
 # Minecraft 1.8.9 client head-less via software OpenGL, then builds the module

@@ -7,7 +7,7 @@ Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClien
 <img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 
 Open the client menu in-game with **Right Shift**.
-
+<img width="1548" height="938" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
 
 ### Performance
 When I say **insanely optimized**, I mean it. The combination of backporting modern optimizations + the relatively lightweight 1.8 Minecraft version means it **smokes** every other popular 1.8.9 client.

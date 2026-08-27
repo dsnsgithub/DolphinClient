@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
  *
  * This file is part of AxolotlClient.
  *
@@ -20,13 +20,30 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.util;
+package io.github.axolotlclient.util;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
-public record Authentication(String token, Instant expiration) {
-	public Authentication(String token) {
-		this(token, Instant.now().plus(24, ChronoUnit.HOURS));
+public class UUIDHelper {
+	public static UUID fromUndashed(String uuid) {
+		return UUID.fromString(uuid.trim().replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+	}
+
+	public static String toUndashed(UUID uuid) {
+		return sanitizeUUID(uuid.toString());
+	}
+
+	public static String sanitizeUUID(String uuid) {
+		if (uuid.contains("-")) {
+			return validateUUID(uuid.replace("-", ""));
+		}
+		return validateUUID(uuid);
+	}
+
+	private static String validateUUID(String uuid) {
+		if (uuid.length() != 32) {
+			throw new IllegalArgumentException("Not a valid UUID (undashed): " + uuid);
+		}
+		return uuid;
 	}
 }

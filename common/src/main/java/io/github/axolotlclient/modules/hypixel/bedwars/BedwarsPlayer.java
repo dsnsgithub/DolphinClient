@@ -22,7 +22,7 @@
 
 package io.github.axolotlclient.modules.hypixel.bedwars;
 
-import io.github.axolotlclient.api.util.UUIDHelper;
+import io.github.axolotlclient.util.UUIDHelper;
 import io.github.axolotlclient.bridge.AxoPlayerListEntry;
 import io.github.axolotlclient.bridge.Platform;
 import lombok.Data;

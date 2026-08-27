@@ -20,22 +20,35 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.config.migration.impl;
+package io.github.axolotlclient.util;
 
-import com.google.gson.JsonObject;
-import io.github.axolotlclient.config.migration.ConfigMigration;
+import java.util.UUID;
 
-/**
- * Drops the removed Social Options / API category.
- */
-public class V10Migration implements ConfigMigration {
-	@Override
-	public int version() {
-		return 10;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class UUIDHelperTest {
+
+	private static final String DASHED = "069a79f4-44e9-4726-a5be-fca90e38aaf5";
+	private static final String UNDASHED = "069a79f444e94726a5befca90e38aaf5";
+
+	@Test
+	void sanitizesDashedAndUndashedUuids() {
+		assertEquals(UNDASHED, UUIDHelper.sanitizeUUID(DASHED));
+		assertEquals(UNDASHED, UUIDHelper.sanitizeUUID(UNDASHED));
 	}
 
-	@Override
-	public void apply(JsonObject config) {
-		config.remove("api.category");
+	@Test
+	void roundTripsUndashedUuids() {
+		UUID uuid = UUID.fromString(DASHED);
+		assertEquals(UNDASHED, UUIDHelper.toUndashed(uuid));
+		assertEquals(uuid, UUIDHelper.fromUndashed(UNDASHED));
+	}
+
+	@Test
+	void rejectsInvalidUuids() {
+		assertThrows(IllegalArgumentException.class, () -> UUIDHelper.sanitizeUUID("not-a-uuid"));
 	}
 }

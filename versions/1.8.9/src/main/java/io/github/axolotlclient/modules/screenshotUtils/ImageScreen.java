@@ -29,15 +29,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.github.axolotlclient.DolphinClientCommon;
-import io.github.axolotlclient.api.API;
-import io.github.axolotlclient.api.util.UUIDHelper;
 import io.github.axolotlclient.util.GsonHelper;
 import io.github.axolotlclient.util.OSUtil;
 import io.github.axolotlclient.util.notifications.Notifications;
@@ -54,7 +51,7 @@ public class ImageScreen extends Screen {
 	private final boolean freeOnClose;
 	private final boolean isRemote;
 	private final String title;
-	private final CompletableFuture<String> uploader;
+	private final String uploader;
 
 	static Screen create(Screen parent, CompletableFuture<ImageInstance> future, boolean freeOnClose) {
 		if (future.isDone()) {
@@ -80,22 +77,18 @@ public class ImageScreen extends Screen {
 		this.image = instance;
 		this.freeOnClose = freeOnClose;
 		this.isRemote = image instanceof ImageInstance.Remote;
-		if (isRemote) {
-			this.uploader = UUIDHelper.tryGetUsernameAsync(((ImageInstance.Remote) image).uploader());
-		} else {
-			this.uploader = null;
-		}
+		this.uploader = isRemote ? ((ImageInstance.Remote) image).uploader() : null;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float delta) {
 		renderBackground();
 		super.render(mouseX, mouseY, delta);
-		if (isRemote && uploader.isDone()) {
+		if (isRemote) {
 			ImageInstance.Remote r = (ImageInstance.Remote) image;
 			drawCenteredString(textRenderer, title, width / 2, 38 / 2 - textRenderer.fontHeight - 2, -1);
 			drawCenteredString(textRenderer,
-				I18n.translate("gallery.image.upload_details", uploader.join(),
+				I18n.translate("gallery.image.upload_details", uploader,
 					r.sharedAt().atZone(ZoneId.systemDefault()).format(DolphinClientCommon.getInstance().getConfig().getDateTimeFormatter())),
 				width / 2, 38 / 2 + 2, -1);
 		} else {
@@ -123,9 +116,6 @@ public class ImageScreen extends Screen {
 		int actionX = element.x + imageWidth + 4;
 		var actions = new ArrayList<ButtonWidget>();
 		if (image instanceof ImageInstance.Local) {
-			if (API.getInstance().isAuthenticated() && !(image instanceof ImageInstance.Remote)) {
-				actions.add(new ButtonWidget(0, 0, 0, buttonWidth, 20, I18n.translate("gallery.image.upload")));
-			}
 			actions.add(new ButtonWidget(1, 0, 0, buttonWidth, 20, I18n.translate("gallery.image.copy")));
 			actions.add(new ButtonWidget(2, 0, 0, buttonWidth, 20, I18n.translate("gallery.image.open.external")));
 			actions.add(new ButtonWidget(8, 0, 0, buttonWidth, 20, I18n.translate("gallery.image.delete")));
@@ -153,19 +143,6 @@ public class ImageScreen extends Screen {
 	@Override
 	protected void buttonClicked(ButtonWidget b) {
 		switch (b.id) {
-			case 0 -> {
-				b.active = false;
-				ImageInstance.Local local = (ImageInstance.Local) image;
-				ImageShare.getInstance().upload(local.location()).thenAccept(s -> {
-					if (s.isEmpty()) {
-						Notifications.getInstance().addStatus("gallery.image.upload.failure", "gallery.image.upload.failure.description");
-					} else {
-						minecraft.executeTask(() -> minecraft.openScreen(new ImageScreen(parent, local.toShared(s, API.getInstance().getSelfUuid(), Instant.now()), freeOnClose)));
-						setClipboard(s);
-						Notifications.getInstance().addStatus("gallery.image.upload.success", "gallery.image.upload.success.description", s);
-					}
-				});
-			}
 			case 1 -> ScreenshotCopying.copy(((ImageInstance.Local) image).location());
 			case 2 -> OSUtil.getOS().open(((ImageInstance.Local) image).location().toUri());
 			case 3 -> {

@@ -20,7 +20,7 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.util;
+package io.github.axolotlclient.util;
 
 import lombok.Data;
 

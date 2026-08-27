@@ -20,33 +20,23 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.modules.auth.skin;
+package io.github.axolotlclient.util;
 
-import java.nio.file.Path;
-import java.util.concurrent.CompletableFuture;
+import java.io.IOException;
+import java.time.Instant;
 
-import io.github.axolotlclient.modules.auth.Account;
-import io.github.axolotlclient.modules.auth.MSApi;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
-public interface Asset {
-
-	byte[] image();
-
-	boolean active();
-
-	CompletableFuture<MSApi.MCProfile> equip(MSApi api, Account account);
-
-	String sha256();
-
-	interface Local extends Asset {
-		Path file();
+public class InstantTypeAdapter extends TypeAdapter<Instant> {
+	@Override
+	public void write(JsonWriter out, Instant value) throws IOException {
+		out.value(value.toString());
 	}
 
-	interface Online extends Asset {
-		String url();
-
-		default boolean supportsDownload() {
-			return false;
-		}
+	@Override
+	public Instant read(JsonReader in) throws IOException {
+		return Instant.parse(in.nextString());
 	}
 }

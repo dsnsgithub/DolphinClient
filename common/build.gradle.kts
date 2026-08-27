@@ -36,9 +36,6 @@ dependencies {
 	shadow(runtimeOnly(compileOnly("com.kohlschutter.junixsocket:junixsocket-common:2.10.1")!!)!!)
 	shadow(runtimeOnly(compileOnly("com.kohlschutter.junixsocket:junixsocket-native-common:2.10.1")!!)!!)
 
-	shadow(runtimeOnly(compileOnly("com.github.mizosoft.methanol:methanol:1.9.0")!!)!!)
-	shadow(runtimeOnly(compileOnly("io.nayuki:qrcodegen:1.8.0")!!)!!)
-
 	compileOnly("net.hypixel:mod-api:1.0.1")
 	compileOnly("com.mojang:brigadier:1.0.18")
 
@@ -128,15 +125,12 @@ tasks.shadowJar {
 	archiveClassifier.set("")
 	mergeServiceFiles()
 	minimize {
-		exclude(dependency("com.github.mizosoft.methanol:.*:.*"))
 		exclude(dependency("io.github.CDAGaming:DiscordIPC:.*"))
 		exclude(dependency("com.kohlschutter.junixsocket:junixsocket-common:.*"))
 		exclude(dependency("com.kohlschutter.junixsocket:junixsocket-native-common:.*"))
 	}
 
 	relocate("com.jagrosh", "io.github.axolotlclient.shadow.jagrosh")
-	relocate("com.github.mizosoft", "io.github.axolotlclient.shadow.mizosoft")
-	relocate("io.nayuki", "io.github.axolotlclient.shadow.nayuki")
 
 	append("../LICENSE")
 }

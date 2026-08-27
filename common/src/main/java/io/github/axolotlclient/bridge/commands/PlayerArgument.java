@@ -33,7 +33,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import io.github.axolotlclient.api.util.UUIDHelper;
+import io.github.axolotlclient.util.UUIDHelper;
 import io.github.axolotlclient.bridge.AxoMinecraftClient;
 import io.github.axolotlclient.bridge.AxoPlayerListEntry;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +54,12 @@ public class PlayerArgument implements ArgumentType<PlayerArgument.PlayerInfo> {
 
 		public CompletableFuture<Optional<String>> uuid() {
 			if (uuid == null) {
-				uuid = UUIDHelper.USERNAME_TO_UUID.getAsync(playerName);
+				uuid = CompletableFuture.completedFuture(
+					AxoMinecraftClient.getInstance().br$getOnlinePlayers().stream()
+						.filter(player -> playerName.equalsIgnoreCase(player.br$getName()))
+						.map(player -> UUIDHelper.toUndashed(player.br$getId()))
+						.findFirst()
+				);
 			}
 
 			return uuid;

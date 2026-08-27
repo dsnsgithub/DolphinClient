@@ -1,7 +1,8 @@
 /*
  * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of AxolotlClient.
+ * This file is part of DolphinClient, a fork of AxolotlClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,16 +27,17 @@ import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.EnumOption;
-import io.github.axolotlclient.api.API;
 import io.github.axolotlclient.util.CachedAPI;
 import io.github.axolotlclient.util.ClientColors;
+import io.github.axolotlclient.util.UUIDHelper;
+import io.github.axolotlclient.util.options.ForceableBooleanOption;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class LevelHead implements AbstractHypixelMod {
 	@Getter
 	private static final LevelHead Instance = new LevelHead();
-	public final BooleanOption enabled = new BooleanOption("enabled", "levelhead.enabled.tooltip", false);
+	public final ForceableBooleanOption enabled = new ForceableBooleanOption("enabled", "levelhead.enabled.tooltip", false);
 	public final BooleanOption background = new BooleanOption("background", false);
 	public final ColorOption textColor = new ColorOption("textcolor", ClientColors.GOLD);
 	public final EnumOption<Mode> mode = new EnumOption<>("levelHeadMode", Mode.class, Mode.NETWORK);
@@ -52,12 +54,13 @@ public class LevelHead implements AbstractHypixelMod {
 	}
 
 	public String getDisplayString(String uuid) {
-		return getDisplayString(mode.get(), API.sanitizeUUID(uuid));
+		return getDisplayString(mode.get(), UUIDHelper.sanitizeUUID(uuid));
 	}
 
 
 	@Override
 	public void init() {
+		enabled.setForceOff(true, "levelhead.enabled.tooltip");
 		category.add(enabled);
 		category.add(textColor);
 		category.add(background);

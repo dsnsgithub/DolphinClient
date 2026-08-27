@@ -26,7 +26,6 @@ import java.util.*;
 
 import com.google.common.collect.Sets;
 import io.github.axolotlclient.AxolotlClientConfig.api.util.Color;
-import io.github.axolotlclient.api.util.BiContainer;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
 import io.github.axolotlclient.bridge.render.AxoSprites;
 import io.github.axolotlclient.bridge.render.AxoWindow;
@@ -34,6 +33,7 @@ import io.github.axolotlclient.modules.hud.HudManagerCommon;
 import io.github.axolotlclient.modules.hud.gui.component.HudEntry;
 import io.github.axolotlclient.modules.hud.gui.layout.SnapAnchorType;
 import io.github.axolotlclient.modules.hud.util.Rectangle;
+import io.github.axolotlclient.util.BiContainer;
 import io.github.axolotlclient.util.ClientColors;
 import lombok.Setter;
 

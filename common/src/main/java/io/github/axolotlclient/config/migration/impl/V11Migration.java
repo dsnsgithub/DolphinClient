@@ -1,7 +1,7 @@
 /*
- * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of AxolotlClient.
+ * This file is part of DolphinClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,23 +20,22 @@
  * For more information, see the LICENSE file.
  */
 
-package io.github.axolotlclient.api.util;
+package io.github.axolotlclient.config.migration.impl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import com.google.gson.JsonObject;
+import io.github.axolotlclient.config.migration.ConfigMigration;
 
-public class AlphabeticalComparator implements Comparator<String> {
+/**
+ * Drops Microsoft / Mojang account management settings.
+ */
+public class V11Migration implements ConfigMigration {
 	@Override
-	public int compare(String s1, String s2) {
-		if (s1.equals(s2))
-			return 0;
-		String[] strings = {s1, s2};
-		Arrays.sort(strings, Collections.reverseOrder());
+	public int version() {
+		return 11;
+	}
 
-		if (strings[0].equals(s1))
-			return 1;
-		else
-			return -1;
+	@Override
+	public void apply(JsonObject config) {
+		getObject(config, "general").ifPresent(general -> general.remove("auth"));
 	}
 }

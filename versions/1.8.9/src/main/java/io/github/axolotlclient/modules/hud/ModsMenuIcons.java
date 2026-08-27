@@ -80,7 +80,6 @@ final class ModsMenuIcons {
 		put("nametagOptions", Items.NAME_TAG);
 		put("hud", Items.PAINTING);
 		put("hypixel-mods", Items.GOLDEN_SWORD);
-		put("api.category", Items.ENDER_EYE);
 		put("zoom", Item.byBlock(Blocks.GLASS));
 		put("motionBlur", Items.POTION);
 		put("menublur", Item.byBlock(Blocks.GLASS));
@@ -91,7 +90,6 @@ final class ModsMenuIcons {
 		put("scrollableTooltips", Items.BOOK);
 		put("screenshotUtils", Items.PAINTING);
 		put("fpsLimiter", Items.CLOCK);
-		put("auth", Items.SKULL);
 		put("sky", Items.ENDER_EYE);
 		put("blockOutlines", Item.byBlock(Blocks.STONE));
 		put("timeChanger", Items.CLOCK);

@@ -157,18 +157,14 @@ public class GalleryScreen extends Screen {
 		});
 
 		int buttonWidth = 150;
-		int footerButtonX = width / 2 - buttonWidth - 2;
 		int footerButtonY = height - 33 / 2 - 10;
-		buttons.add(new ButtonWidget(3, footerButtonX, footerButtonY, buttonWidth, 20, I18n.translate("gallery.download_external")));
-		footerButtonX += buttonWidth + 4;
-		buttons.add(new ButtonWidget(4, footerButtonX, footerButtonY, buttonWidth, 20, I18n.translate("gui.back")));
+		buttons.add(new ButtonWidget(4, width / 2 - buttonWidth / 2, footerButtonY, buttonWidth, 20, I18n.translate("gui.back")));
 	}
 
 	@Override
 	protected void buttonClicked(ButtonWidget buttonWidget) {
 		switch (buttonWidget.id) {
 			case 0 -> init(minecraft, width, height);
-			case 3 -> minecraft.openScreen(new DownloadImageScreen(this));
 			case 4 -> {
 				Tab.LOCAL.loadingCache().forEach((path, instance) -> {
 					if (instance != null) {

@@ -19,7 +19,6 @@
 package io.github.axolotlclient.oldanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -34,7 +33,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.texture.TextureAtlas;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.living.LivingEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.WorldGeneratorType;
 import org.objectweb.asm.Opcodes;
@@ -54,18 +52,6 @@ public abstract class GameRendererMixin implements Sneaky {
 	/* why you not final :( */
 	private Minecraft minecraft;
 
-	@Shadow
-	public abstract void renderWorld(float f, long l);
-
-	@Shadow
-	private long lastWorldRenderTime;
-
-	@Shadow
-	private float fogBrightness;
-
-	@Shadow
-	private float renderDistance;
-
 	@Unique
 	private float lastCameraY;
 
@@ -74,20 +60,6 @@ public abstract class GameRendererMixin implements Sneaky {
 
 	@Unique
 	private float eyeHeight;
-
-	@WrapOperation(method = "render(FJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderWorld(FJ)V"))
-	private void axolotlclient$oldFramerateChunkRendering(GameRenderer instance, float f, long l, Operation<Void> original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldFramerateChunkRendering.get()) {
-			/* the difference is most likely negligible here, but it's worth porting for accuracy */
-			if (minecraft.isFramerateValid()) {
-				renderWorld(f, lastWorldRenderTime + 1000000000 / minecraft.options.fpsLimit);
-			} else {
-				renderWorld(f, 0L);
-			}
-		} else {
-			original.call(instance, f, l);
-		}
-	}
 
 	@Inject(method = "setupCamera", at = @At("HEAD"))
 	protected void axolotlclient$lerpCamera(float tickDelta, int anaglyphRenderPass, CallbackInfo ci) {
@@ -158,15 +130,6 @@ public abstract class GameRendererMixin implements Sneaky {
 				cameraY = eyeHeight;
 			}
 		}
-
-		/* MC-51150 is already fixed by optifine lmfaoo... */
-		/* in order to actually give players an option to toggle it, */
-		/* i think this overwrite is warranted :)  */
-		BlockPos pos = OldAnimationsConfig.instance.oldFogGrayScale.get() ? new BlockPos(camera.getEyePosition(1.0F)) : new BlockPos(camera);
-		float f = minecraft.world.getBrightness(pos);
-		float g = (float) minecraft.options.viewDistance / 16.0F;
-		float h = f * (1.0F - g) + g;
-		fogBrightness = fogBrightness + (h - fogBrightness) * 0.1F;
 	}
 
 	@ModifyExpressionValue(method = "applyHurtCam", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;damagedTimer:I"))
@@ -176,76 +139,6 @@ public abstract class GameRendererMixin implements Sneaky {
 			return Math.max(original - 1, 0);
 		}
 		return original;
-	}
-
-	@ModifyExpressionValue(method = "shouldRenderBlockOutline", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/player/PlayerAbilities;canModifyWorld:Z"))
-	private boolean axolotlclient$alwaysShowOutline(boolean original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.alwaysShowOutline.get()) {
-			return true;
-		}
-		return original;
-	}
-
-	@WrapOperation(method = "setupCamera", at = @At(value = "INVOKE", target = "Lorg/lwjgl/util/glu/Project;gluPerspective(FFFF)V", remap = false))
-	private void axolotlclient$increaseWorldDepth(float fovy, float aspect, float zNear, float zFar, Operation<Void> original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.skyAndCloudPerspective.get()) {
-			/* 14w30b and MC-63179 */
-			/* the following injections are all part of the same feature */
-			/* for some reason, using a slice wasn't working so i had to manually inject with the ordinals... sigh... */
-			/* this feature looks absolutely horrid, but that's just how early minecraft was... lmfao */
-			zFar = renderDistance * 2.0F;
-		}
-		original.call(fovy, aspect, zNear, zFar);
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;matrixMode(I)V", ordinal = 0))
-	private boolean axolotlclient$disableMatrixMode(int i) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;matrixMode(I)V", ordinal = 1))
-	private boolean axolotlclient$disableMatrixMode2(int i) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;matrixMode(I)V", ordinal = 2))
-	private boolean axolotlclient$disableMatrixMode3(int i) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;matrixMode(I)V", ordinal = 3))
-	private boolean axolotlclient$disableMatrixMode4(int i) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;loadIdentity()V", ordinal = 0))
-	private boolean axolotlclient$dontLoadIdentity() {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;loadIdentity()V", ordinal = 1))
-	private boolean axolotlclient$dontLoadIdentity2() {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lorg/lwjgl/util/glu/Project;gluPerspective(FFFF)V", remap = false))
-	private boolean axolotlclient$disablePerspective(float fovy, float aspect, float zNear, float zFar) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "renderClouds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;matrixMode(I)V"))
-	private boolean axolotlclient$disableMatrixMode5(int i) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "renderClouds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;loadIdentity()V"))
-	private boolean axolotlclient$dontLoadIdentity3() {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
-	}
-
-	@WrapWithCondition(method = "renderClouds", at = @At(value = "INVOKE", target = "Lorg/lwjgl/util/glu/Project;gluPerspective(FFFF)V", remap = false))
-	private boolean axolotlclient$disablePerspective2(float fovy, float aspect, float zNear, float zFar) {
-		return !OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.skyAndCloudPerspective.get();
 	}
 
 	@ModifyExpressionValue(method = "setupFog", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/GameRenderer;renderDistance:F", ordinal = 1))

@@ -27,35 +27,19 @@ import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.MobUtil;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
-import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.PlayerRenderer;
 import net.minecraft.client.render.vertex.Tesselator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.util.math.Box;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
-
-	@Shadow
-	private PlayerRenderer defaultPlayerRenderer;
-
-	@Inject(method = "getRenderer(Lnet/minecraft/entity/Entity;)Lnet/minecraft/client/render/entity/EntityRenderer;", at = @At("HEAD"), cancellable = true)
-	private void axolotlclient$defaultToSteve(Entity entity, CallbackInfoReturnable<PlayerRenderer> cir) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.disableAlexModel.get() && entity instanceof ClientPlayerEntity) {
-			/* 1.7 doesn't have Alex skins! */
-			cir.setReturnValue(defaultPlayerRenderer);
-		}
-	}
 
 	@Definition(id = "LivingEntity", type = LivingEntity.class)
 	@Expression("? instanceof LivingEntity")

@@ -18,11 +18,8 @@
 
 package io.github.axolotlclient.oldanimations.mixin;
 
-import com.llamalad7.mixinextras.expression.Expression;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import net.minecraft.client.render.world.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -51,13 +48,6 @@ public class WorldRendererMixin {
 		} else {
 			original.call(instance, pos, sound, volume, pitch, ignoreDistance);
 		}
-	}
-
-	@Expression("? < 0")
-	@ModifyExpressionValue(method = "compileChunksUntil", at = @At("MIXINEXTRAS:EXPRESSION"), require = 0)
-	private boolean axolotlclient$oldFramerateChunkRendering2(boolean original, @Local(name = "l") long l) {
-		/* optifine breaks this sadly */
-		return OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldFramerateChunkRendering.get() ? original || l > 1000000000L : original;
 	}
 
 //	@Inject(method = "reload(Lnet/minecraft/client/resource/manager/ResourceManager;)V", at = @At("HEAD"))

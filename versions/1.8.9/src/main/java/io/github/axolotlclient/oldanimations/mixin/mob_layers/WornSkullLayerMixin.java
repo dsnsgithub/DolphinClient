@@ -18,7 +18,6 @@
 
 package io.github.axolotlclient.oldanimations.mixin.mob_layers;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
@@ -27,8 +26,6 @@ import net.minecraft.entity.living.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WornSkullLayer.class)
@@ -42,42 +39,6 @@ public class WornSkullLayerMixin {
 			return false;
 		}
 		return original.call(instance);
-	}
-
-	@ModifyVariable(method = "render", at = @At("STORE"))
-	private boolean axolotlclient$disableHumanoidCheck(boolean value) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.skullLayerRendering.get()) {
-			/* goodbye villager-specific worn skull rendering :p */
-			return false;
-		}
-		return value;
-	}
-
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/living/LivingEntity;isBaby()Z"))
-	private boolean axolotlclient$disableBabyCheck(LivingEntity instance, Operation<Boolean> original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.skullLayerRendering.get()) {
-			/* the baby will NOT be getting special treatment */
-			return false;
-		}
-		return original.call(instance);
-	}
-
-	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;rotatef(FFFF)V"), index = 0)
-	private float axolotlclient$oldBlockRotation(float f) {
-		/* taken from 1.7 */
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.skullLayerRendering.get()) {
-			return 90;
-		}
-		return f;
-	}
-
-	@ModifyExpressionValue(method = "render", at = @At(value = "CONSTANT", args = "floatValue=1.1875"))
-	private float axolotlclient$useOldScale(float original) {
-		/* taken from 1.7 */
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.skullLayerRendering.get()) {
-			return 1.0625F;
-		}
-		return original;
 	}
 
 	@Inject(method = "colorsWhenDamaged", at = @At("HEAD"), cancellable = true)

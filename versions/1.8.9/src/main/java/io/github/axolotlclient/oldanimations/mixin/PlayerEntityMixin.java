@@ -19,11 +19,8 @@
 package io.github.axolotlclient.oldanimations.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.living.player.PlayerEntity;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -61,16 +58,6 @@ public abstract class PlayerEntityMixin {
 			original = original + getEyeHeight() - 1.62F;
 		}
 		return original;
-	}
-
-	@WrapOperation(method = "moveRelative", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/living/player/PlayerEntity;isSprinting()Z"))
-	private boolean axolotlclient$oldFlightSpeed(PlayerEntity instance, Operation<Boolean> original) {
-		/* potentially MC-29711 */
-		/* pretty sure this is only in singleplayer */
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldFlightSpeed.get() && Minecraft.getInstance().isSingleplayer()) {
-			return false;
-		}
-		return original.call(instance);
 	}
 
 	@ModifyExpressionValue(method = {"onConsumeItem", "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/living/player/PlayerEntity;getEyeHeight()F"))

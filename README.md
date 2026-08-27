@@ -4,10 +4,10 @@ Dolphin Optimized is an **insanely** optimized Minecraft client/mod collection f
 
 Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClient-Fork/releases), then drag it into Prism Launcher to run.
 
-<img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
+<img width="1000" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 
 Open the client menu in-game with **Right Shift**.
-<img width="1548" height="938" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
+<img width="1000" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
 
 ### Performance
 When I say **insanely optimized**, I mean it. Most "optimization" clients still use Forge and Optifine, which can't compete with modern optimizations afforded by Fabric.

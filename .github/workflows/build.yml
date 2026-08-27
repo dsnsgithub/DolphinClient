@@ -4,19 +4,10 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-  workflow_dispatch:
-
-concurrency:
-  group: build-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
 
 jobs:
   build:
-    name: Build mod
+    name: Build DolphinClient
     runs-on: ubuntu-latest
 
     steps:

@@ -1,6 +1,6 @@
 # Dolphin Client
 
-Dolphin Optimized is an **insanely** optimized Minecraft client/mod collection for Hypixel 1.8.9. 
+Dolphin Optimized is an **insanely** optimized Minecraft client/mod collection for Hypixel **1.8.9**. 
 
 Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClient-Fork/releases), then drag it into Prism Launcher to run.
 

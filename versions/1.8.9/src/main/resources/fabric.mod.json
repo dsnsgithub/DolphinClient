@@ -3,11 +3,12 @@
 	"id": "dolphinclient",
 	"version": "${version}",
 	"name": "DolphinClient",
-	"description": "Free & Open-Source Minecraft Mod for use in PvP and other Scenarios",
+	"description": "Insanely optimized Minecraft client for Hypixel 1.8.9.",
 	"authors": [
-		"moehreag"
+		"DSNS"
 	],
 	"contributors": [
+		"moehreag",
 		"YakisikliBaran",
 		"DragonEggBedrockBreaking",
 		"TheKodeToad",
@@ -15,9 +16,9 @@
 		"Mixces"
 	],
 	"contact": {
-		"homepage": "https://axolotlclient.com/",
-		"sources": "https://codeberg.org/AxolotlClient/AxolotlClient-mod/",
-		"issues": "https://codeberg.org/AxolotlClient/AxolotlClient-mod/issues"
+		"homepage": "https://github.com/dsnsgithub/DolphinClient/",
+		"sources": "https://github.com/dsnsgithub/DolphinClient/",
+		"issues": "https://github.com/dsnsgithub/DolphinClient/issues"
 	},
 	"license": "LGPL-3.0-or-later",
 	"icon": "assets/dolphinclient/icon.png",

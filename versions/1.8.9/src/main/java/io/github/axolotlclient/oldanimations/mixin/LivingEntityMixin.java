@@ -18,7 +18,6 @@
 
 package io.github.axolotlclient.oldanimations.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
@@ -30,7 +29,6 @@ import net.minecraft.entity.living.ArmorStandEntity;
 import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.entity.living.mob.monster.GuardianEntity;
 import net.minecraft.world.World;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -49,27 +47,6 @@ public abstract class LivingEntityMixin extends Entity implements ILivingEntity 
 
 	public LivingEntityMixin(World world) {
 		super(world);
-	}
-
-	/* NOTE: the following two injections already exist in optifine, however, for people not using it, */
-	/* i think it would be preferred to add an option in this mod seeing as it's relevant to 1.7 */
-
-	@ModifyExpressionValue(method = "getRotationVec", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;lastHeadYaw:F"))
-	private float axolotlclient$usePrevYaw(float original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.rotationVecYawFix.get()) {
-			/* don't use the prev head yaw as it is not accurate compared to prev yaw */
-			original = lastYaw;
-		}
-		return original;
-	}
-
-	@ModifyExpressionValue(method = "getRotationVec", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;headYaw:F"))
-	private float axolotlclient$useYaw(float original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.rotationVecYawFix.get()) {
-			/* ditto but with yaw */
-			original = yaw;
-		}
-		return original;
 	}
 
 	@Inject(method = "takeDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/living/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", ordinal = 1))

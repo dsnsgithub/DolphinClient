@@ -6,13 +6,12 @@ Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClien
 
 <img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 
-
 Open the client menu in-game with **Right Shift**.
 
 
 ### Performance
 When I say **insanely optimized**, I mean it. The combination of backporting modern optimizations + the relatively lightweight 1.8 Minecraft version means it **smokes** every other popular 1.8.9 client.
-<img width="2560" height="1440" alt="2026-08-26_18 26 41" src="https://github.com/user-attachments/assets/dca9b006-ef06-4f96-8f7d-8ea288e372dd" />
+<img height="500" alt="2026-08-26_18 26 41" src="https://github.com/user-attachments/assets/dca9b006-ef06-4f96-8f7d-8ea288e372dd" />
 
 Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 - 800 FPS on Lunar Client => ~3000 fps in Housing (/visit DSNS)

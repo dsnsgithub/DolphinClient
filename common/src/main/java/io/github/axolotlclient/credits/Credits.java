@@ -1,6 +1,6 @@
 /*
  * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
- * Copyright © 2026 Dominic Seung <dominic@seung.dev>
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
  * This file is part of DolphinClient, a fork of AxolotlClient.
  *
@@ -35,7 +35,7 @@ public class Credits {
 
 	static {
 		contributor("moehreag", "Author, Programming", "https://github.com/moehreag");
-		contributor("Dominic Seung", "DolphinClient fork", "https://seung.dev");
+		contributor("DSNS", "DolphinClient fork", "https://seung.dev");
 		contributor("TheKodeToad", "Contributor", "Motion Blur", "Freelook", "Zoom", "Old Animations");
 		contributor("Mixces", "Old Animations");
 		contributor("DragonEggBedrockBreaking", "Bugfixes", "Inspiration of new Features");

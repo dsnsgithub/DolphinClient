@@ -1,6 +1,6 @@
 /*
  * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
- * Copyright © 2026 Dominic Seung <dominic@seung.dev>
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
  * This file is part of DolphinClient, a fork of AxolotlClient.
  *

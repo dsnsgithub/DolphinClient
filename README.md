@@ -53,7 +53,7 @@ Original AxolotlClient copyright is retained. For more information see the [LICE
 ```
 DolphinClient (fork of AxolotlClient)
 Copyright (C) 2021-present moehreag + Contributors
-Copyright (C) 2026 Dominic Seung <dominic@seung.dev>
+Copyright (C) 2026 DSNS <dominic@seung.dev>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public

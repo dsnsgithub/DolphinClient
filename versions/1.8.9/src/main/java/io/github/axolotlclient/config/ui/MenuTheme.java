@@ -1,5 +1,5 @@
 /*
- * Copyright © 2026 Dominic Seung <dominic@seung.dev>
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
  * This file is part of DolphinClient.
  *

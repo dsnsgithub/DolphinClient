@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Launch Minecraft 1.8.9 (Ornithe / AxolotlClient) head-less, create a fresh
+# Launch Minecraft 1.8.9 (Ornithe / DolphinClient) head-less, create a fresh
 # Creative super-flat singleplayer world, press Right Shift to open the
-# AxolotlClient HUD editor, and save a screenshot.
+# DolphinClient HUD editor, and save a screenshot.
 #
 # Usage:  .cursor/screenshot-hud.sh [output.png]
-# Default output: /workspace/axolotlclient-hud.png
+# Default output: /workspace/dolphinClient-hud.png
 #
 # Requires the packages installed by .cursor/install.sh (xvfb, xdotool, ffmpeg,
 # mesa EGL/GL). All rendering is software (llvmpipe) since the VM has no GPU.
@@ -13,11 +13,11 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-OUT="${1:-$REPO_ROOT/axolotlclient-hud.png}"
+OUT="${1:-$REPO_ROOT/dolphinclient-hud.png}"
 DISPLAY_NUM="${DISPLAY_NUM:-99}"
 SCREEN_W=1280
 SCREEN_H=720
-LOG="$(mktemp /tmp/axolotl-runclient.XXXXXX.log)"
+LOG="$(mktemp /tmp/dolphin-runclient.XXXXXX.log)"
 
 export DISPLAY=":$DISPLAY_NUM"
 # Software OpenGL. legacy-lwjgl3 requests a GL 3.2 *compatibility* context via
@@ -49,7 +49,7 @@ grab() { ffmpeg -y -f x11grab -video_size "${SCREEN_W}x${SCREEN_H}" -i ":$DISPLA
 click() { xdotool mousemove "$1" "$2" click 1; sleep "${3:-1}"; }
 
 # --- Virtual display ------------------------------------------------------
-Xvfb ":$DISPLAY_NUM" -screen 0 "${SCREEN_W}x${SCREEN_H}x24" -ac +extension GLX +render -noreset >/tmp/axolotl-xvfb.log 2>&1 &
+Xvfb ":$DISPLAY_NUM" -screen 0 "${SCREEN_W}x${SCREEN_H}x24" -ac +extension GLX +render -noreset >/tmp/dolphin-xvfb.log 2>&1 &
 XVFB_PID=$!
 sleep 3
 
@@ -70,7 +70,7 @@ sleep 5
 
 if [ "$RECORD" = "1" ]; then
   ffmpeg -y -f x11grab -video_size "${SCREEN_W}x${SCREEN_H}" -framerate 15 -i ":$DISPLAY_NUM" \
-    -pix_fmt yuv420p "$VIDEO" >/tmp/axolotl-ffmpeg.log 2>&1 &
+    -pix_fmt yuv420p "$VIDEO" >/tmp/dolphin-ffmpeg.log 2>&1 &
   FFMPEG_PID=$!
 fi
 
@@ -87,7 +87,7 @@ click 477 563 1   # Create New World (generate + load)
 echo "Waiting for the world to load..."
 sleep 18
 
-xdotool key Shift_R   # open the AxolotlClient HUD editor
+xdotool key Shift_R   # open the DolphinClient HUD editor
 sleep 3
 
 grab "$OUT"

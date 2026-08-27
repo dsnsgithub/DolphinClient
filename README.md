@@ -2,9 +2,7 @@
 
 Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod), focused on **Minecraft 1.8.9 (Ornithe)** and Hypixel.
 
-Download [`dist/DolphinClient-1.0.0+1.8.9.jar`](dist/DolphinClient-1.0.0+1.8.9.jar) and drop it into your Ornithe / Fabric `mods` folder for 1.8.9.
-
-Prism instance pack: [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClient-Fork/releases).
+Download [Dolphin Optimized Pink.zip](https://github.com/dsnsgithub/AxolotlClient-Fork/releases), then drag it into Prism Launcher to run.
 
 <img width="2560" height="1440" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
 

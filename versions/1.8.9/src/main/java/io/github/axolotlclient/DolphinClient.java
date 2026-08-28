@@ -30,6 +30,7 @@ import io.github.axolotlclient.modules.blur.MenuBlur;
 import io.github.axolotlclient.modules.blur.MotionBlur;
 import io.github.axolotlclient.modules.hud.HudManager;
 import io.github.axolotlclient.modules.hud.gui.hud.PackDisplayHud;
+import io.github.axolotlclient.modules.hitboxes.Hitboxes;
 import io.github.axolotlclient.modules.hypixel.HypixelMods;
 import io.github.axolotlclient.modules.particles.Particles;
 import io.github.axolotlclient.modules.screenshotUtils.ScreenshotUtils;
@@ -52,6 +53,7 @@ public class DolphinClient extends DolphinClientCommon {
 		registerModule(MenuBlur.getInstance());
 		registerModule(ScrollableTooltips.getInstance());
 
+		registerModule(Hitboxes.getInstance());
 		registerModule(Particles.getInstance());
 		registerModule(ScreenshotUtils.getInstance());
 		registerModule(UnfocusedFpsLimiter.getInstance());

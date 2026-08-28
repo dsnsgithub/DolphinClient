@@ -46,7 +46,7 @@ public abstract class EntityRenderDispatcherMixin {
 		return original.call(instance);
 	}
 
-	@WrapOperation(method = "render(Lnet/minecraft/entity/Entity;DDDFFZ)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInvisible:()Z"))
+	@WrapOperation(method = "render(Lnet/minecraft/entity/Entity;DDDFFZ)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInvisible()Z"))
 	private boolean dolphinclient$showInvisibleHitboxes(Entity entity, Operation<Boolean> original) {
 		if (Hitboxes.getInstance().shouldRender(entity)) {
 			return false;

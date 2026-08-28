@@ -105,21 +105,7 @@ final class ModsMenuIcons {
 		put("bedwars", Items.BED);
 		put("titles", Items.SIGN);
 
-		put("blockingItemUsing", Items.IRON_SWORD);
-		put("sneaking", Items.IRON_BOOTS);
-		put("items", Items.DIAMOND);
-		put("spriteRendering", Items.PAINTING);
-		put("itemPositions", Items.STICK);
-		put("resources", Items.BOOK);
-		put("models", Items.ARMOR_STAND);
-		put("textures", Item.byBlock(Blocks.WOOL));
-		put("sounds", Items.RECORD_13);
-		put("combat", Items.DIAMOND_SWORD);
-		put("gui", Items.SIGN);
-		put("debugOverlay", Items.COMPASS);
-		put("enchantmentGlint", Items.EXPERIENCE_BOTTLE);
-		put("hitbox", Items.SLIME_BALL);
-		put("offsets", Items.COMPASS);
+		put("axolotlclient-oldanimations", Items.IRON_SWORD);
 	}
 
 	private ModsMenuIcons() {

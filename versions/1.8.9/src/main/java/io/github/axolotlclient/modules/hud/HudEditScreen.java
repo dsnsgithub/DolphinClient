@@ -92,7 +92,7 @@ public class HudEditScreen extends Screen {
 	private int listScroll;
 	private int mouseX, mouseY;
 	private int caretTicks;
-	private static final int TAB_COLS = 4;
+	private static final int TAB_COLS = 3;
 
 	private HudEntry current;
 	private DrawPosition offset;

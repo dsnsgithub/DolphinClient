@@ -18,123 +18,30 @@
 
 package io.github.axolotlclient.oldanimations.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
-import io.github.axolotlclient.oldanimations.util.DamageTint;
-import io.github.axolotlclient.oldanimations.util.IDamageTint;
-import io.github.axolotlclient.oldanimations.util.MobUtil;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.platform.GlStateManager;
 import net.minecraft.entity.living.LivingEntity;
-import org.jetbrains.annotations.NotNull;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.nio.FloatBuffer;
-
 @Mixin(LivingEntityRenderer.class)
-public abstract class LivingEntityRendererMixin<T extends LivingEntity> extends EntityRenderer<T> implements IDamageTint {
-
-	protected LivingEntityRendererMixin(EntityRenderDispatcher entityRenderDispatcher) {
-		super(entityRenderDispatcher);
-	}
-
-	@Shadow
-	protected abstract boolean setupOverlayColor(LivingEntity entity, float tickDelta, boolean alwaysRender);
-
-	@Shadow
-	protected abstract void tearDownOverlayColor();
-
-	@Shadow
-	protected abstract int getOverlayColor(LivingEntity entity, float f, float timeDelta);
-
-	@Shadow
-	protected FloatBuffer tintBuffer;
-
-	@Shadow
-	protected abstract void renderModel(T entity, float walkAnimationProgress, float walkAnimationSpeed, float bob, float yaw, float pitch, float scale);
-
-	@Unique
-	private float axolotlclient$tickDelta = 0.0F;
-
-	@Inject(method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V", at = @At("HEAD"))
-	private void axolotlclient$capturetickDelta(LivingEntity livingEntity, double d, double e, double f, float g, float h, CallbackInfo ci) {
-		axolotlclient$tickDelta = h;
-	}
-
-	/* redirect here instead of wrapoperation for performance reasons */
-	//todo: improve this
-	@Redirect(method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;renderModel(Lnet/minecraft/entity/living/LivingEntity;FFFFFF)V", ordinal = 1))
-	private void axolotlclient$cancelDamageBrightness(LivingEntityRenderer<?> instance, T entity, float walkAnimationProgress, float walkAnimationSpeed, float bob, float yaw, float pitch, float scale) {
-		renderModel(entity, walkAnimationProgress, walkAnimationSpeed, bob, yaw, pitch, scale);
-
-		if (!OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.damageTintColor.get()) {
-			return;
-		}
-
-		if (axolotlclient$setupOverlayColor(entity, axolotlclient$tickDelta)) {
-			renderModel(entity, walkAnimationProgress, walkAnimationSpeed, bob, yaw, pitch, scale);
-			DamageTint.unsetDamageTint();
-		}
-	}
-
-	@WrapOperation(method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;F)Z"))
-	private boolean axolotlclient$cancelDamageBrightness(LivingEntityRenderer<?> instance, LivingEntity livingEntity, float f, Operation<Boolean> original) {
-		/* cancel model damage tint */
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.damageTintColor.get()) {
-			return false;
-		}
-		return original.call(instance, livingEntity, f);
-	}
-
-	@WrapOperation(method = "renderLayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;FZ)Z"))
-	private boolean axolotlclient$cancelDamageBrightness2(LivingEntityRenderer<?> instance, LivingEntity livingEntity, float f, boolean bl, Operation<Boolean> original) {
-		/* cancel layer damage tint */
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.damageTintColor.get()) {
-			return false;
-		}
-		return original.call(instance, livingEntity, f, bl);
-	}
+public abstract class LivingEntityRendererMixin {
 
 	//TODO: this can probably be moved somewhere else like in the main entity rendering method
 	@Inject(method = "render(Lnet/minecraft/entity/living/LivingEntity;DDDFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;translatef(FFF)V"))
-    private void axolotlclient$addSneakTranslation(LivingEntity livingEntity, double d, double e, double f, float g, float h, CallbackInfo ci) {
+	private void axolotlclient$addSneakTranslation(LivingEntity livingEntity, double d, double e, double f, float g, float h, CallbackInfo ci) {
 		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.thirdPersonSneaking.get() && PlayerUtil.INSTANCE.isSelf(livingEntity)) {
 			/* in order to match 1.7, we need to elevate the player model while sneaking */
 			/* the elevation will be the difference between the player's sneaking eyeheight and their actual eyeheight (1.62 meters) */
 			/* the player model should now move 1:1 with the crosshair */
 			GlStateManager.translatef(0.0F, 1.62F - PlayerUtil.INSTANCE.getEyeHeight(), 0.0F);
 		}
-    }
-
-	@ModifyExpressionValue(method = "setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;FZ)Z", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;damagedTimer:I"))
-	private int axolotlclient$oldDamageTick(int original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldDamageTick.get()) {
-			//todo: find source T-T
-			return Math.max(original - 1, 0);
-		}
-		return original;
-	}
-
-	@ModifyExpressionValue(method = "setupOverlayColor(Lnet/minecraft/entity/living/LivingEntity;FZ)Z", at = @At(value = "CONSTANT", args = "floatValue=1.0", ordinal = 0))
-	private float axolotlclient$damageTintLighting(float original, @Local(index = 4, ordinal = 1) float f) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldDamageTintLighting.get()) {
-			return f; /* this will basically make the tint influenced by lighting which reverts the change in MC-4222 */
-		}
-		return original;
 	}
 
 	@ModifyArg(method = "renderNameTag(Lnet/minecraft/entity/living/LivingEntity;DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;translatef(FFF)V", ordinal = 0), index = 1)
@@ -153,48 +60,5 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity> extends 
 			original = original + PlayerUtil.INSTANCE.getEyeHeight() - 1.62F;
 		}
 		return original;
-	}
-
-	@ModifyExpressionValue(method = "renderNameTag(Lnet/minecraft/entity/living/LivingEntity;DDD)V", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;height:F"))
-	private float axolotlclient$oldMobHeight(float original, @Local(argsOnly = true) LivingEntity livingEntity) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mobSizeDimensions.get()) {
-			/* since entity hitbox sizes are slightly different in 1.7, this is the closest we can get to emulating that */
-			/* without altering combat */
-			original = MobUtil.INSTANCE.oldMobHeight(livingEntity, original);
-		}
-		return original;
-	}
-
-	@ModifyExpressionValue(method = "applyRotation", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;height:F"))
-	private float axolotlclient$oldMobHeight2(float original, @Local(argsOnly = true) LivingEntity livingEntity) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mobSizeDimensions.get()) {
-			original = MobUtil.INSTANCE.oldMobHeight(livingEntity, original);
-		}
-		return original;
-	}
-
-	@Override
-	public boolean axolotlclient$setupOverlayColor(@NotNull LivingEntity livingEntity, float tickDelta) {
-		/* revert 14w06a */
-		/* trick to ensure the brightnessBuffer is updated */
-		if (setupOverlayColor(livingEntity, tickDelta, true)) tearDownOverlayColor();
-		/* if there are any performance issues, blame this */
-
-		final float f = livingEntity.getBrightness(tickDelta);
-		final int i = getOverlayColor(livingEntity, f, tickDelta);
-		final boolean flag = (i >> 24 & 0xFF) > 0;
-
-		int hurtTime = livingEntity.damagedTimer;
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldDamageTick.get()) {
-			hurtTime = Math.max(hurtTime - 1, 0);
-		}
-		final boolean flag1 = hurtTime > 0 || livingEntity.deathTicks > 0;
-
-		if (!flag && !flag1) {
-			return false;
-		} else {
-			DamageTint.setDamageTint(tintBuffer);
-			return true;
-		}
 	}
 }

@@ -18,13 +18,7 @@
 
 package io.github.axolotlclient.oldanimations.mixin;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.axolotlclient.DolphinClient;
-import io.github.axolotlclient.oldanimations.OldAnimations;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
 import io.github.axolotlclient.oldanimations.util.ducks.IClientPlayerInteractionManager;
@@ -33,16 +27,13 @@ import net.minecraft.client.ClientPlayerInteractionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleManager;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.sound.instance.SimpleSoundInstance;
 import net.minecraft.client.sound.system.SoundManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.resource.Identifier;
-import net.minecraft.util.crash.CrashReportCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.HitResult;
-import org.lwjgl.opengl.Display;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,9 +41,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.concurrent.Callable;
 
 @Mixin(value = Minecraft.class, priority = 2050 /* priority needed for custom window title */)
 public abstract class MinecraftMixin {
@@ -79,19 +68,7 @@ public abstract class MinecraftMixin {
 	public ClientPlayerInteractionManager interactionManager;
 
 	@Shadow
-	public Screen screen;
-
-	@Shadow
-	public abstract void reloadResources();
-
-	@Shadow
 	public abstract SoundManager getSoundManager();
-
-	@Unique
-	private String axolotlclient$lastTitle = null;
-
-	@Unique
-	private boolean axolotlclient$reloadTextures;
 
 	@Inject(method = "handleMouseDown", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/Minecraft;attackCooldown:I"))
 	private void axolotlclient$oldMiningBehavior(boolean holdingAttack, CallbackInfo ci) {
@@ -158,77 +135,6 @@ public abstract class MinecraftMixin {
 			return false;
 		}
 		return original;
-	}
-
-	@Inject(method = "tick", at = @At("TAIL"))
-	private void axolotlclient$spoofTitleVersion(CallbackInfo ci) {
-		//todo: i can probably make this better
-
-		/* nostalgia! */
-		if (!OldAnimationsConfig.isEnabled()) {
-			return;
-		}
-
-		String title;
-		if (OldAnimationsConfig.instance.show1_7_10.get()) {
-			if (OldAnimations.AXOLOTLCLIENT && DolphinClient.config().customWindowTitle.get()) {
-				title = "DolphinClient 1.7.10";
-			} else {
-				/* hell yeah */
-				title = "Minecraft 1.7.10";
-			}
-		} else {
-			/* might as well ensure the custom title gets updated even when the show1_7_10 feature is disabled! */
-			if (DolphinClient.config().customWindowTitle.get()) {
-				title = "DolphinClient 1.8.9";
-			} else {
-				title = "Minecraft 1.8.9";
-			}
-		}
-
-		/* :p */
-		if (!title.equals(axolotlclient$lastTitle)) {
-			Display.setTitle(title);
-			axolotlclient$lastTitle = title;
-		}
-	}
-
-	@WrapOperation(method = "populateCrashReport", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/crash/CrashReportCategory;add(Ljava/lang/String;Ljava/util/concurrent/Callable;)V", ordinal = 0))
-	private void axolotlclient$spoofCrashVersionAgain(CrashReportCategory instance, String string, Callable<String> callable, Operation<Void> original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.show1_7_10.get()) {
-			/* we do a little trolling frfr ;) */
-			/* ughhh, this injection is kinda poop */
-			callable = () -> "1.7.10";
-		}
-		original.call(instance, string, callable);
-	}
-
-	@ModifyExpressionValue(method = "initSnooper", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;gameVersion:Ljava/lang/String;", opcode = Opcodes.GETFIELD))
-	private String axolotlclient$spoofSnooperVersionAgain(String original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.show1_7_10.get()) {
-			return "1.7.10";
-		}
-		return original;
-	}
-
-	@Inject(method = "runGame", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = "ldc=scheduledExecutables"))
-	private void axolotlclient$oldReloadResouces(CallbackInfo ci) {
-		/* from 1.7 */
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.dontAsyncReloadResources.get() &&
-			(world == null || screen == null) && axolotlclient$reloadTextures) {
-			axolotlclient$reloadTextures = false;
-			reloadResources();
-		}
-	}
-
-	@Inject(method = "reloadResourcesAsync", at = @At("HEAD"), cancellable = true)
-	private void axolotlclient$removeAsyncResourceReloading(CallbackInfoReturnable<ListenableFuture<Object>> cir) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.dontAsyncReloadResources.get()) {
-			/* taken from 1.7. they dont async reload resources, rather, it's when there isn't a screen rendering */
-			axolotlclient$reloadTextures = true;
-			/* lel */
-			cir.setReturnValue(Futures.immediateFuture(null));
-		}
 	}
 
 //	@Inject(method = "reloadResources", at = @At(value = "HEAD"))

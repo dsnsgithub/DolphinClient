@@ -1,7 +1,8 @@
 /*
  * Copyright © 2024 moehreag <moehreag@gmail.com> & Contributors
+ * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of AxolotlClient.
+ * This file is part of DolphinClient, a fork of AxolotlClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -68,6 +69,9 @@ public class CoordsHud extends TextHudEntry {
 	private final StringOption separator = new StringOption("coordshud.separator", ", ");
 	private final ColorOption separatorColor = new ColorOption("coordshud.separator.color", firstColor.getDefault());
 	private final BooleanOption showNetherConversions = new BooleanOption("coordshud.show_nether_conversions", false);
+	private final BooleanOption showCCount = new BooleanOption("debugcounters.ccount", false);
+	private final BooleanOption showECount = new BooleanOption("debugcounters.ecount", false);
+	private final BooleanOption showPCount = new BooleanOption("debugcounters.pcount", false);
 
 	private DecimalFormat format = new DecimalFormat("0");
 
@@ -137,7 +141,7 @@ public class CoordsHud extends TextHudEntry {
 		};
 	}
 
-	private void doRender(AxoRenderContext context, double yaw, Vec3 playerPos, String biomeName, boolean isOverworld, boolean isNether) {
+	private void doRender(AxoRenderContext context, double yaw, Vec3 playerPos, String biomeName, boolean isOverworld, boolean isNether, String chunkDebug, String entityDebug, String particleDebug) {
 		DrawPosition pos = getContentPos();
 
 		int dir = getDirection(yaw);
@@ -233,6 +237,13 @@ public class CoordsHud extends TextHudEntry {
 			height += 10;
 		}
 
+		int[] size = {width, height};
+		appendDebugLine(context, xStart, pos, size, chunkDebug);
+		appendDebugLine(context, xStart, pos, size, entityDebug);
+		appendDebugLine(context, xStart, pos, size, particleDebug);
+		width = size[0];
+		height = size[1];
+
 		boolean changed = false;
 
 		if (getContentWidth() != width) {
@@ -256,7 +267,19 @@ public class CoordsHud extends TextHudEntry {
 			return;
 		}
 
-		doRender(context, client.br$getPlayer().br$getYaw() + 180, client.br$getPlayer().br$getPos(), client.br$getWorld().br$getBiomeName(client.br$getPlayer().br$getPos()), client.br$getWorld().br$isOverworld(), client.br$getWorld().br$isNether());
+		doRender(context, client.br$getPlayer().br$getYaw() + 180, client.br$getPlayer().br$getPos(), client.br$getWorld().br$getBiomeName(client.br$getPlayer().br$getPos()), client.br$getWorld().br$isOverworld(), client.br$getWorld().br$isNether(),
+			showCCount.get() ? client.br$getChunkDebugInfo() : null,
+			showECount.get() ? client.br$getEntityDebugInfo() : null,
+			showPCount.get() ? client.br$getParticleDebugInfo() : null);
+	}
+
+	private void appendDebugLine(AxoRenderContext context, int xStart, DrawPosition pos, int[] size, String line) {
+		if (line == null || line.isEmpty()) {
+			return;
+		}
+		int xEnd = context.br$drawString(line, xStart, pos.y() + size[1], secondColor.get(), shadow.get());
+		size[0] = Math.max(size[0], xEnd - pos.x() + 1);
+		size[1] += 10;
 	}
 
 	public String getWordedDirection(int dir) {
@@ -276,7 +299,10 @@ public class CoordsHud extends TextHudEntry {
 
 	@Override
 	public void renderPlaceholderComponent(AxoRenderContext context, float delta) {
-		doRender(context, 180, new Vec3(109.2325, 180.8981, -5098.32698), "Plains", true, false);
+		doRender(context, 180, new Vec3(109.2325, 180.8981, -5098.32698), "Plains", true, false,
+			showCCount.get() ? "C: 186/15000 (s) D: 10, pC: 000, pU: 00, aB: 20" : null,
+			showECount.get() ? "E: 695/3001, SD: 12" : null,
+			showPCount.get() ? "P: 200" : null);
 	}
 
 	@Override
@@ -289,6 +315,9 @@ public class CoordsHud extends TextHudEntry {
 		options.add(minimal);
 		options.add(biome);
 		options.add(showNetherConversions);
+		options.add(showCCount);
+		options.add(showECount);
+		options.add(showPCount);
 		options.add(delimiter);
 		options.add(separator);
 		options.add(separatorColor);

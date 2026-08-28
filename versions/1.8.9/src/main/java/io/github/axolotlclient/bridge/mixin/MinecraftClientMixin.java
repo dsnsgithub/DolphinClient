@@ -39,6 +39,7 @@ import io.github.axolotlclient.bridge.resource.AxoResourceManager;
 import io.github.axolotlclient.bridge.util.AxoText;
 import io.github.axolotlclient.bridge.world.AxoWorld;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.ParticleManager;
 import net.minecraft.client.Session;
 import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.client.gui.GameGui;
@@ -92,6 +93,9 @@ public abstract class MinecraftClientMixin implements AxoMinecraftClient {
 
 	@Shadow
 	public WorldRenderer worldRenderer;
+
+	@Shadow
+	public ParticleManager particleManager;
 
 	@Shadow
 	private Entity camera;
@@ -243,5 +247,20 @@ public abstract class MinecraftClientMixin implements AxoMinecraftClient {
 		Collections.reverse(lines);
 
 		return lines;
+	}
+
+	@Override
+	public String br$getChunkDebugInfo() {
+		return worldRenderer != null ? worldRenderer.getChunkDebugInfo() : "";
+	}
+
+	@Override
+	public String br$getEntityDebugInfo() {
+		return worldRenderer != null ? worldRenderer.getEntityDebugInfo() : "";
+	}
+
+	@Override
+	public String br$getParticleDebugInfo() {
+		return particleManager != null ? "P: " + particleManager.getDebugInfo() : "";
 	}
 }

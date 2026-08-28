@@ -22,9 +22,6 @@
 
 package io.github.axolotlclient.mixin;
 
-import io.github.axolotlclient.bridge.impl.AxoRenderContextImpl;
-import io.github.axolotlclient.modules.hud.HudManager;
-import io.github.axolotlclient.modules.hud.gui.hud.IconHud;
 import io.github.axolotlclient.modules.scrollableTooltips.ScrollableTooltips;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.menu.InventoryMenuScreen;
@@ -66,13 +63,5 @@ public abstract class HandledScreenMixin {
 	@Inject(method = "mouseClicked", at = @At("RETURN"))
 	private void axolotlclient$mouseClickedTail(int mouseX, int mouseY, int mouseButton, CallbackInfo ci) {
 		moveHoveredSlotToHotbar(mouseButton - 100);
-	}
-
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/inventory/menu/InventoryMenuScreen;renderMenuBackground(FII)V"))
-	private void renderIcon(int i, int j, float f, CallbackInfo ci) {
-		var hud = (IconHud) HudManager.getInstance().get(IconHud.ID);
-		if (hud != null && hud.isEnabled()) {
-			hud.renderInGui(AxoRenderContextImpl.getInstance(), f);
-		}
 	}
 }

@@ -52,7 +52,6 @@ import io.github.axolotlclient.modules.hud.gui.entry.AbstractHudEntry;
 import io.github.axolotlclient.modules.hud.gui.hud.*;
 import io.github.axolotlclient.modules.hud.gui.hud.item.ArmorHud;
 import io.github.axolotlclient.modules.hud.gui.hud.item.ArrowHud;
-import io.github.axolotlclient.modules.hud.gui.hud.item.ItemUpdateHud;
 import io.github.axolotlclient.modules.hud.gui.hud.simple.*;
 import io.github.axolotlclient.modules.hud.gui.hud.item.InventoryHud;
 import io.github.axolotlclient.modules.hud.gui.hud.vanilla.PlayerTabOverlayHud;
@@ -113,12 +112,9 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 		add(new ArmorHud());
 		add(new PotionsHud());
 		add(new ToggleSprintHud());
-		add(new IPHud());
-		add(new IconHud());
 		add(new SpeedHud());
 		add(new CoordsHud());
 		add(new ArrowHud());
-		add(new ItemUpdateHud());
 		add(new IRLTimeHud());
 		add(new ReachHud());
 		add(new MemoryHud());
@@ -126,10 +122,7 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 		add(new CompassHud());
 		add(new TPSHud());
 		add(new ComboHud());
-		add(new MouseMovementHud());
-		add(new DayCounterHud());
 		add(new InventoryHud());
-		add(new XPHud());
 		add(new PlayerTabOverlayHud());
 		add(new SubtitlesHudHud());
 

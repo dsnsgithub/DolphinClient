@@ -161,4 +161,19 @@ public interface AxoMinecraftClient extends Executor {
 	default List<String> br$getSidebar() {
 		throw BridgeUtil.noImpl();
 	}
+
+	@RequiresImpl
+	default String br$getChunkDebugInfo() {
+		throw BridgeUtil.noImpl();
+	}
+
+	@RequiresImpl
+	default String br$getEntityDebugInfo() {
+		throw BridgeUtil.noImpl();
+	}
+
+	@RequiresImpl
+	default String br$getParticleDebugInfo() {
+		throw BridgeUtil.noImpl();
+	}
 }

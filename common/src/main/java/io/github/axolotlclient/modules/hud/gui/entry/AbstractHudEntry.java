@@ -105,7 +105,7 @@ public abstract class AbstractHudEntry implements HudEntry {
 	}
 
 	public void renderPlaceholderGrabCorners(AxoRenderContext context) {
-		if (!supportsScaling()) return;
+		if (!supportsScaling() || !movable()) return;
 		var c = HudManagerCommon.getInstance().grabCornerColor.get();
 		if (c.getAlpha() == 0) return;
 		var bounds = getTrueBounds();
@@ -176,6 +176,19 @@ public abstract class AbstractHudEntry implements HudEntry {
 		return renderBounds;
 	}
 
+	/**
+	 * The position, in scaled screen pixels, this entry's top left corner is locked to.
+	 * Entries that always render in one spot (instead of wherever the user dragged them)
+	 * override this; the returned position is used as is, without the usual clamping to
+	 * the window that a user placed entry gets.
+	 *
+	 * @param window The window to position against
+	 * @return The locked position, or {@code null} to follow the stored x/y options
+	 */
+	protected DrawPosition getLockedPosition(AxoWindow window) {
+		return null;
+	}
+
 	public void setBounds() {
 		final var window = AxoWindow.getWindow();
 
@@ -186,23 +199,30 @@ public abstract class AbstractHudEntry implements HudEntry {
 			trueBounds = new Rectangle(0, 0, 1, 1);
 			return;
 		}
-		int scaledX = floatToInt(x.get().floatValue(), (int) window.br$getScaledWidth(), 0) - offsetTrueWidth();
-		int scaledY = floatToInt(y.get().floatValue(), (int) window.br$getScaledHeight(), 0)
-			- offsetTrueHeight();
-		if (scaledX < 0) {
-			scaledX = 0;
-		}
-		if (scaledY < 0) {
-			scaledY = 0;
-		}
 		int trueWidth = (int)(getWidth() * getScale());
-		if (trueWidth < window.br$getScaledWidth() && scaledX + trueWidth > window.br$getScaledWidth()) {
-			scaledX = (int) (window.br$getScaledWidth() - trueWidth);
-		}
 		int trueHeight =(int)(getHeight() * getScale());
-		if (trueHeight < window.br$getScaledHeight()
-			&& scaledY + trueHeight > window.br$getScaledHeight()) {
-			scaledY = (int) (window.br$getScaledHeight() - trueHeight);
+		int scaledX, scaledY;
+		DrawPosition locked = getLockedPosition(window);
+		if (locked != null) {
+			scaledX = locked.x();
+			scaledY = locked.y();
+		} else {
+			scaledX = floatToInt(x.get().floatValue(), (int) window.br$getScaledWidth(), 0) - offsetTrueWidth();
+			scaledY = floatToInt(y.get().floatValue(), (int) window.br$getScaledHeight(), 0)
+				- offsetTrueHeight();
+			if (scaledX < 0) {
+				scaledX = 0;
+			}
+			if (scaledY < 0) {
+				scaledY = 0;
+			}
+			if (trueWidth < window.br$getScaledWidth() && scaledX + trueWidth > window.br$getScaledWidth()) {
+				scaledX = (int) (window.br$getScaledWidth() - trueWidth);
+			}
+			if (trueHeight < window.br$getScaledHeight()
+				&& scaledY + trueHeight > window.br$getScaledHeight()) {
+				scaledY = (int) (window.br$getScaledHeight() - trueHeight);
+			}
 		}
 		truePosition.x = scaledX;
 		truePosition.y = scaledY;

@@ -32,6 +32,7 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
+import io.github.axolotlclient.bridge.render.AxoWindow;
 import io.github.axolotlclient.mixin.ChatHudAccessor;
 import io.github.axolotlclient.modules.hud.gui.entry.TextHudEntry;
 import io.github.axolotlclient.modules.hud.util.DrawPosition;
@@ -49,6 +50,12 @@ import net.minecraft.util.math.MathHelper;
 public class ChatHud extends TextHudEntry {
 
 	public static final Identifier ID = new Identifier(DolphinClientCommon.MODID, "chathud");
+	/**
+	 * Vanilla draws chat from an origin of (2, scaledHeight - 28): the ingame overlay
+	 * translates to (0, scaledHeight - 48) before the chat itself translates by (2, 20).
+	 */
+	private static final int VANILLA_X = 2;
+	private static final int VANILLA_BOTTOM = 28;
 	// tooltip: "chathud"
 	public final BooleanOption background = new BooleanOption("background", true);
 	public final ColorOption bgColor = new ColorOption("bgcolor", Color.parse("#80000000"));
@@ -257,6 +264,18 @@ public class ChatHud extends TextHudEntry {
 	}
 
 	@Override
+	public boolean movable() {
+		return false;
+	}
+
+	@Override
+	protected DrawPosition getLockedPosition(AxoWindow window) {
+		// Window rounds the scaled height up, and the overlay positions the chat off of that
+		int scaledHeight = MathHelper.ceil(window.br$getScaledHeight());
+		return new DrawPosition(VANILLA_X, scaledHeight - VANILLA_BOTTOM - (int) (getHeight() * getScale()));
+	}
+
+	@Override
 	public double getDefaultX() {
 		return 0.01;
 	}
@@ -274,6 +293,8 @@ public class ChatHud extends TextHudEntry {
 	@Override
 	public List<Option<?>> getConfigurationOptions() {
 		List<Option<?>> options = super.getConfigurationOptions();
+		// the chat is locked to the vanilla position, so the anchor point does nothing
+		options.remove(anchor);
 		options.add(background);
 		options.add(bgColor);
 		options.add(lineSpacing);

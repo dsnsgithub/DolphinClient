@@ -38,7 +38,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ItemFrameRendererMixin {
 
 	@WrapOperation(method = "renderNameTag(Lnet/minecraft/entity/decoration/ItemFrameEntity;DDD)V", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;targetEntity:Lnet/minecraft/entity/Entity;"))
-	private Entity dolphinclient$alwaysRenderNametags(EntityRenderDispatcher instance, Operation<Entity> original, ItemFrameEntity entity) {
+	private Entity axolotlclient$alwaysRenderNametags(EntityRenderDispatcher instance, Operation<Entity> original, ItemFrameEntity entity) {
 		return NametagRendering.lookTarget(original.call(instance), entity, DolphinClient.config().alwaysRenderNametags.get());
 	}
 }

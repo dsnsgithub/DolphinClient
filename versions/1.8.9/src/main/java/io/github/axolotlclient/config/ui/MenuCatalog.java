@@ -149,8 +149,8 @@ public final class MenuCatalog {
 				continue;
 			}
 			if (OldAnimations.MODID.equals(name)) {
-				/* the 1.7 features are one mod tile with its groups as inline sections */
-				modules.add(moduleFrom(name, Tab.MODS, null, nodesFrom(category, false)));
+				/* the 1.7 features are one toggleable mod tile with its groups as inline sections */
+				modules.add(moduleFrom(name, Tab.MODS, firstEnabled(category.getOptions()), nodesFrom(category, false)));
 				continue;
 			}
 			Tab tab = isSettings(name) ? Tab.SETTINGS : Tab.MODS;

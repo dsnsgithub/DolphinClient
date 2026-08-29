@@ -45,6 +45,9 @@ public class OldAnimationsConfig {
 	private final OptionCategory categoryItemPositions = OptionCategory.create("itemPositions");
 	private final OptionCategory categoryOffsets = OptionCategory.create("offsets");
 
+	/* the master switch for every 1.7 feature */
+	public final BooleanOption enabled = new BooleanOption("enabled", true);
+
 	public final BooleanOption useAndMine = new BooleanOption("useAndMine", true);
 	public final BooleanOption useAndMineParticles = new BooleanOption("useAndMineParticles", true);
 	public final BooleanOption useAndMineSound = new BooleanOption("useAndMineSound", true);
@@ -97,18 +100,27 @@ public class OldAnimationsConfig {
 	public final BooleanOption framedItemRotationOffset = new BooleanOption("framedItemRotationOffset", true);
 
 	/* toggling these two rebuilds cached game state, so their previous values are tracked */
-	private boolean previousTrapDoorItemPosition = trapDoorItemPosition.get();
-	private boolean previousOldJumpBoostPotionColor = oldJumpBoostPotionColor.get();
+	private boolean previousTrapDoorItemPosition = trapDoorItemPosition();
+	private boolean previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
 
 	/**
-	 * The 1.7 features no longer have a master switch: every one of them is
-	 * individually configurable, which makes a global toggle redundant.
+	 * Whether the 1.7 features apply at all. With the mod switched off every
+	 * feature behaves as if its own toggle were off, so 1.8.9 is left alone.
 	 */
 	public static boolean isEnabled() {
-		return true;
+		return instance.enabled.get();
+	}
+
+	private boolean trapDoorItemPosition() {
+		return enabled.get() && trapDoorItemPosition.get();
+	}
+
+	private boolean oldJumpBoostPotionColor() {
+		return enabled.get() && oldJumpBoostPotionColor.get();
 	}
 
 	public void initConfig() {
+		category.add(enabled);
 		category.add(blockingItemUsing);
 		blockingItemUsing.add(
 			blockHitting,
@@ -179,8 +191,8 @@ public class OldAnimationsConfig {
 		configManager.load();
 
 		/* attempt to prevent calling resourcereload during game init */
-		previousTrapDoorItemPosition = trapDoorItemPosition.get();
-		previousOldJumpBoostPotionColor = oldJumpBoostPotionColor.get();
+		previousTrapDoorItemPosition = trapDoorItemPosition();
+		previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
 
 		/* reload the resources upon toggling certain options */
 		reloadResources();
@@ -189,17 +201,19 @@ public class OldAnimationsConfig {
 	/**
 	 * The trapdoor item model is baked at resource load, and potion colors are
 	 * cached separately, so both need a nudge when their option is toggled.
+	 * The master switch counts as toggling both of them.
 	 */
 	private void reloadResources() {
 		MinecraftClientEvents.TICK_END.register(client -> {
-			if (trapDoorItemPosition.get() != previousTrapDoorItemPosition) {
-				previousTrapDoorItemPosition = trapDoorItemPosition.get();
+			if (trapDoorItemPosition() != previousTrapDoorItemPosition) {
+				previousTrapDoorItemPosition = trapDoorItemPosition();
+				previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
 				Minecraft.getInstance().reloadResources();
 				reloadPotionColors = true;
 				return;
 			}
-			if (oldJumpBoostPotionColor.get() != previousOldJumpBoostPotionColor) {
-				previousOldJumpBoostPotionColor = oldJumpBoostPotionColor.get();
+			if (oldJumpBoostPotionColor() != previousOldJumpBoostPotionColor) {
+				previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
 				reloadPotionColors = true;
 			}
 		});

@@ -85,7 +85,7 @@ public class Hitboxes extends AbstractModule {
 			types.put(type, settings);
 		}
 
-		DolphinClient.config().rendering.add(category);
+		DolphinClient.config().addCategory(category);
 
 		AxoKeybinding.create(AxoKeys.KEY_UNKNOWN, "toggle_hitboxes").br$registerOnConsumeClick(() -> {
 			enabled.toggle();

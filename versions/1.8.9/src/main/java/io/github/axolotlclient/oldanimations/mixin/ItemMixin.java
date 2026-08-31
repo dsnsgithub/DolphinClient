@@ -21,45 +21,14 @@ package io.github.axolotlclient.oldanimations.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.CreativeModeTab;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Item.class)
 public abstract class ItemMixin {
-
-	@Shadow
-	private static void register(Block block) {
-	}
-
-	@Inject(method = "init", at = @At("HEAD"))
-	private static void axolotlclient$addRemovedBlocks(CallbackInfo ci) {
-		/* adds in the blocks that 14w25a removed */
-		/* this will allow us to actually give ourselves the item with commands in game like 1.7 ;) */
-		register(Blocks.WATER);
-		register(Blocks.LAVA);
-		register(Blocks.FLOWING_WATER);
-		register(Blocks.FLOWING_LAVA);
-		register(Blocks.FIRE);
-		//TODO: models
-//		register(Blocks.NETHER_PORTAL);
-//		register(Blocks.END_PORTAL);
-
-		/* //TODO: one day...
-		register(Blocks.DOUBLE_STONE_SLAB);
-		register(Blocks.DOUBLE_WOODEN_SLAB);
-		register(Blocks.COCOA);
-		register(Blocks.POTATOES);
-		register(Blocks.CARROTS);
-		*/
-	}
 
 	@WrapOperation(
 		method = "init",

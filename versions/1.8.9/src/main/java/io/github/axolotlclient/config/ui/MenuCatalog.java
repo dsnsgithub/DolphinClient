@@ -48,7 +48,6 @@ public final class MenuCatalog {
 	public enum Tab {
 		HUD,
 		MODS,
-		ANIMATIONS,
 		SETTINGS
 	}
 
@@ -150,7 +149,8 @@ public final class MenuCatalog {
 				continue;
 			}
 			if (OldAnimations.MODID.equals(name)) {
-				absorbAnimations(modules, category);
+				/* the 1.7 features are one toggleable mod tile with its groups as inline sections */
+				modules.add(moduleFrom(name, Tab.MODS, firstEnabled(category.getOptions()), nodesFrom(category, false)));
 				continue;
 			}
 			Tab tab = isSettings(name) ? Tab.SETTINGS : isHudTab(name) ? Tab.HUD : Tab.MODS;
@@ -159,16 +159,6 @@ public final class MenuCatalog {
 
 		modules.sort(Comparator.comparing(Module::displayName, String.CASE_INSENSITIVE_ORDER));
 		return modules;
-	}
-
-	/**
-	 * The 1.7 tab lists the feature groups directly. The parent category and
-	 * Misc grab bag are gone, so only the remaining configurable groups appear.
-	 */
-	private static void absorbAnimations(List<Module> modules, OptionCategory category) {
-		for (OptionCategory child : category.getSubCategories()) {
-			modules.add(moduleFrom(child.getName(), Tab.ANIMATIONS, firstEnabled(child.getOptions()), nodesFrom(child, false)));
-		}
 	}
 
 	private static void absorb(List<Module> modules, OptionCategory category, Tab tab) {

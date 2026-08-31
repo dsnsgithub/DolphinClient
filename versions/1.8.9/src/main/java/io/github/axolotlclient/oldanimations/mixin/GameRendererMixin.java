@@ -18,24 +18,13 @@
 
 package io.github.axolotlclient.oldanimations.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.axolotlclient.modules.hud.HudManager;
-import io.github.axolotlclient.modules.hud.gui.hud.vanilla.CrosshairHud;
-import io.github.axolotlclient.oldanimations.OldAnimations;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.ducks.Sneaky;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.texture.TextureAtlas;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.living.LivingEntity;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.gen.WorldGeneratorType;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -104,12 +93,6 @@ public abstract class GameRendererMixin implements Sneaky {
 		return axolotlclient$isEitherSneakOptionEnabled() ? axolotlclient$getEyeHeight() : x;
 	}
 
-	@WrapOperation(method = "renderAxisIndicators", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/living/player/LocalClientPlayerEntity;hasReducedDebugInfo()Z"))
-	private boolean axolotlclient$disableAxisIndicator(LocalClientPlayerEntity instance, Operation<Boolean> original) {
-		boolean isCustomCrosshair = OldAnimations.AXOLOTLCLIENT && HudManager.getInstance().get(CrosshairHud.ID).isEnabled();
-		return (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.alwaysShowCrosshair.get() && !isCustomCrosshair) || original.call(instance);
-	}
-
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/ItemInHandRenderer;tick()V")) /* placed below null check */
 	private void axolotlclient$onTick(CallbackInfo ci) {
 		/* updates the current eye height */
@@ -130,59 +113,6 @@ public abstract class GameRendererMixin implements Sneaky {
 				cameraY = eyeHeight;
 			}
 		}
-	}
-
-	@ModifyExpressionValue(method = "applyHurtCam", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/living/LivingEntity;damagedTimer:I"))
-	private int axolotlclient$oldDamageTick(int original) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldDamageTick.get()) {
-			//todo: find the source
-			return Math.max(original - 1, 0);
-		}
-		return original;
-	}
-
-	@ModifyExpressionValue(method = "setupFog", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/GameRenderer;renderDistance:F", ordinal = 1))
-	private float axolotlclient$renderVoidFog(float original, @Local(argsOnly = true) int i, @Local(argsOnly = true) float f) {
-		/* void fog logic taken straight from 1.7 */
-		float gx = original;
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.voidFog.get()) {
-			Entity entity = minecraft.getCamera();
-			Dimension dimension = minecraft.world.dimension;
-			if (i == 0 &&
-				/* 1.7's hasFog() method */
-				((DimensionAccessor) dimension).getGeneratorType() != WorldGeneratorType.FLAT && !dimension.hasNoSky()) {
-				double d = ((entity.getLightLevel(f) & 15728640) >> 20) / 16.0 + (entity.prevY + (entity.y - entity.prevY) * f + 4.0) / 32.0;
-				if (d < 1.0) {
-					if (d < 0.0) {
-						d = 0.0;
-					}
-					d *= d;
-					float h = 100.0F * (float) d;
-					if (h < 5.0F) {
-						h = 5.0F;
-					}
-					if (gx > h) {
-						gx = h;
-					}
-				}
-			}
-		}
-		/* welcome back my friend */
-		return gx;
-	}
-
-	@Inject(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/world/WorldRenderer;render(Lnet/minecraft/client/render/block/BlockLayer;DILnet/minecraft/entity/Entity;)I"))
-	private void axolotlclient$applyMipmapToBlocks(int anaglyphRenderPass, float tickDelta, long renderTimeLimit, CallbackInfo ci) {
-		/* optifine already does this, but i might as well give the player the option lol */
-		minecraft.getTextureManager().get(TextureAtlas.BLOCKS_LOCATION).pushFilter(false,
-			OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mipmapAllBlocks.get() &&
-				minecraft.options.mipmapLevels > 0
-		);
-	}
-
-	@Inject(method = "render(IFJ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/world/WorldRenderer;render(Lnet/minecraft/client/render/block/BlockLayer;DILnet/minecraft/entity/Entity;)I", shift = At.Shift.AFTER))
-	private void axolotlclient$applyMipmapToBlocks2(int anaglyphRenderPass, float tickDelta, long renderTimeLimit, CallbackInfo ci) {
-		minecraft.getTextureManager().get(TextureAtlas.BLOCKS_LOCATION).popFilter();
 	}
 
 	@Unique

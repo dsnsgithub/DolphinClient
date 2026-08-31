@@ -25,8 +25,6 @@ import net.minecraft.client.render.entity.layer.WornSkullLayer;
 import net.minecraft.entity.living.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WornSkullLayer.class)
 public class WornSkullLayerMixin {
@@ -41,11 +39,4 @@ public class WornSkullLayerMixin {
 		return original.call(instance);
 	}
 
-	@Inject(method = "colorsWhenDamaged", at = @At("HEAD"), cancellable = true)
-	private void axolotlclient$removeDamageColor(CallbackInfoReturnable<Boolean> callback) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.noSkullLayerDamageTint.get()) {
-			/* disables coloring the second layer just like 1.7 */
-			callback.setReturnValue(false);
-		}
-	}
 }

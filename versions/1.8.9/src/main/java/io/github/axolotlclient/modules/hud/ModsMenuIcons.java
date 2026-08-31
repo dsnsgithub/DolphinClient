@@ -94,6 +94,7 @@ final class ModsMenuIcons {
 		put("fpsLimiter", Items.CLOCK);
 		put("sky", Items.ENDER_EYE);
 		put("blockOutlines", Item.byBlock(Blocks.STONE));
+		put("hitboxes", Items.SLIME_BALL);
 		put("timeChanger", Items.CLOCK);
 		put("beams", Items.BLAZE_ROD);
 		put("levelhead", Items.GOLDEN_HELMET);

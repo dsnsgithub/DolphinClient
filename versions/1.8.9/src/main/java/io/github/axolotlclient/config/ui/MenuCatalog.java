@@ -153,7 +153,7 @@ public final class MenuCatalog {
 				modules.add(moduleFrom(name, Tab.MODS, firstEnabled(category.getOptions()), nodesFrom(category, false)));
 				continue;
 			}
-			Tab tab = isSettings(name) ? Tab.SETTINGS : Tab.MODS;
+			Tab tab = isSettings(name) ? Tab.SETTINGS : isHudTab(name) ? Tab.HUD : Tab.MODS;
 			absorb(modules, category, tab);
 		}
 
@@ -183,11 +183,16 @@ public final class MenuCatalog {
 	/**
 	 * Settings keeps a tile per child even when only Screenshots remains
 	 * under General, matching the layout from before Authentication was
-	 * removed. Mods still need at least two children before splitting.
+	 * removed. Mods still need at least two children before splitting. HUD
+	 * tiles always stay whole so an overlay's groups render as sections rather
+	 * than as one tile per group.
 	 */
 	private static boolean shouldPromote(Collection<OptionCategory> children, Tab tab) {
 		int size = children.size();
 		if (size == 0 || size > 12) {
+			return false;
+		}
+		if (tab == Tab.HUD) {
 			return false;
 		}
 		return tab == Tab.SETTINGS || size >= 2;
@@ -245,6 +250,14 @@ public final class MenuCatalog {
 
 	private static boolean isSettings(String name) {
 		return "general".equals(name);
+	}
+
+	/**
+	 * Overlays that draw in the world rather than on a HUD widget still belong
+	 * on the HUD tab, so they are routed there instead of Mods.
+	 */
+	private static boolean isHudTab(String name) {
+		return "hitboxes".equals(name);
 	}
 
 	private static OptionCategory find(Collection<OptionCategory> categories, String name) {

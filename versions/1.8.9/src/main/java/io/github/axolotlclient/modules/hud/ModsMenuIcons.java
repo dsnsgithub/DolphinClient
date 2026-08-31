@@ -54,12 +54,9 @@ final class ModsMenuIcons {
 		put("armorhud", Items.IRON_CHESTPLATE);
 		put("potionshud", Items.POTION);
 		put("togglesprint", Items.IRON_BOOTS);
-		put("iphud", Items.SIGN);
-		put("iconhud", Items.NETHER_STAR);
 		put("speedhud", Items.SUGAR);
 		put("coordshud", Items.COMPASS);
 		put("arrowhud", Items.ARROW);
-		put("itemupdatehud", Item.byBlock(Blocks.HOPPER));
 		put("irltimehud", Items.CLOCK);
 		put("reachhud", Items.DIAMOND_SWORD);
 		put("memoryhud", Items.REDSTONE);
@@ -67,15 +64,11 @@ final class ModsMenuIcons {
 		put("compasshud", Items.COMPASS);
 		put("tpshud", Items.REDSTONE);
 		put("combohud", Items.IRON_SWORD);
-		put("mousemovementhud", Items.FISHING_ROD);
-		put("daycounterhud", Items.CLOCK);
 		put("inventoryhud", Item.byBlock(Blocks.CHEST));
-		put("xphud", Items.EXPERIENCE_BOTTLE);
 		put("subtitleshud", Items.BOOK);
 		put("actionbarhud", Items.SIGN);
 		put("bossbarhud", Items.NETHER_STAR);
 		put("crosshairhud", Items.ARROW);
-		put("debugcountershud", Items.REDSTONE);
 		put("hotbarhud", Items.DIAMOND);
 		put("scoreboardhud", Items.PAPER);
 		put("keystrokehud", Items.BOOK);
@@ -101,6 +94,7 @@ final class ModsMenuIcons {
 		put("fpsLimiter", Items.CLOCK);
 		put("sky", Items.ENDER_EYE);
 		put("blockOutlines", Item.byBlock(Blocks.STONE));
+		put("hitboxes", Items.SLIME_BALL);
 		put("timeChanger", Items.CLOCK);
 		put("beams", Items.BLAZE_ROD);
 		put("levelhead", Items.GOLDEN_HELMET);

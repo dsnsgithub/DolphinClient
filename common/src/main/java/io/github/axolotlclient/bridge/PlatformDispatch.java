@@ -26,7 +26,6 @@ import java.util.List;
 
 import io.github.axolotlclient.bridge.internal.BridgeUtil;
 import io.github.axolotlclient.bridge.internal.RequiresImpl;
-import io.github.axolotlclient.bridge.render.AxoSprite;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 /**
@@ -38,11 +37,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 public class PlatformDispatch {
 	@RequiresImpl
 	public static void pingHud$updatePing(MutableInt currentServerPing) {
-		throw BridgeUtil.noImpl();
-	}
-
-	@RequiresImpl
-	public static AxoSprite.Dynamic ipHud$getServerIcon() {
 		throw BridgeUtil.noImpl();
 	}
 

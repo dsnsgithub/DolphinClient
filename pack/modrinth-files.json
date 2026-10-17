@@ -1,0 +1,62 @@
+[
+  {
+    "path": "mods/asynclogger-2.2.2+1.8.9-ornithe.jar",
+    "hashes": {
+      "sha1": "cb25c8cbac18425723006cd89158076633e89152",
+      "sha512": "2ee41834156342128d19f6070aa0d8513b9ef240f08f652070e5024537bb90dc61c196266b1c66f88567b7b7493033eacc5281a3797b495621817adaa63c19e1"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/zvNzKfGF/versions/lwjZBYEm/asynclogger-2.2.2%2B1.8.9-ornithe.jar"
+    ],
+    "fileSize": 595059
+  },
+  {
+    "path": "mods/legacy-lwjgl3-1.4.4.jar",
+    "hashes": {
+      "sha1": "5b6206b0cc78c2c291cc79cf370f395583c11500",
+      "sha512": "257bbfb61ed727b5d0c9f8a3b58375830faac82a6d72c5dac2c0b288d9bda6fc138b78182ef162e7a89815da0915584c1fc5d2819e483d7836967614d3b2f429"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/lpiIRiAZ/versions/g5grBwqM/legacy-lwjgl3-1.4.4.jar"
+    ],
+    "fileSize": 12512984
+  },
+  {
+    "path": "mods/ornithe-standard-libraries-0.20.3.jar",
+    "hashes": {
+      "sha1": "92d1556483e7209c9cb7db9805f0c548b406dbf3",
+      "sha512": "f93aed44bb7f1e9761f9f5fe91f8bf0ce18423caee8c30429567465a8692d53b75694daab5bde151ba1722e8be15cc94c3bcb7526dadac90fd962d5498cd2c5d"
+    },
+    "env": {
+      "client": "required",
+      "server": "required"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/EHGtwpJv/versions/MH3vv5UY/ornithe-standard-libraries-0.20.3.jar"
+    ],
+    "fileSize": 3248472
+  },
+  {
+    "path": "mods/soundfix-1.1.0+mc1.8.9.jar",
+    "hashes": {
+      "sha1": "d28786939f20e324a0a9b362cde4f43afc2ff74b",
+      "sha512": "5baea044af713a160b1beaa65aabe776a6e920a0bf90ffe12a9090cbf69f3dc1525340ad6f431d0aa676a66cd0f981e400bda4d0b88577cc7a8b759810cc17e2"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/h2NAXCR5/versions/HZ3MW8tG/soundfix-1.1.0%2Bmc1.8.9.jar"
+    ],
+    "fileSize": 85414
+  }
+]

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Assemble the Dolphin Optimized .mrpack from pack/overrides.
 
-The instance files live in this directory. The GitHub build passes the
-DolphinClient jar it just produced, and that jar is the only copy of the
-mod that goes into the pack.
+The instance files live in this directory. Mods listed in
+modrinth-files.json are downloaded from Modrinth on import; those entries
+are the same bytes as the jars this pack used to bundle. Everything else,
+including the DolphinClient jar from the GitHub build, is packed into
+overrides.
 
 Prism's importer accepts only minecraft, fabric-loader, quilt-loader, forge,
 and neoforge in modrinth.index.json. Any other dependency, including an
@@ -35,6 +37,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 PATCH_DIR = ROOT / "prism-patches"
 OVERRIDES = ROOT / "overrides"
+MODRINTH_FILES = ROOT / "modrinth-files.json"
 PACK_NAME = "Dolphin Optimized Pink"
 MINECRAFT_VERSION = "1.8.9"
 FABRIC_LOADER_VERSION = "0.19.3"
@@ -55,7 +58,33 @@ def patches() -> dict[str, dict]:
     return found
 
 
-def index_document(version_id: str) -> dict:
+def modrinth_files() -> list[dict]:
+    with MODRINTH_FILES.open(encoding="utf-8") as handle:
+        files = json.load(handle)
+    if not isinstance(files, list) or not files:
+        raise SystemExit("modrinth-files.json must list the Modrinth downloads")
+    paths = []
+    for entry in files:
+        path = entry.get("path")
+        hashes = entry.get("hashes") or {}
+        downloads = entry.get("downloads") or []
+        if not isinstance(path, str) or not path.startswith("mods/") or not path.endswith(".jar"):
+            raise SystemExit(f"Modrinth file path is not a mod jar: {path!r}")
+        if is_dolphin_mod(path):
+            raise SystemExit("DolphinClient is built here and is not a Modrinth download")
+        if not hashes.get("sha1") or not hashes.get("sha512"):
+            raise SystemExit(f"{path} is missing sha1 or sha512")
+        if not downloads or not all(url.startswith("https://cdn.modrinth.com/") for url in downloads):
+            raise SystemExit(f"{path} is not a Modrinth CDN download")
+        if not isinstance(entry.get("fileSize"), int):
+            raise SystemExit(f"{path} is missing fileSize")
+        paths.append(path)
+    if paths != sorted(paths) or len(paths) != len(set(paths)):
+        raise SystemExit("Modrinth files must be unique and sorted by path")
+    return files
+
+
+def index_document(version_id: str, files: list[dict]) -> dict:
     return {
         "formatVersion": 1,
         "game": "minecraft",
@@ -65,7 +94,7 @@ def index_document(version_id: str) -> dict:
             "Optimized Hypixel 1.8.9 client. Prism installs Ornithe from the "
             "bundled Fabric Loader and Calamus generation 2 components."
         ),
-        "files": [],
+        "files": files,
         "dependencies": {
             "minecraft": MINECRAFT_VERSION,
             "fabric-loader": FABRIC_LOADER_VERSION,
@@ -134,7 +163,7 @@ def is_dolphin_mod(relative: str) -> bool:
     return relative.startswith("mods/") and name.startswith("DolphinClient-") and name.endswith(".jar")
 
 
-def override_files() -> list[tuple[str, bytes]]:
+def override_files(modrinth_paths: set[str]) -> list[tuple[str, bytes]]:
     if not OVERRIDES.is_dir():
         raise SystemExit(f"Missing pack overrides directory: {OVERRIDES}")
     entries = []
@@ -144,17 +173,20 @@ def override_files() -> list[tuple[str, bytes]]:
         relative = path.relative_to(OVERRIDES).as_posix()
         if is_dolphin_mod(relative):
             raise SystemExit(f"{relative} is checked in; the build supplies the DolphinClient jar")
+        if relative in modrinth_paths:
+            raise SystemExit(f"{relative} is a Modrinth download and is also bundled")
         entries.append((relative, path.read_bytes()))
-    if not any(relative.startswith("mods/") and relative.endswith(".jar") for relative, _ in entries):
-        raise SystemExit("pack/overrides has no mods to bundle")
     return entries
 
 
 def build(output_path: Path, dolphin_jar: Path) -> str:
     component_patches = patches()
     check_components(component_patches)
+    files = modrinth_files()
     version_id = dolphin_version(dolphin_jar.name)
-    entries = override_files()
+    entries = override_files({entry["path"] for entry in files})
+    if not any(relative.startswith("mods/") and relative.endswith(".jar") for relative, _ in entries):
+        raise SystemExit("pack/overrides has no mods to bundle")
     entries.append((f"mods/{dolphin_jar.name}", dolphin_jar.read_bytes()))
     entries.sort()
 
@@ -163,7 +195,7 @@ def build(output_path: Path, dolphin_jar: Path) -> str:
         # Must be the first entry Prism's importer inspects.
         pack.writestr(
             "modrinth.index.json",
-            json.dumps(index_document(version_id), indent=2) + "\n",
+            json.dumps(index_document(version_id, files), indent=2) + "\n",
         )
         pack.writestr("instance.cfg", (ROOT / "instance.cfg").read_bytes())
         for uid, data in component_patches.items():
@@ -193,9 +225,17 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
             raise SystemExit("Fabric Loader dependency changed")
         if index["formatVersion"] != 1 or index["game"] != "minecraft":
             raise SystemExit("Index header is not a Minecraft formatVersion 1 pack")
+        expected_files = modrinth_files()
+        if index["files"] != expected_files:
+            raise SystemExit("Index files do not match pack/modrinth-files.json")
+        modrinth_paths = {f"overrides/{entry['path']}" for entry in expected_files}
+        if any(name in modrinth_paths for name in names):
+            raise SystemExit("A Modrinth download is also bundled in overrides")
         bundled = [name for name in names if name.startswith("overrides/mods/") and name.endswith(".jar")]
-        if len(bundled) < 8:
-            raise SystemExit(f"Only {len(bundled)} mods were bundled")
+        if len(bundled) + len(expected_files) < 10:
+            raise SystemExit(
+                f"Only {len(bundled)} bundled mods and {len(expected_files)} Modrinth downloads"
+            )
         dolphin_mods = [name for name in bundled if is_dolphin_mod(name.removeprefix("overrides/"))]
         if len(dolphin_mods) != 1:
             raise SystemExit(f"Expected one DolphinClient jar, found {dolphin_mods}")
@@ -217,7 +257,8 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
             if uid != "net.minecraft" and patch_name not in names:
                 raise SystemExit(f"Missing {patch_name}")
         print(
-            f"ok {path} version={index['versionId']} mods={len(bundled)} "
+            f"ok {path} version={index['versionId']} bundled={len(bundled)} "
+            f"modrinth={len(expected_files)} "
             f"components={sum(1 for n in names if n.startswith('patches/'))}"
         )
 

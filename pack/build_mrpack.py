@@ -232,10 +232,13 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
         if any(name in modrinth_paths for name in names):
             raise SystemExit("A Modrinth download is also bundled in overrides")
         bundled = [name for name in names if name.startswith("overrides/mods/") and name.endswith(".jar")]
-        if len(bundled) + len(expected_files) < 10:
-            raise SystemExit(
-                f"Only {len(bundled)} bundled mods and {len(expected_files)} Modrinth downloads"
-            )
+        third_party = sorted(
+            Path(name).name
+            for name in bundled
+            if not is_dolphin_mod(name.removeprefix("overrides/"))
+        )
+        if third_party != ["nettyfix-1.1.0+1.8.9.jar"]:
+            raise SystemExit(f"Unexpected bundled mods: {third_party}")
         dolphin_mods = [name for name in bundled if is_dolphin_mod(name.removeprefix("overrides/"))]
         if len(dolphin_mods) != 1:
             raise SystemExit(f"Expected one DolphinClient jar, found {dolphin_mods}")

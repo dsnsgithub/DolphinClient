@@ -38,6 +38,7 @@ For those nerdy and curious to care, Dolphin Optimized is built on:
 - [OldAnimations](https://modrinth.com/mod/oldanimations) (1.7 animations, now integrated into DolphinClient)
 - [Ornithe](https://ornithemc.net/) + [Ornithe Standard Libraries](https://modrinth.com/mod/osl) (required for Ornithe, which is backported Fabric for 1.8.9)
 - [SoundFix](https://modrinth.com/mod/soundfix) (brings new sound system to 1.8.9)
+- [Zirconium](https://github.com/Coccocoahelper/Zirconium-Ornithe) (brings modern optimizations to 1.8.9)
 
 
 ---

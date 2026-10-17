@@ -240,7 +240,7 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
             for name in bundled
             if not is_dolphin_mod(name.removeprefix("overrides/"))
         )
-        if third_party != ["nettyfix-1.1.0+1.8.9.jar"]:
+        if third_party != ["Zirconium-0.2.0+mc1.8.9.jar", "nettyfix-1.1.0+1.8.9.jar"]:
             raise SystemExit(f"Unexpected bundled mods: {third_party}")
         dolphin_mods = [name for name in bundled if is_dolphin_mod(name.removeprefix("overrides/"))]
         if len(dolphin_mods) != 1:

@@ -2,10 +2,10 @@
 """Assemble the Dolphin Optimized .mrpack from pack/overrides.
 
 The instance files live in this directory. Mods listed in
-modrinth-files.json are downloaded from Modrinth on import; those entries
-are the same bytes as the jars this pack used to bundle. Everything else,
-including the DolphinClient jar from the GitHub build, is packed into
-overrides.
+modrinth-files.json are downloaded from Modrinth on import. Argentum,
+Argentum Extras, and Cera use the published 1.0.0 files, which differ from
+the jars previously bundled here. Everything else, including the
+DolphinClient jar from the GitHub build, is packed into overrides.
 
 Prism's importer accepts only minecraft, fabric-loader, quilt-loader, forge,
 and neoforge in modrinth.index.json. Any other dependency, including an

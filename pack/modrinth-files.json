@@ -1,5 +1,35 @@
 [
   {
+    "path": "mods/argentum-1.0.0.jar",
+    "hashes": {
+      "sha1": "5723a4b884396010df44f4e7f27af38010fe12ed",
+      "sha512": "a10fcbb75a2e47fa02d6c278c8d7feee11f86159291214a3a4ad26625921f22c27093a2f40b030a3b9744ff7b4174311c1711a4cd595532040ad0014acc29dfb"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/QRMV06RW/versions/eD0a2cPD/argentum-1.0.0.jar"
+    ],
+    "fileSize": 1736412
+  },
+  {
+    "path": "mods/argentum-extras-1.0.0.jar",
+    "hashes": {
+      "sha1": "2c5dbb19e725a1e7b6f862df7846776ab42b8903",
+      "sha512": "ced7c1588dee545133955d154b61b8a03955cf3d51db7e4392a3d8dd8438bd048dd77f5a9907ec61cce9847e59e892c6a7e881cac63df56590a318db8e21ab4d"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/Tc8Lbsu7/versions/NOYXQuR5/argentum-extras-1.0.0.jar"
+    ],
+    "fileSize": 54925
+  },
+  {
     "path": "mods/asynclogger-2.2.2+1.8.9-ornithe.jar",
     "hashes": {
       "sha1": "cb25c8cbac18425723006cd89158076633e89152",
@@ -13,6 +43,21 @@
       "https://cdn.modrinth.com/data/zvNzKfGF/versions/lwjZBYEm/asynclogger-2.2.2%2B1.8.9-ornithe.jar"
     ],
     "fileSize": 595059
+  },
+  {
+    "path": "mods/cera-1.0.0.jar",
+    "hashes": {
+      "sha1": "024e7b9c34c6864448c13e1ed909e95c93498617",
+      "sha512": "f871a64bc24491bde5908fcad9bbb81e9bfd34c9962ddecd492e658701f2de6ffc9aeb83f8f6170e088d34d693b58f5acf012af7546c22d2df1f4c9d8316e733"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/z4ctq7MO/versions/CIU0Y1Xy/cera-1.0.0.jar"
+    ],
+    "fileSize": 511708
   },
   {
     "path": "mods/legacy-lwjgl3-1.4.4.jar",

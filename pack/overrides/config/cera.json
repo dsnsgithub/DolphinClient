@@ -1,0 +1,10 @@
+{
+  "better_grass": "OFF",
+  "connected_textures": "FANCY",
+  "dynamic_lights": "OFF",
+  "natural_textures": true,
+  "custom_sky": false,
+  "custom_guis": true,
+  "custom_items": true,
+  "optifine_cosmetics": true
+}

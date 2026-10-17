@@ -32,16 +32,21 @@ jobs:
         id: version
         run: echo "version=$(grep -E '^version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
-      - name: Stage release artifact
+      - name: Stage jar and mrpack
         run: |
           mkdir -p build/upload
-          find versions/*/build/libs -maxdepth 1 -name '*.jar' \
-            ! -name '*-dev*.jar' ! -name '*-sources*.jar' \
-            -exec cp -v {} build/upload/ \;
-          if [ -z "$(ls -A build/upload)" ]; then
-            echo "::error::No release jar found under versions/*/build/libs"
+          mapfile -t jars < <(find versions/*/build/libs -maxdepth 1 -name '*.jar' \
+            ! -name '*-dev*.jar' ! -name '*-sources*.jar' | sort)
+          if [ "${#jars[@]}" -ne 1 ]; then
+            echo "::error::Expected one release jar, found ${#jars[@]}"
+            printf '%s\n' "${jars[@]}"
             exit 1
           fi
+          cp -v "${jars[0]}" build/upload/
+          python3 pack/build_mrpack.py \
+            --dolphin-jar "${jars[0]}" \
+            --output "build/upload/Dolphin-Optimized.Pink.v${{ steps.version.outputs.version }}.mrpack" \
+            --check
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v7

@@ -127,6 +127,13 @@ def check_components(component_patches: dict[str, dict]) -> None:
         raise SystemExit("Fabric Loader patch does not launch Knot")
 
 
+def dolphin_version(jar_name: str) -> str:
+    prefix = "DolphinClient-"
+    if not jar_name.startswith(prefix) or not jar_name.endswith(".jar"):
+        raise SystemExit(f"Not a DolphinClient jar: {jar_name}")
+    return jar_name[len(prefix) :].split("+", 1)[0]
+
+
 def detect_version(source: zipfile.ZipFile) -> str:
     prefix = "minecraft/mods/DolphinClient-"
     matches = [
@@ -139,11 +146,23 @@ def detect_version(source: zipfile.ZipFile) -> str:
     return matches[0]
 
 
-def build(source_path: Path, output_path: Path) -> str:
+def is_dolphin_mod(relative: str) -> bool:
+    name = relative.rsplit("/", 1)[-1]
+    return relative.startswith("mods/") and name.startswith("DolphinClient-") and name.endswith(".jar")
+
+
+def build(source_path: Path, output_path: Path, dolphin_jar: Path | None = None) -> str:
     component_patches = patches()
     check_components(component_patches)
+    replacement_name = None
+    replacement_bytes = None
+    if dolphin_jar is not None:
+        replacement_name = dolphin_jar.name
+        replacement_bytes = dolphin_jar.read_bytes()
+        version_id = dolphin_version(replacement_name)
     with zipfile.ZipFile(source_path) as source:
-        version_id = detect_version(source)
+        if dolphin_jar is None:
+            version_id = detect_version(source)
         game_files = [
             info
             for info in source.infolist()
@@ -168,13 +187,21 @@ def build(source_path: Path, output_path: Path) -> str:
                     f"patches/{uid}.json",
                     json.dumps(data, indent=4) + "\n",
                 )
+            replaced = False
             for info in game_files:
                 relative = info.filename[len(GAME_PREFIX) :]
+                if replacement_bytes is not None and is_dolphin_mod(relative):
+                    replaced = True
+                    continue
                 pack.writestr(f"overrides/{relative}", source.read(info))
+            if replacement_bytes is not None:
+                if not replaced:
+                    raise SystemExit("Source pack has no DolphinClient jar to replace")
+                pack.writestr(f"overrides/mods/{replacement_name}", replacement_bytes)
     return version_id
 
 
-def check_pack(path: Path) -> None:
+def check_pack(path: Path, dolphin_jar: Path | None = None) -> None:
     with zipfile.ZipFile(path) as pack:
         names = pack.namelist()
         if not names or names[0] != "modrinth.index.json":
@@ -194,6 +221,16 @@ def check_pack(path: Path) -> None:
         bundled = [name for name in names if name.startswith("overrides/mods/") and name.endswith(".jar")]
         if len(bundled) < 8:
             raise SystemExit(f"Only {len(bundled)} mods were bundled")
+        dolphin_mods = [name for name in bundled if is_dolphin_mod(name.removeprefix("overrides/"))]
+        if len(dolphin_mods) != 1:
+            raise SystemExit(f"Expected one DolphinClient jar, found {dolphin_mods}")
+        if dolphin_jar is not None:
+            if Path(dolphin_mods[0]).name != dolphin_jar.name:
+                raise SystemExit(f"Pack jar {dolphin_mods[0]} != {dolphin_jar.name}")
+            if pack.read(dolphin_mods[0]) != dolphin_jar.read_bytes():
+                raise SystemExit("Pack DolphinClient jar does not match --dolphin-jar")
+            if index["versionId"] != dolphin_version(dolphin_jar.name):
+                raise SystemExit("Pack versionId does not match --dolphin-jar")
         if any(name.endswith("usercache.json") or name.endswith("accounts.json") for name in names):
             raise SystemExit("Personal account files were copied into the pack")
         intermediary = json.loads(pack.read("patches/net.fabricmc.intermediary.json"))
@@ -226,13 +263,20 @@ def main() -> None:
         type=Path,
         default=ROOT.parent / "build" / "Dolphin-Optimized.Pink.v1.0.2.mrpack",
     )
+    parser.add_argument(
+        "--dolphin-jar",
+        type=Path,
+        help="Replace the pack's DolphinClient jar with this freshly built jar",
+    )
     parser.add_argument("--check", action="store_true", help="Validate the written .mrpack")
     args = parser.parse_args()
+    if args.dolphin_jar is not None and not args.dolphin_jar.is_file():
+        raise SystemExit(f"DolphinClient jar not found: {args.dolphin_jar}")
     source = resolve_source(args.source, ROOT.parent / "build" / "source-instance.zip")
-    version = build(source, args.output)
+    version = build(source, args.output, args.dolphin_jar)
     print(f"wrote {args.output} ({version})")
     if args.check:
-        check_pack(args.output)
+        check_pack(args.output, args.dolphin_jar)
 
 
 if __name__ == "__main__":

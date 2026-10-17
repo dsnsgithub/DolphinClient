@@ -3,9 +3,9 @@
 
 The instance files live in this directory. Mods listed in
 modrinth-files.json are downloaded from Modrinth on import. Argentum,
-Argentum Extras, and Cera use the published 1.0.0 files, which differ from
-the jars previously bundled here. Everything else, including the
-DolphinClient jar from the GitHub build, is packed into overrides.
+Argentum Extras, and Cera use the latest published 1.0.1 files. Everything
+else, including the DolphinClient jar from the GitHub build, is packed into
+overrides.
 
 Prism's importer accepts only minecraft, fabric-loader, quilt-loader, forge,
 and neoforge in modrinth.index.json. Any other dependency, including an

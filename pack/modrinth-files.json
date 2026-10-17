@@ -1,33 +1,33 @@
 [
   {
-    "path": "mods/argentum-1.0.0.jar",
+    "path": "mods/argentum-1.0.1.jar",
     "hashes": {
-      "sha1": "5723a4b884396010df44f4e7f27af38010fe12ed",
-      "sha512": "a10fcbb75a2e47fa02d6c278c8d7feee11f86159291214a3a4ad26625921f22c27093a2f40b030a3b9744ff7b4174311c1711a4cd595532040ad0014acc29dfb"
+      "sha1": "6324b84ba636bb3dee2cc6898fbae40051ea9dc6",
+      "sha512": "22fa7b7ba6f0dabda864ef720107096043188e62af43f1f9b18af90c648b5add9c29761217c3acc03a2deb2d5dbb76683598b8266bc8891792694947ac8268f5"
     },
     "env": {
       "client": "required",
       "server": "unsupported"
     },
     "downloads": [
-      "https://cdn.modrinth.com/data/QRMV06RW/versions/eD0a2cPD/argentum-1.0.0.jar"
+      "https://cdn.modrinth.com/data/QRMV06RW/versions/X6fQxSsK/argentum-1.0.1.jar"
     ],
-    "fileSize": 1736412
+    "fileSize": 1741043
   },
   {
-    "path": "mods/argentum-extras-1.0.0.jar",
+    "path": "mods/argentum-extras-1.0.1.jar",
     "hashes": {
-      "sha1": "2c5dbb19e725a1e7b6f862df7846776ab42b8903",
-      "sha512": "ced7c1588dee545133955d154b61b8a03955cf3d51db7e4392a3d8dd8438bd048dd77f5a9907ec61cce9847e59e892c6a7e881cac63df56590a318db8e21ab4d"
+      "sha1": "b4d397612db05f78c9625a05f5876b6ff29c5dcb",
+      "sha512": "38597e2d0e0a3bb9b26b55b96ad15f5038f21ddecde9f608dd3e3cc08623b14fbea5c0614b09fe34d2696d46ea8d4fd437e46a1a315cf1834a7d075b9a3ba60f"
     },
     "env": {
       "client": "required",
       "server": "unsupported"
     },
     "downloads": [
-      "https://cdn.modrinth.com/data/Tc8Lbsu7/versions/NOYXQuR5/argentum-extras-1.0.0.jar"
+      "https://cdn.modrinth.com/data/Tc8Lbsu7/versions/6wzTdaZh/argentum-extras-1.0.1.jar"
     ],
-    "fileSize": 54925
+    "fileSize": 55070
   },
   {
     "path": "mods/asynclogger-2.2.2+1.8.9-ornithe.jar",
@@ -45,19 +45,19 @@
     "fileSize": 595059
   },
   {
-    "path": "mods/cera-1.0.0.jar",
+    "path": "mods/cera-1.0.1.jar",
     "hashes": {
-      "sha1": "024e7b9c34c6864448c13e1ed909e95c93498617",
-      "sha512": "f871a64bc24491bde5908fcad9bbb81e9bfd34c9962ddecd492e658701f2de6ffc9aeb83f8f6170e088d34d693b58f5acf012af7546c22d2df1f4c9d8316e733"
+      "sha1": "b304a781dbdfa1e9f60aeb2128fd22130169bdfc",
+      "sha512": "662ea45adecc56b2f3b14c61536800d7b8904a5056fcad563d0a0f4cb9872b7e3c3f1b0acdccc9686b2ab3e221256d0d58d9c1dd227c890b278e47df6f595e80"
     },
     "env": {
       "client": "required",
       "server": "unsupported"
     },
     "downloads": [
-      "https://cdn.modrinth.com/data/z4ctq7MO/versions/CIU0Y1Xy/cera-1.0.0.jar"
+      "https://cdn.modrinth.com/data/z4ctq7MO/versions/yAj5VKe1/cera-1.0.1.jar"
     ],
-    "fileSize": 511708
+    "fileSize": 512393
   },
   {
     "path": "mods/legacy-lwjgl3-1.4.4.jar",

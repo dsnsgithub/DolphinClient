@@ -3,7 +3,7 @@
 
 The instance files live in this directory. Mods listed in
 modrinth-files.json are downloaded from Modrinth on import. Argentum,
-Argentum Extras, and Cera use the latest published 1.0.1 files. Everything
+Argentum Extras, and Cera use the published 1.0.0 files. Everything
 else, including the DolphinClient jar from the GitHub build, is packed into
 overrides.
 

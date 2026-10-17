@@ -1,19 +1,19 @@
 name = "Argentum"
-filename = "argentum-1.0.1.jar"
+filename = "argentum-1.0.0.jar"
 side = "client"
 x-prismlauncher-loaders = ["ornithe"]
 x-prismlauncher-mc-versions = ["1.8.9"]
 x-prismlauncher-release-type = "release"
-x-prismlauncher-version-number = "1.0.1"
+x-prismlauncher-version-number = "1.0.0"
 x-prismlauncher-dependencies = []
 x-prismlauncher-lock-update = false
 
 [download]
 mode = "url"
-url = "https://cdn.modrinth.com/data/QRMV06RW/versions/X6fQxSsK/argentum-1.0.1.jar"
+url = "https://cdn.modrinth.com/data/QRMV06RW/versions/eD0a2cPD/argentum-1.0.0.jar"
 hash-format = "sha512"
-hash = "22fa7b7ba6f0dabda864ef720107096043188e62af43f1f9b18af90c648b5add9c29761217c3acc03a2deb2d5dbb76683598b8266bc8891792694947ac8268f5"
+hash = "a10fcbb75a2e47fa02d6c278c8d7feee11f86159291214a3a4ad26625921f22c27093a2f40b030a3b9744ff7b4174311c1711a4cd595532040ad0014acc29dfb"
 
 [update.modrinth]
 mod-id = "QRMV06RW"
-version = "X6fQxSsK"
+version = "eD0a2cPD"

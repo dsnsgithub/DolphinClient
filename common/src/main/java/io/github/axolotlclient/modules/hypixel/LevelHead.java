@@ -44,13 +44,15 @@ public class LevelHead implements AbstractHypixelMod {
 	private final OptionCategory category = OptionCategory.create("levelhead");
 
 	public static String getDisplayString(Mode mode, String uuid) {
-		return "Level: " + mode.getApi().getAsyncNow(uuid).map(() -> "...", () -> "???", val -> {
-			if (mode == Mode.BEDWARS) {
-				return val + "☆";
-			} else {
-				return String.valueOf(val);
-			}
-		});
+		return "Level: " + mode.getApi().getAsyncNow(uuid).map(() -> "...", () -> "???", val -> decorate(mode, val));
+	}
+
+	static String decorate(Mode mode, Number level) {
+		String text = HypixelLevelClient.formatLevel(level);
+		if (mode == Mode.BEDWARS) {
+			return text + "☆";
+		}
+		return text;
 	}
 
 	public String getDisplayString(String uuid) {
@@ -60,7 +62,6 @@ public class LevelHead implements AbstractHypixelMod {
 
 	@Override
 	public void init() {
-		enabled.setForceOff(true, "levelhead.enabled.tooltip");
 		category.add(enabled);
 		category.add(textColor);
 		category.add(background);
@@ -80,6 +81,6 @@ public class LevelHead implements AbstractHypixelMod {
 		BEDWARS(HypixelAbstractionLayer.getInstance().getBedwarsLevelApi()),
 		SKYWARS(HypixelAbstractionLayer.getInstance().getSkywarsExpApi());
 
-		private final CachedAPI<String, Integer> api;
+		private final CachedAPI<String, Double> api;
 	}
 }

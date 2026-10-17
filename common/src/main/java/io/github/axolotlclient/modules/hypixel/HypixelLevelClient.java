@@ -29,7 +29,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Locale;
 import java.util.Optional;
 
 import io.github.axolotlclient.util.UUIDHelper;
@@ -60,11 +59,7 @@ public final class HypixelLevelClient {
 		if (!Double.isFinite(value) || value < 0) {
 			return "???";
 		}
-		double rounded = Math.round(value * 100.0d) / 100.0d;
-		if (rounded == Math.rint(rounded)) {
-			return Long.toString((long) Math.rint(rounded));
-		}
-		return String.format(Locale.ROOT, "%.2f", rounded);
+		return Long.toString((long) Math.floor(value));
 	}
 
 	public static String levelUrl(String uuid) {

@@ -27,7 +27,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HypixelLevelClientTest {
@@ -60,9 +59,11 @@ class HypixelLevelClientTest {
 
 	@Test
 	void formatsLevelForNametag() {
-		assertEquals("251.85", HypixelLevelClient.formatLevel(251.84895433070866));
+		assertEquals("251", HypixelLevelClient.formatLevel(251.84895433070866));
+		assertEquals("251", HypixelLevelClient.formatLevel(251.99));
 		assertEquals("12", HypixelLevelClient.formatLevel(12.0));
 		assertEquals("0", HypixelLevelClient.formatLevel(0));
+		assertEquals("0", HypixelLevelClient.formatLevel(0.9));
 		assertEquals("???", HypixelLevelClient.formatLevel(Double.NaN));
 	}
 
@@ -71,6 +72,7 @@ class HypixelLevelClientTest {
 		Optional<Double> level = HypixelLevelClient.requestLevel(UUID, HypixelLevelClient.userAgent("1.0.2"));
 		assertTrue(level.isPresent(), "level endpoint returned no number");
 		assertTrue(level.get() >= 0);
-		assertNotEquals("???", HypixelLevelClient.formatLevel(level.get()));
+		String shown = HypixelLevelClient.formatLevel(level.get());
+		assertTrue(shown.matches("\\d+"), shown);
 	}
 }

@@ -32,7 +32,7 @@ jobs:
         id: version
         run: echo "version=$(grep -E '^version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
-      - name: Stage jar and mrpack
+      - name: Stage mrpack
         run: |
           mkdir -p build/upload
           mapfile -t jars < <(find versions/*/build/libs -maxdepth 1 -name '*.jar' \
@@ -42,7 +42,6 @@ jobs:
             printf '%s\n' "${jars[@]}"
             exit 1
           fi
-          cp -v "${jars[0]}" build/upload/
           python3 pack/build_mrpack.py \
             --dolphin-jar "${jars[0]}" \
             --output "build/upload/Dolphin-Optimized.Pink.v${{ steps.version.outputs.version }}.mrpack" \
@@ -52,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: DolphinClient-${{ steps.version.outputs.version }}-${{ github.sha }}
-          path: build/upload/
+          path: build/upload/*.mrpack
           if-no-files-found: error
 
       - name: Upload test reports

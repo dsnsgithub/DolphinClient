@@ -68,8 +68,11 @@ def modrinth_files() -> list[dict]:
         path = entry.get("path")
         hashes = entry.get("hashes") or {}
         downloads = entry.get("downloads") or []
-        if not isinstance(path, str) or not path.startswith("mods/") or not path.endswith(".jar"):
-            raise SystemExit(f"Modrinth file path is not a mod jar: {path!r}")
+        if not isinstance(path, str) or not (
+            (path.startswith("mods/") and path.endswith(".jar"))
+            or (path.startswith("resourcepacks/") and path.endswith(".zip"))
+        ):
+            raise SystemExit(f"Modrinth file path is not a mod jar or resource pack: {path!r}")
         if is_dolphin_mod(path):
             raise SystemExit("DolphinClient is built here and is not a Modrinth download")
         if not hashes.get("sha1") or not hashes.get("sha512"):
@@ -250,6 +253,24 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
             raise SystemExit("Pack versionId does not match --dolphin-jar")
         if any(name.endswith("usercache.json") or name.endswith("accounts.json") for name in names):
             raise SystemExit("Personal account files were copied into the pack")
+        # 1.8.9 saves this list bottom-to-top, so the last name is the top of the resource pack screen.
+        options_line = next(
+            line.split(":", 1)[1]
+            for line in pack.read("overrides/options.txt").decode().splitlines()
+            if line.startswith("resourcePacks:")
+        )
+        resource_packs = json.loads(options_line)
+        expected_packs = [
+            "§dlooshy §7[§f1.8.9§7] [v0.12].zip",
+            "§dlooshy §7[§f1.8.9§7] PINK MODE.zip",
+            "xD Overlay.zip",
+        ]
+        if resource_packs != expected_packs:
+            raise SystemExit(f"Resource pack order is {resource_packs}")
+        if "overrides/resourcepacks/xD Overlay.zip" not in names:
+            raise SystemExit("xD Overlay is missing from the pack")
+        if any("Zahry" in name for name in names):
+            raise SystemExit("Zahry is still in the pack")
         intermediary = json.loads(pack.read("patches/net.fabricmc.intermediary.json"))
         library_names = [lib["name"] for lib in intermediary["libraries"]]
         if "net.ornithemc:calamus-intermediary-gen2:1.8.9" not in library_names:

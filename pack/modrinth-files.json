@@ -103,5 +103,35 @@
       "https://cdn.modrinth.com/data/h2NAXCR5/versions/HZ3MW8tG/soundfix-1.1.0%2Bmc1.8.9.jar"
     ],
     "fileSize": 85414
+  },
+  {
+    "path": "resourcepacks/§dlooshy §7[§f1.8.9§7] PINK MODE.zip",
+    "hashes": {
+      "sha1": "eb94e8673c24a6e7a15f182968db0c61c621c8dc",
+      "sha512": "78abe5b04c727ff67288ed3320da28d65f22e015efb42580cd6a7629d5585fc78d251b4bb13056044c29e5552f912d571230e04b3f075f40872d48358814ad22"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/eadkPdfn/versions/TMFNfbRR/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20PINK%20MODE.zip"
+    ],
+    "fileSize": 11985876
+  },
+  {
+    "path": "resourcepacks/§dlooshy §7[§f1.8.9§7] [v0.12].zip",
+    "hashes": {
+      "sha1": "27d920e1c39fa9945bb68554145e21e1565c8ab6",
+      "sha512": "1e666c6a359415daf640b9d27231b7e75db90a41c544b7b850983ff499dd73a0e30b5f0022a121ec6f35b90bb6eced0981580f88c7ce3293166cfbe9bd9d8da7"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/pbipt9Sm/versions/NzXM5AKu/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20%5Bv0.12%5D.zip"
+    ],
+    "fileSize": 14149213
   }
 ]

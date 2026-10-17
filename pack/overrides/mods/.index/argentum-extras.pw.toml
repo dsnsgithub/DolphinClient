@@ -1,0 +1,19 @@
+name = "Argentum Extras"
+filename = "argentum-extras-1.0.0.jar"
+side = "client"
+x-prismlauncher-loaders = ["ornithe"]
+x-prismlauncher-mc-versions = ["1.8.9"]
+x-prismlauncher-release-type = "release"
+x-prismlauncher-version-number = "1.0.0"
+x-prismlauncher-dependencies = []
+x-prismlauncher-lock-update = false
+
+[download]
+mode = "url"
+url = "https://cdn.modrinth.com/data/Tc8Lbsu7/versions/NOYXQuR5/argentum-extras-1.0.0.jar"
+hash-format = "sha512"
+hash = "ced7c1588dee545133955d154b61b8a03955cf3d51db7e4392a3d8dd8438bd048dd77f5a9907ec61cce9847e59e892c6a7e881cac63df56590a318db8e21ab4d"
+
+[update.modrinth]
+mod-id = "Tc8Lbsu7"
+version = "NOYXQuR5"

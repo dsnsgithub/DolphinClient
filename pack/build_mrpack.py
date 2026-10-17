@@ -1,31 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble the Dolphin Optimized .mrpack from pack/overrides.
-
-The instance files live in this directory. Mods listed in
-modrinth-files.json are downloaded from Modrinth on import. Argentum,
-Argentum Extras, and Cera use the published 1.0.0 files. Everything
-else, including the DolphinClient jar from the GitHub build, is packed into
-overrides.
-
-Prism's importer accepts only minecraft, fabric-loader, quilt-loader, forge,
-and neoforge in modrinth.index.json. Any other dependency, including an
-"ornithe" key, aborts the import. Ornithe on 1.8.9 is Fabric Loader 0.19.3
-plus Calamus generation 2 intermediary mappings, Flap, and a handful of
-libraries the Ornithe installer adds so the game can start on modern Java.
-
-The index therefore depends on Fabric Loader. The same archive carries Prism
-component files in patches/. Prism uses a patches/<uid>.json file instead of
-downloading that component from its metadata server, and while resolving
-dependencies it adds every component those files require. The shipped
-intermediary patch points at net.ornithemc:calamus-intermediary-gen2:1.8.9
-and requires the rest of the Ornithe runtime, so importing the .mrpack
-installs Ornithe rather than Fabric's own intermediary (which has no 1.8.9
-build).
-
-modrinth.index.json is stored first. Prism stops at the first of that file
-or instance.cfg, and this pack must take the Modrinth path so the dependency
-resolver runs.
-"""
+"""Assemble the Dolphin Optimized .mrpack from pack/overrides."""
 
 from __future__ import annotations
 

@@ -23,12 +23,16 @@
 
 package io.github.axolotlclient.mixin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.axolotlclient.DolphinClient;
 import io.github.axolotlclient.bridge.AxoPerspective;
 import io.github.axolotlclient.modules.hypixel.LevelHead;
+import io.github.axolotlclient.modules.hypixel.LevelHeadPlacement;
 import io.github.axolotlclient.modules.hypixel.bedwars.BedwarsMod;
 import io.github.axolotlclient.util.Util;
 import net.minecraft.client.Minecraft;
@@ -42,6 +46,9 @@ import net.minecraft.client.render.vertex.DefaultVertexFormat;
 import net.minecraft.client.render.vertex.Tesselator;
 import net.minecraft.client.render.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.living.player.PlayerEntity;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -81,27 +88,27 @@ public abstract class EntityRendererMixin<T extends Entity> {
 					BedwarsMod.getInstance().bedwarsLevelHead.get()) {
 					String levelhead = BedwarsMod.getInstance().getGame().get().getLevelHead(player);
 					if (levelhead != null) {
-						axolotlclient$drawLevelHead(levelhead);
+						axolotlclient$drawLevelHead(player, string, levelhead);
 					}
 				} else if (LevelHead.getInstance().enabled.get()) {
 					String text = LevelHead.getInstance().getDisplayString(entity.getUuid().toString());
 
-					axolotlclient$drawLevelHead(text);
+					axolotlclient$drawLevelHead(player, string, text);
 				}
 			}
 		}
 	}
 
 	@Unique
-	private void axolotlclient$drawLevelHead(String text) {
+	private void axolotlclient$drawLevelHead(Entity entity, String name, String text) {
 		TextRenderer textRenderer = Minecraft.getInstance().textRenderer;
 
 		float x = textRenderer.getWidth(text) / 2F;
-		int y = text.contains("deadmau5") ? -20 : -10;
-
+		int above = "deadmau5".equals(name) ? 20 : 10;
 		if (LevelHead.getInstance().background.get()) {
-			y -= 2;
+			above += 2;
 		}
+		int y = -(above + axolotlclient$tagsAbove(entity, textRenderer.fontHeight, above));
 
 		if (LevelHead.getInstance().background.get()) {
 			Tesselator tesselator = Tesselator.getInstance();
@@ -118,6 +125,48 @@ public abstract class EntityRendererMixin<T extends Entity> {
 
 		textRenderer.draw(text, -x, y, LevelHead.getInstance().textColor.get().toInt(),
 			DolphinClient.config().useShadows.get());
+	}
+
+	/**
+	 * Pixels to lift the level so it clears the below-name scoreboard row and holograms
+	 * parked just above the username. Vanilla only draws that scoreboard row inside 10 blocks.
+	 */
+	@Unique
+	private int axolotlclient$tagsAbove(Entity entity, int fontHeight, int baseAbove) {
+		boolean belowName = false;
+		if (entity instanceof PlayerEntity player && !player.isSneaking() && this.dispatcher.camera != null
+			&& player.squaredDistanceTo(this.dispatcher.camera) < 100.0) {
+			Scoreboard scoreboard = player.getScoreboard();
+			belowName = scoreboard != null && scoreboard.getDisplayObjective(2) != null;
+		}
+
+		double nameAnchor = entity.y + entity.height + 0.5;
+		double[] tags = null;
+		if (entity.world != null) {
+			Box box = new Box(entity.x - 1.0, nameAnchor, entity.z - 1.0, entity.x + 1.0, nameAnchor + 3.0, entity.z + 1.0);
+			List<Double> above = new ArrayList<>();
+			for (Entity other : entity.world.getEntities(entity, box)) {
+				if (other == entity || !other.hasCustomName() || !other.isCustomNameVisible()) {
+					continue;
+				}
+				double dx = other.x - entity.x;
+				double dz = other.z - entity.z;
+				if (dx * dx + dz * dz > 0.36) {
+					continue;
+				}
+				double anchor = other.y + other.height + 0.5;
+				if (anchor > nameAnchor + 0.05) {
+					above.add(anchor);
+				}
+			}
+			if (!above.isEmpty()) {
+				tags = new double[above.size()];
+				for (int i = 0; i < above.size(); i++) {
+					tags[i] = above.get(i);
+				}
+			}
+		}
+		return LevelHeadPlacement.extraPixels(fontHeight, belowName, nameAnchor, tags, baseAbove);
 	}
 
 	@WrapWithCondition(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;begin(ILnet/minecraft/client/render/vertex/VertexFormat;)V"))

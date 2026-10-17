@@ -930,7 +930,7 @@
     },
     "hypixel-mods": {
       "levelhead": {
-        "enabled": "false",
+        "enabled": "true",
         "textcolor": "#FFB8860B;false;1.0",
         "background": "false",
         "levelHeadMode": "NETWORK"

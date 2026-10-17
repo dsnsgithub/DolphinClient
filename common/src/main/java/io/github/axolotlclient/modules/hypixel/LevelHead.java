@@ -37,7 +37,7 @@ import lombok.Getter;
 public class LevelHead implements AbstractHypixelMod {
 	@Getter
 	private static final LevelHead Instance = new LevelHead();
-	public final ForceableBooleanOption enabled = new ForceableBooleanOption("enabled", "levelhead.enabled.tooltip", false);
+	public final ForceableBooleanOption enabled = new ForceableBooleanOption("enabled", "levelhead.enabled.tooltip", true);
 	public final BooleanOption background = new BooleanOption("background", false);
 	public final ColorOption textColor = new ColorOption("textcolor", ClientColors.GOLD);
 	public final EnumOption<Mode> mode = new EnumOption<>("levelHeadMode", Mode.class, Mode.NETWORK);

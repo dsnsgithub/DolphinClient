@@ -40,5 +40,6 @@
   "weather_density": 0,
   "leaf_quality": "FANCY",
   "disable_text_shadows": false,
-  "fxaa": false
+  "fxaa": false,
+  "high_dpi_screen": true
 }

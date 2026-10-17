@@ -211,6 +211,23 @@ def build(output_path: Path, dolphin_jar: Path) -> str:
     return version_id
 
 
+def check_update_metadata(pack: zipfile.ZipFile, files: list[dict]) -> None:
+    """Prism only offers Ornithe updates when the mod index records that loader."""
+    indexes = [pack.read(name).decode() for name in pack.namelist() if name.endswith(".pw.toml")]
+    for entry in files:
+        filename = entry["path"].rsplit("/", 1)[-1]
+        matches = [text for text in indexes if f'filename = "{filename}"' in text]
+        if len(matches) != 1:
+            raise SystemExit(f"Expected one Prism metadata file for {filename}, found {len(matches)}")
+        text = matches[0]
+        if entry["hashes"]["sha512"] not in text or "[update.modrinth]" not in text:
+            raise SystemExit(f"Prism metadata for {filename} is missing the Modrinth hash or project")
+        if entry["path"].startswith("mods/") and '"ornithe"' not in text:
+            raise SystemExit(f"Prism metadata for {filename} does not record the Ornithe loader")
+        if "x-prismlauncher-lock-update = true" in text:
+            raise SystemExit(f"Prism metadata for {filename} locks updates")
+
+
 def check_pack(path: Path, dolphin_jar: Path) -> None:
     with zipfile.ZipFile(path) as pack:
         names = pack.namelist()
@@ -231,6 +248,7 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
         expected_files = modrinth_files()
         if index["files"] != expected_files:
             raise SystemExit("Index files do not match pack/modrinth-files.json")
+        check_update_metadata(pack, expected_files)
         modrinth_paths = {f"overrides/{entry['path']}" for entry in expected_files}
         if any(name in modrinth_paths for name in names):
             raise SystemExit("A Modrinth download is also bundled in overrides")

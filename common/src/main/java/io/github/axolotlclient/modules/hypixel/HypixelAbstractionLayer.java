@@ -26,12 +26,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import io.github.axolotlclient.DolphinClientCommon;
 import io.github.axolotlclient.util.CachedAPI;
+import io.github.axolotlclient.util.ThreadExecuter;
+import io.github.axolotlclient.util.UUIDHelper;
 import lombok.Getter;
 
 /**
- * Local cache for Hypixel stats. Online lookups were removed with the backend,
- * so every request completes empty and callers fall back to in-game data.
+ * Cache for Hypixel stats. Network level is loaded from hypixel.dsns.dev.
+ * The other lookups have no endpoint and complete empty.
  */
 public class HypixelAbstractionLayer {
 	@Getter
@@ -45,13 +48,16 @@ public class HypixelAbstractionLayer {
 	private final CachedAPI<String, BedwarsData> bedwarsDataApi = empty();
 
 	@Getter
-	private final CachedAPI<String, Integer> networkLevelApi = empty();
+	private final CachedAPI<String, Double> networkLevelApi = new CachedAPI<>(uuid -> CompletableFuture
+		.supplyAsync(() -> HypixelLevelClient.requestLevel(uuid, HypixelLevelClient.userAgent(DolphinClientCommon.VERSION)),
+			ThreadExecuter.service())
+		.exceptionally(error -> Optional.empty()), 128, true);
 
 	@Getter
-	private final CachedAPI<String, Integer> bedwarsLevelApi = empty();
+	private final CachedAPI<String, Double> bedwarsLevelApi = empty();
 
 	@Getter
-	private final CachedAPI<String, Integer> skywarsExpApi = empty();
+	private final CachedAPI<String, Double> skywarsExpApi = empty();
 
 	@Getter
 	private final CachedAPI<String, PlayerData> playerDataApi = empty();
@@ -65,7 +71,7 @@ public class HypixelAbstractionLayer {
 	}
 
 	public void handleDisconnectEvents(UUID uuid) {
-		String key = uuid.toString();
+		String key = UUIDHelper.toUndashed(uuid);
 		bedwarsDataApi.invalidate(key);
 		networkLevelApi.invalidate(key);
 		bedwarsLevelApi.invalidate(key);

@@ -1,0 +1,137 @@
+[
+  {
+    "path": "mods/argentum-1.0.0.jar",
+    "hashes": {
+      "sha1": "5723a4b884396010df44f4e7f27af38010fe12ed",
+      "sha512": "a10fcbb75a2e47fa02d6c278c8d7feee11f86159291214a3a4ad26625921f22c27093a2f40b030a3b9744ff7b4174311c1711a4cd595532040ad0014acc29dfb"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/QRMV06RW/versions/eD0a2cPD/argentum-1.0.0.jar"
+    ],
+    "fileSize": 1736412
+  },
+  {
+    "path": "mods/argentum-extras-1.0.0.jar",
+    "hashes": {
+      "sha1": "2c5dbb19e725a1e7b6f862df7846776ab42b8903",
+      "sha512": "ced7c1588dee545133955d154b61b8a03955cf3d51db7e4392a3d8dd8438bd048dd77f5a9907ec61cce9847e59e892c6a7e881cac63df56590a318db8e21ab4d"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/Tc8Lbsu7/versions/NOYXQuR5/argentum-extras-1.0.0.jar"
+    ],
+    "fileSize": 54925
+  },
+  {
+    "path": "mods/asynclogger-2.2.2+1.8.9-ornithe.jar",
+    "hashes": {
+      "sha1": "cb25c8cbac18425723006cd89158076633e89152",
+      "sha512": "2ee41834156342128d19f6070aa0d8513b9ef240f08f652070e5024537bb90dc61c196266b1c66f88567b7b7493033eacc5281a3797b495621817adaa63c19e1"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/zvNzKfGF/versions/lwjZBYEm/asynclogger-2.2.2%2B1.8.9-ornithe.jar"
+    ],
+    "fileSize": 595059
+  },
+  {
+    "path": "mods/cera-1.0.0.jar",
+    "hashes": {
+      "sha1": "024e7b9c34c6864448c13e1ed909e95c93498617",
+      "sha512": "f871a64bc24491bde5908fcad9bbb81e9bfd34c9962ddecd492e658701f2de6ffc9aeb83f8f6170e088d34d693b58f5acf012af7546c22d2df1f4c9d8316e733"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/z4ctq7MO/versions/CIU0Y1Xy/cera-1.0.0.jar"
+    ],
+    "fileSize": 511708
+  },
+  {
+    "path": "mods/legacy-lwjgl3-1.4.4.jar",
+    "hashes": {
+      "sha1": "5b6206b0cc78c2c291cc79cf370f395583c11500",
+      "sha512": "257bbfb61ed727b5d0c9f8a3b58375830faac82a6d72c5dac2c0b288d9bda6fc138b78182ef162e7a89815da0915584c1fc5d2819e483d7836967614d3b2f429"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/lpiIRiAZ/versions/g5grBwqM/legacy-lwjgl3-1.4.4.jar"
+    ],
+    "fileSize": 12512984
+  },
+  {
+    "path": "mods/ornithe-standard-libraries-0.20.3.jar",
+    "hashes": {
+      "sha1": "92d1556483e7209c9cb7db9805f0c548b406dbf3",
+      "sha512": "f93aed44bb7f1e9761f9f5fe91f8bf0ce18423caee8c30429567465a8692d53b75694daab5bde151ba1722e8be15cc94c3bcb7526dadac90fd962d5498cd2c5d"
+    },
+    "env": {
+      "client": "required",
+      "server": "required"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/EHGtwpJv/versions/MH3vv5UY/ornithe-standard-libraries-0.20.3.jar"
+    ],
+    "fileSize": 3248472
+  },
+  {
+    "path": "mods/soundfix-1.1.0+mc1.8.9.jar",
+    "hashes": {
+      "sha1": "d28786939f20e324a0a9b362cde4f43afc2ff74b",
+      "sha512": "5baea044af713a160b1beaa65aabe776a6e920a0bf90ffe12a9090cbf69f3dc1525340ad6f431d0aa676a66cd0f981e400bda4d0b88577cc7a8b759810cc17e2"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/h2NAXCR5/versions/HZ3MW8tG/soundfix-1.1.0%2Bmc1.8.9.jar"
+    ],
+    "fileSize": 85414
+  },
+  {
+    "path": "resourcepacks/§dlooshy §7[§f1.8.9§7] PINK MODE.zip",
+    "hashes": {
+      "sha1": "eb94e8673c24a6e7a15f182968db0c61c621c8dc",
+      "sha512": "78abe5b04c727ff67288ed3320da28d65f22e015efb42580cd6a7629d5585fc78d251b4bb13056044c29e5552f912d571230e04b3f075f40872d48358814ad22"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/eadkPdfn/versions/TMFNfbRR/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20PINK%20MODE.zip"
+    ],
+    "fileSize": 11985876
+  },
+  {
+    "path": "resourcepacks/§dlooshy §7[§f1.8.9§7] [v0.12].zip",
+    "hashes": {
+      "sha1": "27d920e1c39fa9945bb68554145e21e1565c8ab6",
+      "sha512": "1e666c6a359415daf640b9d27231b7e75db90a41c544b7b850983ff499dd73a0e30b5f0022a121ec6f35b90bb6eced0981580f88c7ce3293166cfbe9bd9d8da7"
+    },
+    "env": {
+      "client": "required",
+      "server": "unsupported"
+    },
+    "downloads": [
+      "https://cdn.modrinth.com/data/pbipt9Sm/versions/NzXM5AKu/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20%5Bv0.12%5D.zip"
+    ],
+    "fileSize": 14149213
+  }
+]

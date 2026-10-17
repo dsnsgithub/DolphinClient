@@ -1,0 +1,1139 @@
+{
+  "version": "11.0.0",
+  "config": {
+    "general": {
+      "screenshotUtils": {
+        "enabled": "true",
+        "screenshot_utils.mode": "screenshot_utils.mode.chat",
+        "autoExec": "copyAction",
+        "screenshot_utils.mode.toast.border_color": "#FFFFFFFF;false;1.0"
+      },
+      "customWindowTitle": "true",
+      "debugLogOutput": "false",
+      "datetime_format": "yyyy/MM/dd HH:mm:ss",
+      "title_screen_button_mode": "menu_button_mode.modmenu",
+      "game_menu_screen_button_mode": "menu_button_mode.modmenu",
+      "confirm_disconnect": "false",
+      "custom_loading_bg_color": "false",
+      "loadingBgColor": "#FFFFFFFF;false;1.0",
+      "nightMode": "false",
+      "rawMouseInput": "false"
+    },
+    "rendering": {
+      "blockOutlines": {
+        "enabled": "false",
+        "color": "#66000000;false;1.0",
+        "outlineWidth": "1",
+        "block_outlines.fill": "false",
+        "block_outlines.fill_color": "#A5401025;false;1.0"
+      },
+      "nametagOptions": {
+        "showOwnNametag": "false",
+        "useShadows": "true",
+        "nametagBackground": "false"
+      },
+      "timeChanger": {
+        "enabled": "false",
+        "time": "0"
+      },
+      "titles": {
+        "titles.scaling": "false",
+        "titles.padding": "4"
+      },
+      "motionBlur": {
+        "enabled": "false",
+        "strength": "50.0",
+        "inGuis": "false"
+      },
+      "menublur": {
+        "enabled": "false",
+        "strength": "8",
+        "fadeTime": "1",
+        "bgcolor": "#64000000;false;1.0"
+      },
+      "scrollableTooltips": {
+        "enabled": "true",
+        "shiftHorizontalScroll": "true",
+        "scrollAmount": "5",
+        "inverse": "false",
+        "alignToBottom": "false"
+      },
+      "particles": {
+        "Angry Villager": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Barrier": {
+          "showParticle": "true",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Blockcrack": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Blockdust": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Bubble": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Cloud": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Crit": {
+          "showParticle": "true",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0",
+          "alwaysCrit": "false"
+        },
+        "Depthsuspend": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Drip Lava": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Drip Water": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Droplet": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Enchantmenttable": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Explode": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Fireworks Spark": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Flame": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Footstep": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Happy Villager": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Heart": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Hugeexplosion": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Iconcrack": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Instant Spell": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Largeexplode": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Largesmoke": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Lava": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Magic Crit": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0",
+          "alwaysCrit": "false"
+        },
+        "Mob Spell": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Mob Spell Ambient": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Mobappearance": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Note": {
+          "showParticle": "true",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Portal": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Reddust": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Slime": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Smoke": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Snowballpoof": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Snowshovel": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Spell": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Splash": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Suspended": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Take": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Townaura": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Wake": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "Witch Magic": {
+          "showParticle": "false",
+          "count": "1",
+          "customColor": "false",
+          "color": "#FFFFFFFF;false;1.0"
+        },
+        "enabled": "true"
+      },
+      "fpsLimiter": {
+        "enabled": "false",
+        "reduceFPS": "false",
+        "unfocusedFPS": "10",
+        "restoreOnHover": "true",
+        "unfocusedVolumeMultiplier": "0.25",
+        "hiddenVolumeMultiplier": "0.0",
+        "runGCOnUnfocus": "false"
+      },
+      "beams": {
+        "showBeaconBeams": "true"
+      },
+      "tnttime": {
+        "enabled": "false",
+        "decimalplaces": "2"
+      },
+      "zoom": {
+        "zoomDivisor": "4.0",
+        "zoomSpeed": "7.5",
+        "zoomScrolling": "false",
+        "decreaseSensitivity": "true",
+        "smoothCamera": "false",
+        "toggle": "false"
+      },
+      "dynamicFov": "false",
+      "fullBright": "true",
+      "removeVignette": "true",
+      "lowFire": "false",
+      "minimalViewBob": "false",
+      "noHurtCam": "true",
+      "noRain": "false",
+      "hide_chat": "false",
+      "hitColor": "#4DFF0000;false;1.0",
+      "hit_color_on_armor": "false",
+      "customSky": "false",
+      "cloudHeight": "128",
+      "flatItems": "true",
+      "inventory.potion_effect_offset": "true"
+    },
+    "storedOptions": {
+      "hudEditScreen": {
+        "snapping": "true"
+      },
+      "creditsBGM": "true",
+      "defNoSecret": "false",
+      "modify_client_brand": "true",
+      "no_alt_icons": "false"
+    },
+    "hud": {
+      "pinghud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "refreshTime": "4",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "fpshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "cpshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "cpskeybind": "false",
+        "rightcps": "false",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "armorhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_RIGHT",
+        "showProtectionLevel": "false",
+        "show_durability_num": "false",
+        "show_max_durability_num": "false",
+        "armorhud.custom_durability_num_color": "false",
+        "armorhud.durability_num_color": "#FFFFFFFF;false;1.0",
+        "armorhud.main_hand_item_position": "armorhud.main_hand_item_position.bottom",
+        "cardinalorder": "LEFT_RIGHT",
+        "armorhud.reverse_armor_order": "false",
+        "hud.hide_if_empty": "true",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "potionshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "false",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "cardinalorder": "TOP_DOWN",
+        "mode": "potionshud.mode.icons_and_text",
+        "showEffectNames": "true",
+        "potionshud.timer_text_color": "#FF7F7F7F;false;1.0",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "togglesprint": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "100",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "toggleSprint": "true",
+        "toggleSneak": "false",
+        "randomPlaceholder": "false",
+        "placeholder": "No keys pressed",
+        "togglesprint.hide_instead_of_placeholder": "true",
+        "x": "0.0",
+        "y": "0.0",
+        "sprintToggled": "false",
+        "sneakToggled": "false"
+      },
+      "speedhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "horizontal": "true",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "coordshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "shadow": "true",
+        "anchorpoint": "TOP_MIDDLE",
+        "firsttextcolor": "#FF3399FF;false;1.0",
+        "secondtextcolor": "#FFFFFFFF;false;1.0",
+        "decimalplaces": "0",
+        "minimal": "false",
+        "show_biome": "false",
+        "coordshud.show_nether_conversions": "false",
+        "debugcounters.ccount": "false",
+        "debugcounters.ecount": "false",
+        "debugcounters.pcount": "false",
+        "coordshud.delimiter": " ",
+        "coordshud.separator": ", ",
+        "coordshud.separator.color": "#FF3399FF;false;1.0",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "arrowhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "dynamic": "false",
+        "hud.hide_if_empty": "true",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "irltimehud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "dateformat": "HH:mm:ss",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "reachhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "decimalplaces": "0",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "memoryhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "showGraph": "true",
+        "graphUsedColor": "#FFBF2222;false;1.0",
+        "graphFreeColor": "#FF35DB67;false;1.0",
+        "showText": "false",
+        "showAllocated": "false",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "playercounthud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "compasshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_MIDDLE",
+        "width": "240",
+        "showdegrees": "true",
+        "invert_direction": "false",
+        "lookingbox": "#80000000;false;1.0",
+        "degreescolor": "#FFFFFFFF;false;1.0",
+        "cardinalcolor": "#FFFFFFFF;false;1.0",
+        "semicardinalcolor": "#FFAAAAAA;false;1.0",
+        "majorindicator": "#FFFFFFFF;false;1.0",
+        "minorindicator": "#CCFFFFFF;false;1.0",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "tpshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "simple_text_hud.order": "simple_text_hud.order.value_description",
+        "simple_text_hud.separator": " ",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "combohud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "justification": "CENTER",
+        "minwidth": "53",
+        "hud.height": "13",
+        "show_brackets": "false",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "inventoryhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "background_rounding": "9",
+        "anchorpoint": "MIDDLE_MIDDLE",
+        "hud.hide": "false",
+        "dynamic": "false",
+        "inventoryhud.item_background": "true",
+        "inventoryhud.item_background_color": "#64000000;false;1.0",
+        "inventoryhud.always_show_item_backgrounds": "false",
+        "x": "0.5",
+        "y": "0.76"
+      },
+      "tab_overlay_hud": {
+        "enabled": "false",
+        "background": "true",
+        "custom_background_color": "false",
+        "bgcolor": "#64000000;false;1.0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "hud.background_padding": "0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "anchorpoint": "TOP_MIDDLE",
+        "numericalPing": "false",
+        "tablist.small_ping_text": "false",
+        "showPlayerHeads": "true",
+        "shadow": "true",
+        "showHeader": "true",
+        "showFooter": "true",
+        "alwaysShowHeadLayer": "false",
+        "pingColor0": "#FF00FFFF;false;1.0",
+        "pingColor1": "#FF00FF00;false;1.0",
+        "pingColor2": "#FF008800;false;1.0",
+        "pingColor3": "#FFFFFF00;false;1.0",
+        "pingColor4": "#FFFF8800;false;1.0",
+        "pingColor5": "#FFFF0000;false;1.0",
+        "x": "0.5",
+        "y": "0.01"
+      },
+      "subtitleshud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "anchorpoint": "BOTTOM_RIGHT",
+        "subtitles.entry_background": "true",
+        "x": "1.0",
+        "y": "0.9"
+      },
+      "actionbarhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "hud.hide": "false",
+        "timeshown": "60",
+        "customtextcolor": "false",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "bossbarhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_MIDDLE",
+        "hud.hide": "false",
+        "text": "true",
+        "bar": "true",
+        "x": "0.5",
+        "y": "0.0"
+      },
+      "crosshairhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "hud.hide": "false",
+        "crosshair_type": "CROSS",
+        "customTextureGraphics": "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAJklEQVR4XmNgGH7gPxCgixENhohmkGJCAF0PTkCSYnQwRDUPXgAAFyRDvbiXZLUAAAAASUVORK5CYII\u003d",
+        "entity_crosshair_type": "CROSSHAIR_TYPE_DEFAULT",
+        "entity_crosshair_graphics": "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAJklEQVR4XmNgGH7gPxCgixENhohmkGJCAF0PTkCSYnQwRDUPXgAAFyRDvbiXZLUAAAAASUVORK5CYII\u003d",
+        "container_crosshair_type": "CROSSHAIR_TYPE_DEFAULT",
+        "container_crosshair_graphics": "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAJklEQVR4XmNgGH7gPxCgixENhohmkGJCAF0PTkCSYnQwRDUPXgAAFyRDvbiXZLUAAAAASUVORK5CYII\u003d",
+        "showInF5": "false",
+        "overrideF3": "false",
+        "applyBlend": "true",
+        "defaultcolor": "#FFFFFFFF;false;1.0",
+        "entitycolor": "#FFBF2222;false;1.0",
+        "blockcolor": "#FF3399FF;false;1.0",
+        "x": "0.5",
+        "y": "0.5"
+      },
+      "hotbarhud": {
+        "enabled": "false",
+        "hud.hide": "false",
+        "shadow": "true",
+        "anchorpoint": "BOTTOM_MIDDLE",
+        "x": "0.5",
+        "y": "0.96"
+      },
+      "scoreboardhud": {
+        "enabled": "true",
+        "scale": "1.0",
+        "background": "false",
+        "backgroundcolor": "#4C000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "shadow": "true",
+        "anchorpoint": "MIDDLE_RIGHT",
+        "hud.hide": "false",
+        "topbackgroundcolor": "#66000000;false;1.0",
+        "scores": "false",
+        "scorecolor": "#FFFF5555;false;1.0",
+        "toppadding": "0",
+        "text_alpha": "255",
+        "x": "1.0",
+        "y": "0.5"
+      },
+      "keystrokehud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "anchorpoint": "TOP_LEFT",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "heldtextcolor": "#FF000000;false;1.0",
+        "shadow": "false",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "heldbackgroundcolor": "#64FFFFFF;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "heldoutlinecolor": "#FF000000;false;1.0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "keystrokes.animation_time": "100",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "packdisplayhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "iconsonly": "false",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "playerhud": {
+        "enabled": "false",
+        "scale": "1.0",
+        "background": "true",
+        "bgcolor": "#64000000;false;1.0",
+        "outline": "false",
+        "outlinecolor": "#FFFFFFFF;false;1.0",
+        "hud.background_padding": "0",
+        "hud.round_background": "false",
+        "hud.background_rounding": "10",
+        "anchorpoint": "TOP_LEFT",
+        "dynamicrotation": "true",
+        "rotation": "0.0",
+        "autoHide": "false",
+        "x": "0.0",
+        "y": "0.0"
+      },
+      "chathud": {
+        "enabled": "true",
+        "scale": "1.0",
+        "textcolor": "#FFFFFFFF;false;1.0",
+        "shadow": "true",
+        "anchorpoint": "TOP_LEFT",
+        "background": "false",
+        "bgcolor": "#80000000;false;1.0",
+        "lineSpacing": "1",
+        "scrollbarColor": "#70CCCCCC;false;1.0",
+        "chatHistoryLength": "5000",
+        "animate_chat": "true",
+        "keep_messages_on_disconnect": "true",
+        "x": "0.0015625000232830644",
+        "y": "0.8472222089767456"
+      },
+      "enabled": "true",
+      "rescale_grab_corner_color": "#FFF38DA3;false;1.0",
+      "hud_link_creation_enabled": "true",
+      "hud.hud_link_line_width": "3.0"
+    },
+    "hypixel-mods": {
+      "levelhead": {
+        "enabled": "true",
+        "textcolor": "#FFB8860B;false;1.0",
+        "background": "false",
+        "levelHeadMode": "NETWORK"
+      },
+      "autogg": {
+        "printGG": "true",
+        "ggString": "gg",
+        "printGF": "false",
+        "gfString": "gf",
+        "printGLHF": "false",
+        "glhfString": "glhf",
+        "onHypixel": "true",
+        "onBWP": "false",
+        "onPVPL": "false",
+        "onMMC": "false"
+      },
+      "autotip": {
+        "enabled": "true",
+        "hideTipMessages": "false"
+      },
+      "nickhider": {
+        "hiddenNameSelf": "You",
+        "hiddenNameOthers": "Player",
+        "hideOwnName": "false",
+        "hideOtherNames": "false",
+        "hideOwnSkin": "false",
+        "hideOtherSkins": "false"
+      },
+      "autoboop": {
+        "enabled": "false",
+        "autoboop.filterlist.mode": "autoboop.filterlist.mode.disabled",
+        "autoboop.filterlist": ""
+      },
+      "skyblock": {
+        "rotationLocked": "false"
+      },
+      "bedwars": {
+        "bedwars_teamupgrades": {
+          "enabled": "false",
+          "scale": "1.0",
+          "background": "true",
+          "bgcolor": "#64000000;false;1.0",
+          "outline": "false",
+          "outlinecolor": "#FFFFFFFF;false;1.0",
+          "hud.background_padding": "0",
+          "hud.round_background": "false",
+          "hud.background_rounding": "10",
+          "anchorpoint": "TOP_LEFT",
+          "bedwars_teamupgrades.renderWhenRelevant": "true",
+          "x": "0.0",
+          "y": "0.0"
+        },
+        "bedwars_resources": {
+          "enabled": "false",
+          "scale": "1.0",
+          "background": "true",
+          "bgcolor": "#64000000;false;1.0",
+          "outline": "false",
+          "outlinecolor": "#FFFFFFFF;false;1.0",
+          "hud.background_padding": "0",
+          "hud.round_background": "false",
+          "hud.background_rounding": "10",
+          "anchorpoint": "TOP_LEFT",
+          "hud.hide_if_empty": "true",
+          "bedwars_resources.renderWhenRelevant": "true",
+          "x": "0.0",
+          "y": "0.0"
+        },
+        "bedwars_stats_overlay": {
+          "enabled": "false",
+          "scale": "1.0",
+          "background": "true",
+          "bgcolor": "#64000000;false;1.0",
+          "outline": "false",
+          "outlinecolor": "#FFFFFFFF;false;1.0",
+          "hud.background_padding": "0",
+          "hud.round_background": "false",
+          "hud.background_rounding": "10",
+          "shadow": "true",
+          "anchorpoint": "TOP_LEFT",
+          "hud.padding": "3",
+          "hud.column_margin": "3",
+          "hud.row_margin": "1",
+          "bedwars.stats_overlay.column.level": "false",
+          "bedwars.stats_overlay.column.fkdr": "true",
+          "bedwars.stats_overlay.column.kdr": "true",
+          "bedwars.stats_overlay.column.wlr": "true",
+          "bedwars.stats_overlay.column.ws": "true",
+          "toggle": "true",
+          "bedwars.stats_overlay.auto_activate": "true",
+          "x": "0.0",
+          "y": "0.0"
+        },
+        "bedwars.session_statistics": {
+          "enabled": "false",
+          "scale": "1.0",
+          "background": "true",
+          "bgcolor": "#64000000;false;1.0",
+          "outline": "false",
+          "outlinecolor": "#FFFFFFFF;false;1.0",
+          "hud.background_padding": "0",
+          "hud.round_background": "false",
+          "hud.background_rounding": "10",
+          "textcolor": "#FFFFFFFF;false;1.0",
+          "bedwars.session_stats.value_color": "#FF3399FF;false;1.0",
+          "shadow": "true",
+          "anchorpoint": "TOP_LEFT",
+          "bedwars.session_stats.show_hud": "true",
+          "bedwars.session_stats.show_games_played": "true",
+          "bedwars.session_stats.show_wins": "true",
+          "bedwars.session_stats.show_losses": "true",
+          "bedwars.session_stats.show_winstreak": "true",
+          "bedwars.session_stats.show_beds_broken": "true",
+          "bedwars.session_stats.show_beds_lost": "true",
+          "bedwars.session_stats.show_final_deaths": "true",
+          "bedwars.session_stats.show_final_kills": "true",
+          "bedwars.session_stats.show_deaths": "true",
+          "bedwars.session_stats.show_kills": "true",
+          "bedwars.session_stats.show_kdr": "true",
+          "bedwars.session_stats.show_fkdr": "true",
+          "bedwars.session_stats.order": "games_played,wins,losses,winstreak,beds_broken,beds_lost,final_deaths,final_kills,deaths,kills,kdr,fkdr",
+          "x": "0.0",
+          "y": "0.0"
+        },
+        "bedwars.deathType": {
+          "bedwars.deathType.combat": "rekt",
+          "bedwars.deathType.void": "yeeted into void",
+          "bedwars.deathType.projectile": "shot",
+          "bedwars.deathType.fall": "fall",
+          "bedwars.deathType.golem": "golem moment",
+          "bedwars.deathType.self_void": "voided",
+          "bedwars.deathType.self_unknown": "died"
+        },
+        "enabled": "true",
+        "bedwars.hardcoreHearts": "true",
+        "bedwars.showHunger": "false",
+        "bedwars.displayArmor": "true",
+        "bedwars.bedwarsLevelHead": "true",
+        "bedwars.bedwarsLevelHeadMode": "GAME_KILLS_GAME_DEATHS",
+        "bedwars.removeAnnoyingMessages": "true",
+        "bedwars.tabRenderLatencyIcon": "false",
+        "bedwars.showChatTime": "true",
+        "bedwars.overrideMessages": "true",
+        "bedwars.custom_tab_list": "true",
+        "bedwars.custom_tab_header": "true",
+        "bedwars.custom_tab_footer": "true"
+      },
+      "cache_mode": "ON_CLIENT_DISCONNECT",
+      "removeLobbyJoinMessages": "false"
+    },
+    "hitboxes": {
+      "hitboxes.self": {
+        "hitboxes.show": "false",
+        "color": "#FFFE8EFF;false;1.0"
+      },
+      "hitboxes.players": {
+        "hitboxes.show": "false",
+        "color": "#FFFFFFFF;false;1.0"
+      },
+      "hitboxes.arrows": {
+        "hitboxes.show": "true",
+        "color": "#FFFFCBFF;false;1.0"
+      },
+      "hitboxes.projectiles": {
+        "hitboxes.show": "false",
+        "color": "#FFFFAA00;false;1.0"
+      },
+      "hitboxes.items": {
+        "hitboxes.show": "false",
+        "color": "#FFFFFF55;false;1.0"
+      },
+      "hitboxes.hostile": {
+        "hitboxes.show": "false",
+        "color": "#FFAA0000;false;1.0"
+      },
+      "hitboxes.passive": {
+        "hitboxes.show": "false",
+        "color": "#FF55FF55;false;1.0"
+      },
+      "hitboxes.other": {
+        "hitboxes.show": "false",
+        "color": "#FFAAAAAA;false;1.0"
+      },
+      "enabled": "true",
+      "hitboxes.line_width": "2",
+      "hitboxes.show_look_vector": "true",
+      "hitboxes.show_eye_height": "true",
+      "hitboxes.show_invisible": "false"
+    },
+    "freelook": {
+      "enabled": "false",
+      "mode": "freelook",
+      "perspective": "THIRD_PERSON_BACK",
+      "invert": "false",
+      "toggle": "false",
+      "perspective.alt": "THIRD_PERSON_FRONT",
+      "toggle.alt": "false"
+    },
+    "rpc": {
+      "enabled": "false",
+      "showTime": "true",
+      "showActivity": "true",
+      "showServerNameMode": "off"
+    }
+  }
+}

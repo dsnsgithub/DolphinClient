@@ -1,0 +1,19 @@
+name = "looshy"
+filename = "§dlooshy §7[§f1.8.9§7] [v0.12].zip"
+side = "client"
+x-prismlauncher-loaders = ["minecraft"]
+x-prismlauncher-mc-versions = ["1.8.9"]
+x-prismlauncher-release-type = "release"
+x-prismlauncher-version-number = "v0.12.legacy"
+x-prismlauncher-dependencies = []
+x-prismlauncher-lock-update = false
+
+[download]
+mode = "url"
+url = "https://cdn.modrinth.com/data/pbipt9Sm/versions/NzXM5AKu/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20%5Bv0.12%5D.zip"
+hash-format = "sha512"
+hash = "1e666c6a359415daf640b9d27231b7e75db90a41c544b7b850983ff499dd73a0e30b5f0022a121ec6f35b90bb6eced0981580f88c7ce3293166cfbe9bd9d8da7"
+
+[update.modrinth]
+mod-id = "pbipt9Sm"
+version = "NzXM5AKu"

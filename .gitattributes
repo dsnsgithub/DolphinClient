@@ -25,6 +25,9 @@ gradlew         text    eol=lf
 *.ear           binary
 *.jar           binary
 *.jks           binary
+*.mrpack        binary
 *.png           binary
+*.dat           binary
+*.zip           binary
 *.so            binary
 *.war           binary

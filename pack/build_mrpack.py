@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Turn the Dolphin Optimized Prism instance zip into a Modrinth .mrpack.
+"""Assemble the Dolphin Optimized .mrpack from pack/overrides.
+
+The instance files live in this directory. The GitHub build passes the
+DolphinClient jar it just produced, and that jar is the only copy of the
+mod that goes into the pack.
 
 Prism's importer accepts only minecraft, fabric-loader, quilt-loader, forge,
 and neoforge in modrinth.index.json. Any other dependency, including an
@@ -25,21 +29,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import urllib.request
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PATCH_DIR = ROOT / "prism-patches"
-DEFAULT_SOURCE = (
-    "https://github.com/dsnsgithub/DolphinClient/releases/download/"
-    "v1.0.2/Dolphin-Optimized.Pink.v1.0.2.zip"
-)
-GAME_PREFIX = "minecraft/"
-SKIP_GAME_FILES = {
-    "minecraft/usercache.json",
-    "minecraft/config/dolphinclient/accounts.json",
-}
+OVERRIDES = ROOT / "overrides"
 PACK_NAME = "Dolphin Optimized Pink"
 MINECRAFT_VERSION = "1.8.9"
 FABRIC_LOADER_VERSION = "0.19.3"
@@ -134,74 +129,54 @@ def dolphin_version(jar_name: str) -> str:
     return jar_name[len(prefix) :].split("+", 1)[0]
 
 
-def detect_version(source: zipfile.ZipFile) -> str:
-    prefix = "minecraft/mods/DolphinClient-"
-    matches = [
-        name[len(prefix) :].split("+", 1)[0]
-        for name in source.namelist()
-        if name.startswith(prefix) and name.endswith(".jar")
-    ]
-    if len(matches) != 1:
-        raise SystemExit(f"Expected one DolphinClient jar, found {matches}")
-    return matches[0]
-
-
 def is_dolphin_mod(relative: str) -> bool:
     name = relative.rsplit("/", 1)[-1]
     return relative.startswith("mods/") and name.startswith("DolphinClient-") and name.endswith(".jar")
 
 
-def build(source_path: Path, output_path: Path, dolphin_jar: Path | None = None) -> str:
+def override_files() -> list[tuple[str, bytes]]:
+    if not OVERRIDES.is_dir():
+        raise SystemExit(f"Missing pack overrides directory: {OVERRIDES}")
+    entries = []
+    for path in OVERRIDES.rglob("*"):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(OVERRIDES).as_posix()
+        if is_dolphin_mod(relative):
+            raise SystemExit(f"{relative} is checked in; the build supplies the DolphinClient jar")
+        entries.append((relative, path.read_bytes()))
+    if not any(relative.startswith("mods/") and relative.endswith(".jar") for relative, _ in entries):
+        raise SystemExit("pack/overrides has no mods to bundle")
+    return entries
+
+
+def build(output_path: Path, dolphin_jar: Path) -> str:
     component_patches = patches()
     check_components(component_patches)
-    replacement_name = None
-    replacement_bytes = None
-    if dolphin_jar is not None:
-        replacement_name = dolphin_jar.name
-        replacement_bytes = dolphin_jar.read_bytes()
-        version_id = dolphin_version(replacement_name)
-    with zipfile.ZipFile(source_path) as source:
-        if dolphin_jar is None:
-            version_id = detect_version(source)
-        game_files = [
-            info
-            for info in source.infolist()
-            if info.filename.startswith(GAME_PREFIX)
-            and not info.is_dir()
-            and info.filename not in SKIP_GAME_FILES
-        ]
-        if not any(info.filename.startswith("minecraft/mods/") and info.filename.endswith(".jar") for info in game_files):
-            raise SystemExit("Source zip has no mods to bundle")
+    version_id = dolphin_version(dolphin_jar.name)
+    entries = override_files()
+    entries.append((f"mods/{dolphin_jar.name}", dolphin_jar.read_bytes()))
+    entries.sort()
 
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with zipfile.ZipFile(output_path, "w") as pack:
-            # Must be the first entry Prism's importer inspects.
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(output_path, "w") as pack:
+        # Must be the first entry Prism's importer inspects.
+        pack.writestr(
+            "modrinth.index.json",
+            json.dumps(index_document(version_id), indent=2) + "\n",
+        )
+        pack.writestr("instance.cfg", (ROOT / "instance.cfg").read_bytes())
+        for uid, data in component_patches.items():
             pack.writestr(
-                "modrinth.index.json",
-                json.dumps(index_document(version_id), indent=2) + "\n",
+                f"patches/{uid}.json",
+                json.dumps(data, indent=4) + "\n",
             )
-            instance_cfg = (ROOT / "instance.cfg").read_bytes()
-            pack.writestr("instance.cfg", instance_cfg)
-            for uid, data in component_patches.items():
-                pack.writestr(
-                    f"patches/{uid}.json",
-                    json.dumps(data, indent=4) + "\n",
-                )
-            replaced = False
-            for info in game_files:
-                relative = info.filename[len(GAME_PREFIX) :]
-                if replacement_bytes is not None and is_dolphin_mod(relative):
-                    replaced = True
-                    continue
-                pack.writestr(f"overrides/{relative}", source.read(info))
-            if replacement_bytes is not None:
-                if not replaced:
-                    raise SystemExit("Source pack has no DolphinClient jar to replace")
-                pack.writestr(f"overrides/mods/{replacement_name}", replacement_bytes)
+        for relative, payload in entries:
+            pack.writestr(f"overrides/{relative}", payload)
     return version_id
 
 
-def check_pack(path: Path, dolphin_jar: Path | None = None) -> None:
+def check_pack(path: Path, dolphin_jar: Path) -> None:
     with zipfile.ZipFile(path) as pack:
         names = pack.namelist()
         if not names or names[0] != "modrinth.index.json":
@@ -224,13 +199,12 @@ def check_pack(path: Path, dolphin_jar: Path | None = None) -> None:
         dolphin_mods = [name for name in bundled if is_dolphin_mod(name.removeprefix("overrides/"))]
         if len(dolphin_mods) != 1:
             raise SystemExit(f"Expected one DolphinClient jar, found {dolphin_mods}")
-        if dolphin_jar is not None:
-            if Path(dolphin_mods[0]).name != dolphin_jar.name:
-                raise SystemExit(f"Pack jar {dolphin_mods[0]} != {dolphin_jar.name}")
-            if pack.read(dolphin_mods[0]) != dolphin_jar.read_bytes():
-                raise SystemExit("Pack DolphinClient jar does not match --dolphin-jar")
-            if index["versionId"] != dolphin_version(dolphin_jar.name):
-                raise SystemExit("Pack versionId does not match --dolphin-jar")
+        if Path(dolphin_mods[0]).name != dolphin_jar.name:
+            raise SystemExit(f"Pack jar {dolphin_mods[0]} != {dolphin_jar.name}")
+        if pack.read(dolphin_mods[0]) != dolphin_jar.read_bytes():
+            raise SystemExit("Pack DolphinClient jar does not match --dolphin-jar")
+        if index["versionId"] != dolphin_version(dolphin_jar.name):
+            raise SystemExit("Pack versionId does not match --dolphin-jar")
         if any(name.endswith("usercache.json") or name.endswith("accounts.json") for name in names):
             raise SystemExit("Personal account files were copied into the pack")
         intermediary = json.loads(pack.read("patches/net.fabricmc.intermediary.json"))
@@ -242,38 +216,21 @@ def check_pack(path: Path, dolphin_jar: Path | None = None) -> None:
             patch_name = f"patches/{uid}.json"
             if uid != "net.minecraft" and patch_name not in names:
                 raise SystemExit(f"Missing {patch_name}")
-        print(f"ok {path} version={index['versionId']} mods={len(bundled)} components={sum(1 for n in names if n.startswith('patches/'))}")
-
-
-def resolve_source(source: str, cache: Path) -> Path:
-    path = Path(source)
-    if path.is_file():
-        return path
-    cache.parent.mkdir(parents=True, exist_ok=True)
-    if not cache.is_file():
-        urllib.request.urlretrieve(source, cache)
-    return cache
+        print(
+            f"ok {path} version={index['versionId']} mods={len(bundled)} "
+            f"components={sum(1 for n in names if n.startswith('patches/'))}"
+        )
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", default=DEFAULT_SOURCE, help="Prism instance zip, or a URL")
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=ROOT.parent / "build" / "Dolphin-Optimized.Pink.v1.0.2.mrpack",
-    )
-    parser.add_argument(
-        "--dolphin-jar",
-        type=Path,
-        help="Replace the pack's DolphinClient jar with this freshly built jar",
-    )
+    parser.add_argument("--dolphin-jar", type=Path, required=True, help="DolphinClient jar from this build")
+    parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--check", action="store_true", help="Validate the written .mrpack")
     args = parser.parse_args()
-    if args.dolphin_jar is not None and not args.dolphin_jar.is_file():
+    if not args.dolphin_jar.is_file():
         raise SystemExit(f"DolphinClient jar not found: {args.dolphin_jar}")
-    source = resolve_source(args.source, ROOT.parent / "build" / "source-instance.zip")
-    version = build(source, args.output, args.dolphin_jar)
+    version = build(args.output, args.dolphin_jar)
     print(f"wrote {args.output} ({version})")
     if args.check:
         check_pack(args.output, args.dolphin_jar)

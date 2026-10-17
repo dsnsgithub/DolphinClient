@@ -44,7 +44,7 @@ jobs:
           fi
           python3 pack/build_mrpack.py \
             --dolphin-jar "${jars[0]}" \
-            --output "build/upload/Dolphin-Optimized.Pink.v${{ steps.version.outputs.version }}.mrpack" \
+            --output "build/upload/Dolphin Optimized v${{ steps.version.outputs.version }}.mrpack" \
             --check
 
       - name: Upload release artifact

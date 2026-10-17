@@ -1,0 +1,165 @@
+{
+  "version": "1.0.0",
+  "config": {
+    "blockingItemUsing": {
+      "blockHitting": "true",
+      "useAndMine": "true",
+      "useAndMineParticles": "true",
+      "useAndMineSound": "true",
+      "allowMiningCancel": "true",
+      "miningProgressResetLogic": "true",
+      "blockingArm": "true",
+      "swordBlockThirdPerson": "true",
+      "oldSwingVisual": "true",
+      "oldSwingVisualParticles": "true"
+    },
+    "sneaking": {
+      "smoothSneaking": "true",
+      "slowUpSneak": "true",
+      "thirdPersonSneaking": "true",
+      "fixThirdPersonHeldItemSneakDeSync": "true",
+      "doubleTapSneak": "false",
+      "stopLineTranslateSneak": "true"
+    },
+    "items": {
+      "spriteRendering": {
+        "droppedItemSprite": "false",
+        "swapDroppedItemNormals": "false",
+        "projectileSprite": "false",
+        "swapProjectileSpriteNormals": "false",
+        "framedItemSprite": "false",
+        "swapFramedItemSpriteNormals": "false"
+      },
+      "itemPositions": {
+        "firstPersonPositions": "true",
+        "thirdPersonPositions": "true",
+        "framedItemPosition": "false",
+        "oldBowRotation": "true",
+        "trapDoorItemPosition": "false"
+      },
+      "mirroredProjectiles": "false",
+      "droppedItemsFacePlayer": "false",
+      "stickRod": "false",
+      "equipLogic": "false",
+      "framedItemLighting": "false",
+      "oldJumpBoostPotionColor": "false",
+      "goldenCarrotCreativeTab": "false"
+    },
+    "resources": {
+      "models": {
+        "skullModel": "false",
+        "fastGrass": "false",
+        "fastGrassItem": "false",
+        "fire": "false",
+        "skullBlockRendering": "false",
+        "fenceGateItemModel": "false",
+        "fenceGateWallMode": "false",
+        "itemModelSideQuadRendering": "false",
+        "modelShadeAndAmbientOcclusion": "false",
+        "fastSmoothLighting": "false",
+        "inventoryPressurePlateDimensions": "false"
+      },
+      "textures": {
+        "opaqueLeavesTextures": "false",
+        "witherArmorTexture": "false"
+      },
+      "sounds": {
+        "fireChargeSound": "false",
+        "hopperSound": "false",
+        "fireSound": "false",
+        "randomizeDoorSound": "false",
+        "dispenserClickSound": "false",
+        "disableItemEntitySplashSound": "false"
+      },
+      "particles": {
+        "eggEntityCollisionParticles": "false",
+        "fallParticles": "false",
+        "dontShowFallParticlesOnFences": "false",
+        "disableItemEntitySplashParticles": "false"
+      },
+      "mipmapPrecision": "false",
+      "mipmapAllBlocks": "false",
+      "guiBlockItemsMipmap": "false",
+      "oldFastLeaves": "false",
+      "litFurnaceMinecart": "false",
+      "tallBlockBreakSync": "false",
+      "tntZFighting": "false",
+      "dontAsyncReloadResources": "false"
+    },
+    "combat": {
+      "clientSideEntityMovement": "false",
+      "secondLayerDamageTint": "false",
+      "damageTintColor": "false",
+      "oldDamageTick": "false",
+      "oldDamageTintLighting": "false",
+      "separateDamageTintFromGlint": "false",
+      "noSkullLayerDamageTint": "false"
+    },
+    "gui": {
+      "debugOverlay": {
+        "debugInfo": "false",
+        "disableDebugBackground": "false",
+        "debugTextSpacing": "false",
+        "debugTextColorScheme": "false",
+        "debugTextShadow": "false"
+      },
+      "tabOverlay": {
+        "tabDimensions": "false",
+        "disableTabPlayerHeads": "false",
+        "disableTabHeader": "false",
+        "disableTabFooter": "false",
+        "hideScoreboardHearts": "false",
+        "dontSortTabEntries": "false",
+        "rowBasedEntryOrder": "false",
+        "oldObjectivesPosition": "false"
+      },
+      "show1_7_10": "false",
+      "heartFlashing": "false",
+      "alwaysShowCrosshair": "false",
+      "centeredSelectionMenus": "false",
+      "disableServerSelectionButtons": "false",
+      "disableUnknownServerIcon": "false",
+      "disableSkinCustomizationButton": "false",
+      "oldMultiplayerSettingsPage": "false",
+      "difficultyLogic": "false",
+      "refreshResourcesRegardless": "false",
+      "moveSprintKeybind": "false",
+      "controlsListButtonHeight": "false",
+      "disableTitles": "false",
+      "dontUpdateEffectsHud": "false",
+      "inventoryTextLighting": "false",
+      "disconnectScreen": "false",
+      "disconnectServerToTitleScreen": "false",
+      "customizeWorldPresetIcons": "false",
+      "packFormatWarning": "false",
+      "buggedChatOpacity": "false",
+      "showShadowInInventory": "false"
+    },
+    "enchantmentGlint": {
+      "oldGlint": "false",
+      "oldGuiGlint": "false",
+      "oldGlintColor": "false",
+      "oldGlintLayer": "false",
+      "disableGlintOnBlocks": "false"
+    },
+    "hitbox": {
+      "removeHitboxEyeLine": "false",
+      "removeHitboxEyeVector": "false",
+      "hitboxOffset": "false",
+      "mobSizeDimensions": "false"
+    },
+    "offsets": {
+      "oldItemPickup": "false",
+      "xpOrbPosition": "false",
+      "flameOffset": "false",
+      "creeperOffset": "false",
+      "shadowOffset": "false",
+      "horseRiderEyeHeight": "false",
+      "sleepEyeHeight": "false",
+      "potionEntityOffset": "false",
+      "playerEyeHeightOffset": "false",
+      "zombieVillagerHelmetOffset": "false",
+      "framedItemRotationOffset": "false"
+    }
+  }
+}

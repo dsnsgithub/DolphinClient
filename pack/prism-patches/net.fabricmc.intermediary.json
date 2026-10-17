@@ -1,0 +1,55 @@
+{
+    "formatVersion": 1,
+    "libraries": [
+        {
+            "name": "net.ornithemc:calamus-intermediary-gen2:1.8.9",
+            "url": "https://maven.ornithemc.net/releases"
+        }
+    ],
+    "name": "Intermediary Mappings",
+    "requires": [
+        {
+            "equals": "1.8.9",
+            "uid": "net.minecraft"
+        },
+        {
+            "equals": "2.0.17",
+            "uid": "org.slf4j.slf4j-api"
+        },
+        {
+            "equals": "2.19.0",
+            "uid": "org.apache.logging.log4j.log4j-slf4j2-impl"
+        },
+        {
+            "equals": "2.19.0",
+            "uid": "org.apache.logging.log4j.log4j-api"
+        },
+        {
+            "equals": "2.19.0",
+            "uid": "org.apache.logging.log4j.log4j-core"
+        },
+        {
+            "equals": "8.5.9",
+            "uid": "it.unimi.dsi.fastutil"
+        },
+        {
+            "equals": "2.10",
+            "uid": "com.google.code.gson.gson"
+        },
+        {
+            "equals": "1.0.0",
+            "uid": "net.ornithemc.log4j-patch"
+        },
+        {
+            "equals": "5.0.4",
+            "uid": "net.sf.jopt-simple.jopt-simple"
+        },
+        {
+            "equals": "0.0.5",
+            "uid": "net.ornithemc.flap"
+        }
+    ],
+    "type": "release",
+    "uid": "net.fabricmc.intermediary",
+    "version": "1.8.9"
+}

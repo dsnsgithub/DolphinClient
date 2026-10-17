@@ -1,0 +1,23 @@
+{
+  "chunk_builder_threads": 0,
+  "defer_chunk_updates": true,
+  "async_occlusion": "EVERYTHING",
+  "fog_culling": true,
+  "entity_culling": true,
+  "entity_instancing": true,
+  "entity_occlusion_interval_ms": 50,
+  "particle_culling": true,
+  "block_face_culling": true,
+  "translucency_sorting": true,
+  "animate_only_visible_textures": true,
+  "chunk_fade_in_duration": 0,
+  "faster_clouds": true,
+  "cpu_render_ahead_limit": 3,
+  "biome_blend_radius": 3,
+  "render_pass_downgrade_denylist": [],
+  "safe_chunk_edges": true,
+  "compact_vertex_format": false,
+  "check_gl_errors": false,
+  "font_batching": true,
+  "greedy_render_thread": false
+}

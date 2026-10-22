@@ -1,5 +1,5 @@
 name = "prism 16x - original"
-filename = "!      §fp§9rism §8[§f16§9x§8].zip"
+filename = "-      §fp§9rism §8[§f16§9x§8].zip"
 side = "client"
 x-prismlauncher-loaders = ["minecraft"]
 x-prismlauncher-mc-versions = ["1.8.9"]

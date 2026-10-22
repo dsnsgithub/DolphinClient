@@ -253,12 +253,23 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
         )
         resource_packs = json.loads(options_line)
         expected_packs = [
-            "§dlooshy §7[§f1.8.9§7] [v0.12].zip",
-            "§dlooshy §7[§f1.8.9§7] PINK MODE.zip",
+            "!      §fp§drism §8[§f16§dx§8].zip",
             "xD Overlay.zip",
         ]
         if resource_packs != expected_packs:
             raise SystemExit(f"Resource pack order is {resource_packs}")
+        # All four variants must be installed, even though only Rose is selected.
+        expected_downloads = {
+            "resourcepacks/!      §fp§9rism §8[§f16§9x§8].zip",
+            "resourcepacks/!      §fp§7rism §8[§f16§7x§8].zip",
+            "resourcepacks/!      §fp§dri§bsm §8[§f16§3x§8].zip",
+            "resourcepacks/!      §fp§drism §8[§f16§dx§8].zip",
+        }
+        resource_downloads = {
+            entry["path"] for entry in expected_files if entry["path"].startswith("resourcepacks/")
+        }
+        if resource_downloads != expected_downloads:
+            raise SystemExit(f"Unexpected resource pack downloads: {resource_downloads}")
         if "overrides/resourcepacks/xD Overlay.zip" not in names:
             raise SystemExit("xD Overlay is missing from the pack")
         if any("Zahry" in name for name in names):

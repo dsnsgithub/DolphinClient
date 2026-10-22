@@ -23,9 +23,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
-import io.github.axolotlclient.oldanimations.util.MobUtil;
 import io.github.axolotlclient.oldanimations.util.PlayerUtil;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.platform.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -49,24 +47,6 @@ public abstract class EntityRendererMixin {
 		return original;
 	}
 
-	@ModifyExpressionValue(method = "renderOnFire", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/Entity;width:F"))
-	private float axolotlclient$oldMobWidth(float original, @Local(argsOnly = true) Entity entity) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mobSizeDimensions.get()) {
-			/* since entity hitbox sizes are slightly different in 1.7, this is the closest we can get to emulating that */
-			/* without altering combat */
-			original = MobUtil.INSTANCE.oldMobWidth(entity, original);
-		}
-		return original;
-	}
-
-	@ModifyExpressionValue(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/entity/Entity;height:F"))
-	private float axolotlclient$oldMobHeight(float original, @Local(argsOnly = true) Entity entity) {
-		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.mobSizeDimensions.get()) {
-			original = MobUtil.INSTANCE.oldMobHeight(entity, original);
-		}
-		return original;
-	}
-
 	//todo: we can improve this a bit
 	@WrapOperation(method = "postRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;renderOnFire(Lnet/minecraft/entity/Entity;DDDF)V"))
 	private void axolotlclient$includeEyeHeight$renderFire(EntityRenderer<?> instance, Entity entity, double dx, double dy, double dz, float tickDelta, Operation<Void> original) {
@@ -81,12 +61,6 @@ public abstract class EntityRendererMixin {
 		if (oldFlameHeight) {
 			GlStateManager.popMatrix();
 		}
-	}
-
-	@WrapOperation(method = "postRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;shouldRenderShadow()Z"))
-	private boolean axolotlclient$removeShadowCheck(EntityRenderDispatcher instance, Operation<Boolean> original) {
-		/* its already true by default but eh */
-		return OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.showShadowInInventory.get() || original.call(instance);
 	}
 
 	@ModifyArg(method = "postRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;renderShadow(Lnet/minecraft/entity/Entity;DDDFF)V"), index = 2)

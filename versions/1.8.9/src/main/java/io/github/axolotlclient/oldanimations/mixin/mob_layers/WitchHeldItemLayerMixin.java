@@ -91,7 +91,8 @@ public class WitchHeldItemLayerMixin {
 
 	@WrapWithCondition(method = "render(Lnet/minecraft/entity/living/mob/monster/WitchEntity;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;translatef(FFF)V", ordinal = 5))
 	private boolean axolotlclient$wrapWitchLayerTranslate(float f, float g, float h) {
-		return false;
+		/* the translation is replaced by the transforms above, so it only goes away with them */
+		return !(OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.thirdPersonPositions.get());
 	}
 
 	@ModifyArg(method = "render(Lnet/minecraft/entity/living/mob/monster/WitchEntity;FFFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;rotatef(FFFF)V", ordinal = 7), index = 1)

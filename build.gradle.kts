@@ -12,7 +12,7 @@ plugins {
 }
 
 version = "${project.version}"
-group = "io.github.axolotlclient"
+group = "io.github.dolphinclient"
 
 repositories {
 	maven {

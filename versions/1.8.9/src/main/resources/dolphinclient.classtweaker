@@ -1,0 +1,33 @@
+classTweaker v1 named
+
+accessible class net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionFace
+
+accessible field net/minecraft/client/sound/system/SoundEngine system Lnet/minecraft/client/sound/system/SoundEngine$System;
+
+transitive-inject-interface net/minecraft/resource/Identifier io/github/dolphinclient/bridge/util/AxoIdentifier
+transitive-inject-interface net/minecraft/client/Minecraft io/github/dolphinclient/bridge/AxoMinecraftClient
+transitive-inject-interface net/minecraft/client/render/TextRenderer io/github/dolphinclient/bridge/render/AxoFont
+transitive-inject-interface net/minecraft/client/render/Window io/github/dolphinclient/bridge/render/AxoWindow
+transitive-inject-interface net/minecraft/entity/Entity io/github/dolphinclient/bridge/entity/AxoEntity
+transitive-inject-interface net/minecraft/item/ItemStack io/github/dolphinclient/bridge/item/AxoItemStack
+transitive-inject-interface net/minecraft/entity/living/player/PlayerInventory io/github/dolphinclient/bridge/item/AxoPlayerInventory
+transitive-inject-interface net/minecraft/entity/living/player/PlayerEntity io/github/dolphinclient/bridge/entity/AxoPlayer
+transitive-inject-interface net/minecraft/item/Item io/github/dolphinclient/bridge/item/AxoItem
+transitive-inject-interface net/minecraft/world/World io/github/dolphinclient/bridge/world/AxoWorld
+transitive-inject-interface net/minecraft/enchantment/Enchantment io/github/dolphinclient/bridge/item/AxoEnchant
+transitive-inject-interface net/minecraft/client/options/KeyBinding io/github/dolphinclient/bridge/key/AxoKeybinding
+transitive-inject-interface net/minecraft/client/options/GameOptions io/github/dolphinclient/bridge/AxoGameOptions
+transitive-inject-interface net/minecraft/text/Text io/github/dolphinclient/bridge/util/AxoText$Mutable
+transitive-inject-interface net/minecraft/client/network/PlayerInfo io/github/dolphinclient/bridge/AxoPlayerListEntry
+transitive-inject-interface net/minecraft/entity/living/effect/StatusEffectInstance io/github/dolphinclient/bridge/entity/effect/AxoStatusEffectInstance
+transitive-inject-interface net/minecraft/entity/living/effect/StatusEffect io/github/dolphinclient/bridge/entity/effect/AxoStatusEffect
+transitive-inject-interface net/minecraft/text/Style io/github/dolphinclient/bridge/util/AxoText$Style
+transitive-inject-interface net/minecraft/client/resource/Resource io/github/dolphinclient/bridge/resource/AxoResource
+transitive-inject-interface net/minecraft/client/resource/manager/ResourceManager io/github/dolphinclient/bridge/resource/AxoResourceManager
+transitive-inject-interface net/minecraft/scoreboard/ScoreboardObjective io/github/dolphinclient/bridge/scores/AxoObjective
+transitive-inject-interface net/minecraft/scoreboard/Scoreboard io/github/dolphinclient/bridge/scores/AxoScoreboard
+transitive-inject-interface net/minecraft/scoreboard/ScoreboardScore io/github/dolphinclient/bridge/scores/AxoScoreboardScore
+transitive-inject-interface net/minecraft/scoreboard/team/Team io/github/dolphinclient/bridge/scores/AxoTeam
+transitive-inject-interface net/minecraft/util/profiler/Profiler io/github/dolphinclient/bridge/util/AxoProfiler
+transitive-inject-interface net/minecraft/client/options/ServerListEntry io/github/dolphinclient/bridge/network/AxoServerData
+transitive-inject-interface net/minecraft/entity/living/LivingEntity io/github/dolphinclient/bridge/entity/AxoLivingEntity

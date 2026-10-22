@@ -105,33 +105,39 @@
     "fileSize": 85414
   },
   {
-    "path": "resourcepacks/§dlooshy §7[§f1.8.9§7] PINK MODE.zip",
-    "hashes": {
-      "sha1": "eb94e8673c24a6e7a15f182968db0c61c621c8dc",
-      "sha512": "78abe5b04c727ff67288ed3320da28d65f22e015efb42580cd6a7629d5585fc78d251b4bb13056044c29e5552f912d571230e04b3f075f40872d48358814ad22"
-    },
-    "env": {
-      "client": "required",
-      "server": "unsupported"
-    },
     "downloads": [
-      "https://cdn.modrinth.com/data/eadkPdfn/versions/TMFNfbRR/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20PINK%20MODE.zip"
+	  "https://cdn.modrinth.com/data/bsKJEgom/versions/aGCeIPsC/%21%20%20%20%20%20%20%C2%A7fp%C2%A77rism%20%C2%A78%5B%C2%A7f16%C2%A77x%C2%A78%5D.zip"
     ],
-    "fileSize": 11985876
+    "env": { "client": "required", "server": "required" },
+    "fileSize": 13228006,
+    "hashes": {
+	  "sha1": "13771aed7acaf232ca88ece92e03dba79efdcb03",
+	  "sha512": "013095921bdba5710a0d8ec8578894accf323abcdd47b3b0d44787483f2ea68bc63f507806ad3a46524c96e732661c45261956922a2932428c81c78aed1d6477"
+    },
+    "path": "resourcepacks/-      §fp§7rism §8[§f16§7x§8].zip"
   },
   {
-    "path": "resourcepacks/§dlooshy §7[§f1.8.9§7] [v0.12].zip",
-    "hashes": {
-      "sha1": "27d920e1c39fa9945bb68554145e21e1565c8ab6",
-      "sha512": "1e666c6a359415daf640b9d27231b7e75db90a41c544b7b850983ff499dd73a0e30b5f0022a121ec6f35b90bb6eced0981580f88c7ce3293166cfbe9bd9d8da7"
-    },
-    "env": {
-      "client": "required",
-      "server": "unsupported"
-    },
     "downloads": [
-      "https://cdn.modrinth.com/data/pbipt9Sm/versions/NzXM5AKu/%C2%A7dlooshy%20%C2%A77%5B%C2%A7f1.8.9%C2%A77%5D%20%5Bv0.12%5D.zip"
+	  "https://cdn.modrinth.com/data/o5FS3VdX/versions/DvQCj5Ub/%21%20%20%20%20%20%20%C2%A7fp%C2%A79rism%20%C2%A78%5B%C2%A7f16%C2%A79x%C2%A78%5D.zip"
     ],
-    "fileSize": 14149213
+    "env": { "client": "required", "server": "required" },
+    "fileSize": 16157842,
+    "hashes": {
+	  "sha1": "c4f19f0ddbbaf93151b6736c54135fec66c84521",
+	  "sha512": "29b228c6de49692d589d1b661f71abdde812521c8ee41da7ebe95e5ded68a0148e55e2bff916ec67976192ee42773f27cbdf9e297c5219c7e5c263ee00e369fd"
+    },
+    "path": "resourcepacks/-      §fp§9rism §8[§f16§9x§8].zip"
+  },
+  {
+    "downloads": [
+	  "https://cdn.modrinth.com/data/YdLnIW2i/versions/II04ihWK/%21%20%20%20%20%20%20%C2%A7fp%C2%A7drism%20%C2%A78%5B%C2%A7f16%C2%A7dx%C2%A78%5D.zip"
+    ],
+    "env": { "client": "required", "server": "required" },
+    "fileSize": 13582594,
+    "hashes": {
+	  "sha1": "4b8d8e26145c9de374c816ba3661c8897f761381",
+	  "sha512": "6ff818ef02badcdf4f95d1d076fb5cfccdc30a139ef385507eadee42edf93dc086d780989fb643d6fa5019d71b0796b944261c9ea6d138d693c7c5e1c9c2462e"
+    },
+    "path": "resourcepacks/-      §fp§drism §8[§f16§dx§8].zip"
   }
 ]

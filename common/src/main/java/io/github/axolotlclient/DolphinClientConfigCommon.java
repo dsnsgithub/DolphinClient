@@ -69,6 +69,7 @@ public abstract class DolphinClientConfigCommon {
 	// options
 
 	public final BooleanOption showOwnNametag = new BooleanOption("showOwnNametag", false);
+	public final BooleanOption alwaysRenderNametags = new BooleanOption("alwaysRenderNametags", false);
 	public final BooleanOption useShadows = new BooleanOption("useShadows", false);
 	public final BooleanOption nametagBackground = new BooleanOption("nametagBackground", true);
 
@@ -127,6 +128,7 @@ public abstract class DolphinClientConfigCommon {
 		rendering.add(nametagOptions);
 
 		nametagOptions.add(showOwnNametag);
+		nametagOptions.add(alwaysRenderNametags);
 		nametagOptions.add(useShadows);
 		nametagOptions.add(nametagBackground);
 

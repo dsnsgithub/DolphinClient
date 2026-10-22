@@ -1,0 +1,19 @@
+name = "prism 16x - cotton candy"
+filename = "-      §fp§dri§bsm §8[§f16§3x§8].zip"
+side = "client"
+x-prismlauncher-loaders = ["minecraft"]
+x-prismlauncher-mc-versions = ["1.8.9"]
+x-prismlauncher-release-type = "release"
+x-prismlauncher-version-number = "v1.0.legacy"
+x-prismlauncher-dependencies = []
+x-prismlauncher-lock-update = false
+
+[download]
+mode = "url"
+url = "https://cdn.modrinth.com/data/8uQL8L7B/versions/9L3dBoZ7/%21%20%20%20%20%20%20%C2%A7fp%C2%A7dri%C2%A7bsm%20%C2%A78%5B%C2%A7f16%C2%A73x%C2%A78%5D.zip"
+hash-format = "sha512"
+hash = "485bce1c4eb9aabf0d3b18c61f7d84f7ddc4cf7bece0d342a49105e0dac1d620db5989c93f0e86415880a6ba8bfd66f0ab0f08edb475b6340403c76aa372d0dc"
+
+[update.modrinth]
+mod-id = "8uQL8L7B"
+version = "9L3dBoZ7"

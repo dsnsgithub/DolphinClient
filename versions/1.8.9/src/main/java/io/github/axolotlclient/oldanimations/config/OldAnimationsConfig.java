@@ -26,7 +26,6 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.oldanimations.OldAnimations;
 import lombok.Getter;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
 import net.ornithemc.osl.lifecycle.api.client.MinecraftClientEvents;
 
 public class OldAnimationsConfig {
@@ -99,8 +98,7 @@ public class OldAnimationsConfig {
 	public final BooleanOption zombieVillagerHelmetOffset = new BooleanOption("zombieVillagerHelmetOffset", true);
 	public final BooleanOption framedItemRotationOffset = new BooleanOption("framedItemRotationOffset", true);
 
-	/* toggling these two rebuilds cached game state, so their previous values are tracked */
-	private boolean previousTrapDoorItemPosition = trapDoorItemPosition();
+	/* Potion colors are cached; trapdoor models are selected at render time. */
 	private boolean previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
 
 	/**
@@ -109,10 +107,6 @@ public class OldAnimationsConfig {
 	 */
 	public static boolean isEnabled() {
 		return instance.enabled.get();
-	}
-
-	private boolean trapDoorItemPosition() {
-		return enabled.get() && trapDoorItemPosition.get();
 	}
 
 	private boolean oldJumpBoostPotionColor() {
@@ -190,30 +184,23 @@ public class OldAnimationsConfig {
 		AxolotlClientConfig.getInstance().register(configManager);
 		configManager.load();
 
-		/* attempt to prevent calling resourcereload during game init */
-		previousTrapDoorItemPosition = trapDoorItemPosition();
+		/* Seed the effective color setting after the configuration is loaded. */
 		previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
 
-		/* reload the resources upon toggling certain options */
-		reloadResources();
+		trackPotionColors();
 	}
 
 	/**
-	 * The trapdoor item model is baked at resource load, and potion colors are
-	 * cached separately, so both need a nudge when their option is toggled.
-	 * The master switch counts as toggling both of them.
+	 * Both trapdoor variants are always baked by ModelBakeryMixin and selected
+	 * by ItemModelShaperMixin. Toggling them (or the master switch) must not
+	 * reload every resource and rebuild the world. Only potion colors need
+	 * their cache invalidated when the effective option changes.
 	 */
-	private void reloadResources() {
+	private void trackPotionColors() {
 		MinecraftClientEvents.TICK_END.register(client -> {
-			if (trapDoorItemPosition() != previousTrapDoorItemPosition) {
-				previousTrapDoorItemPosition = trapDoorItemPosition();
-				previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
-				Minecraft.getInstance().reloadResources();
-				reloadPotionColors = true;
-				return;
-			}
-			if (oldJumpBoostPotionColor() != previousOldJumpBoostPotionColor) {
-				previousOldJumpBoostPotionColor = oldJumpBoostPotionColor();
+			boolean current = oldJumpBoostPotionColor();
+			if (current != previousOldJumpBoostPotionColor) {
+				previousOldJumpBoostPotionColor = current;
 				reloadPotionColors = true;
 			}
 		});

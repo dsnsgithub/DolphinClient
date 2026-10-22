@@ -25,24 +25,40 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.axolotlclient.oldanimations.config.OldAnimationsConfig;
 import io.github.axolotlclient.oldanimations.util.ItemUtil;
+import io.github.axolotlclient.oldanimations.util.GuiGlintRenderer;
+import io.github.axolotlclient.oldanimations.util.SpriteQuadProvider;
 import net.minecraft.client.render.entity.ItemRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.model.block.ModelTransformations;
 import net.minecraft.client.render.platform.GlStateManager;
 import net.minecraft.client.resource.model.BakedModel;
 import net.minecraft.client.resource.model.BakedQuad;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.render.texture.TextureManager;
+import net.minecraft.resource.Identifier;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(ItemRenderer.class /* C_6823239 */)
 public abstract class ItemRendererMixin {
+
+	@Shadow
+	@Final
+	private static Identifier ENCHANTMENT_GLINT_LOCATION;
+
+	@Shadow
+	@Final
+	private TextureManager textureManager;
+
+	@Shadow
+	public abstract boolean isGui3d(ItemStack stack);
 
 	@Unique
 	private BakedModel axolotlclient$model = null;
@@ -92,27 +108,28 @@ public abstract class ItemRendererMixin {
 		}
 
 		if (!model.isGui3d() && (axolotlclient$transform == ModelTransformations.Type.GUI || axolotlclient$shouldBeSpriteOrSwapNormal(false))) {
-			/* this is the easiest way to have fast items with the 1.8 model system */
-			/* even forge does this xD */
-			List<BakedQuad> filtered = new ArrayList<>(quads.size());
-			for (BakedQuad quad : quads) {
-				if (quad.getFace() == Direction.SOUTH) {
-					filtered.add(quad);
-				}
-			}
-			return filtered;
+			return SpriteQuadProvider.get(model, quads);
 		}
 		return quads;
 	}
 
 	@Inject(method = "renderEnchantmentGlint", at = @At("HEAD"), cancellable = true)
-	private void axolotlclient$disableDefaultGlint(CallbackInfo ci) {
+	private void axolotlclient$disableDefaultGlint(BakedModel model, CallbackInfo ci) {
 		if (!OldAnimationsConfig.isEnabled()) {
 			return;
 		}
 
-		if (axolotlclient$shouldBeSpriteOrSwapNormal(false)) {
+		// Keep the pre-refactor fast paths: no two extra geometry passes on
+		// blocks, and a flat overlay for GUI items. Master-off remains vanilla.
+		if (model.isGui3d() || axolotlclient$transform == ModelTransformations.Type.GUI || axolotlclient$shouldBeSpriteOrSwapNormal(false)) {
 			ci.cancel();
+		}
+	}
+
+	@Inject(method = "renderGuiItemModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/ItemRenderer;renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/resource/model/BakedModel;)V", shift = At.Shift.AFTER))
+	private void axolotlclient$renderGuiGlint(ItemStack stack, int x, int y, CallbackInfo ci) {
+		if (OldAnimationsConfig.isEnabled() && stack.hasEnchantmentGlint() && !isGui3d(stack)) {
+			GuiGlintRenderer.render(textureManager, ENCHANTMENT_GLINT_LOCATION, Minecraft.getTime());
 		}
 	}
 

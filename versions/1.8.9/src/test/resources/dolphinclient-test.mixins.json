@@ -1,0 +1,7 @@
+{
+	"required": true,
+	"package": "io.github.axolotlclient.test.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"client": ["GlintPassCounterMixin"],
+	"injectors": { "defaultRequire": 1 }
+}

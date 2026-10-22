@@ -23,6 +23,7 @@
 	"license": "LGPL-3.0-or-later",
 	"icon": "assets/dolphinclient/icon.png",
 	"environment": "client",
+	"mixins": ["dolphinclient-test.mixins.json"],
 	"entrypoints": {
 		"client": [
 			"io.github.axolotlclient.DolphinClientTest"

@@ -25,9 +25,6 @@
 	"environment": "client",
 	"entrypoints": {
 	},
-	"provides": [
-		"axolotlclient-common"
-	],
 	"custom": {
 		"modmenu": {
 			"parent": {

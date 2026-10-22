@@ -118,8 +118,6 @@
 	"cache_mode.tooltip": "When cached player data should be cleared <br> <br>On Client Disconnect: Clear when you disconnect from the server. <br>On Player disconnect: Clears a player's data when they disconnect.",
 	"cardinalcolor": "Cardinal Direction Color",
 	"cardinalorder": "Cardinal Order",
-	"category.axolotlclient": "DolphinClient",
-	"key.category.axolotlclient.title": "DolphinClient",
 	"category.dolphinclient": "DolphinClient",
 	"key.category.dolphinclient.title": "DolphinClient",
 	"chathud": "Chat",

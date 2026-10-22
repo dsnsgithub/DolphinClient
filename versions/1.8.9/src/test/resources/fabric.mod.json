@@ -25,7 +25,7 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"io.github.axolotlclient.DolphinClientTest"
+			"io.github.dolphinclient.DolphinClientTest"
 		]
 	},
 	"depends": {

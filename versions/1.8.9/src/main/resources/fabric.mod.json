@@ -22,24 +22,19 @@
 	},
 	"license": "LGPL-3.0-or-later",
 	"icon": "assets/dolphinclient/icon.png",
-	"accessWidener": "axolotlclient.classtweaker",
+	"accessWidener": "dolphinclient.classtweaker",
 	"environment": "client",
 	"entrypoints": {
 		"modmenu": [
-			"io.github.axolotlclient.config.modmenu.ModMenuCompat"
+			"io.github.dolphinclient.config.modmenu.ModMenuCompat"
 		]
 	},
 	"mixins": [
-		"axolotlclient.mixins.json",
-		"axolotlclient-bridge.mixins.json",
+		"dolphinclient.mixins.json",
+		"dolphinclient-bridge.mixins.json",
 		"oldanimations.mixins.json"
 	],
-	"provides": [
-		"axolotlclient",
-		"axolotlclient-oldanimations"
-	],
 	"custom": {
-		"axolotlclient:bridge_impl_version": "V1_8",
 		"dolphinclient:bridge_impl_version": "V1_8"
 	},
 	"depends": {

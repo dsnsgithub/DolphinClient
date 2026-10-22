@@ -42,6 +42,9 @@ dependencies {
 	compileOnly("org.slf4j:slf4j-api:2.0.1")
 
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+	testImplementation("io.github.axolotlclient.AxolotlClient-config:AxolotlClientConfig-common:${project.property("config")}")
+	testImplementation("com.google.code.gson:gson:2.10")
+	testRuntimeOnly("org.slf4j:slf4j-api:2.0.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -130,7 +133,7 @@ tasks.shadowJar {
 		exclude(dependency("com.kohlschutter.junixsocket:junixsocket-native-common:.*"))
 	}
 
-	relocate("com.jagrosh", "io.github.axolotlclient.shadow.jagrosh")
+	relocate("com.jagrosh", "io.github.dolphinclient.shadow.jagrosh")
 
 	append("../LICENSE")
 }

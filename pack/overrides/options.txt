@@ -14,7 +14,7 @@ difficulty:3
 fancyGraphics:false
 ao:0
 renderClouds:false
-resourcePacks:["§dlooshy §7[§f1.8.9§7] [v0.12].zip","§dlooshy §7[§f1.8.9§7] PINK MODE.zip","xD Overlay.zip"]
+resourcePacks:["-      §fp§drism §8[§f16§dx§8].zip","xD Overlay.zip"]
 incompatibleResourcePacks:[]
 lastServer:mc.hypixel.net
 lang:en_US

@@ -31,5 +31,10 @@ public class DolphinClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BridgeValidationPostprocessor.validate();
+		if (System.getenv("DOLPHIN_RENDER_TESTS") != null) {
+			io.github.axolotlclient.oldanimations.OldAnimationsRegressionTest.install();
+		} else if (System.getenv("DOLPHIN_BENCHMARK") != null) {
+			RenderBenchmark.install();
+		}
 	}
 }

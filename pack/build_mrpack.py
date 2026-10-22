@@ -253,8 +253,7 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
         )
         resource_packs = json.loads(options_line)
         expected_packs = [
-            "§dlooshy §7[§f1.8.9§7] [v0.12].zip",
-            "§dlooshy §7[§f1.8.9§7] PINK MODE.zip",
+            "-      §fp§drism §8[§f16§dx§8].zip",
             "xD Overlay.zip",
         ]
         if resource_packs != expected_packs:

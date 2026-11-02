@@ -1,7 +1,7 @@
 /*
  * Copyright © 2026 DSNS <dominic@seung.dev>
  *
- * This file is part of DolphinClient, a fork of AxolotlClient.
+ * This file is part of DolphinClient.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

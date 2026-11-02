@@ -282,7 +282,7 @@ public class Profiles {
 	private @Nullable Profile importProfileFile(Path path) {
 		try {
 			JsonObject document = ProfileFile.read(path);
-			if (!document.has(ProfileFile.CONFIG)) {
+			if (document.entrySet().isEmpty()) {
 				DolphinClientCommon.getInstance().getNotificationProvider().addStatus(
 					"profiles.profile.import.notification.failed",
 					"profiles.profile.import.notification.malformed_profile",

@@ -24,8 +24,6 @@
 
 package io.github.dolphinclient;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +39,6 @@ import io.github.dolphinclient.config.ProfileConfigManager;
 import io.github.dolphinclient.bridge.events.Events;
 import io.github.dolphinclient.bridge.util.AxoIdentifier;
 import io.github.dolphinclient.bridge.util.AxoProfiler;
-import io.github.dolphinclient.config.migration.ConfigMigration;
 import io.github.dolphinclient.config.profiles.ProfileAware;
 import io.github.dolphinclient.config.profiles.Profiles;
 import io.github.dolphinclient.modules.Module;
@@ -63,17 +60,12 @@ public abstract class DolphinClientCommon {
 	public static final String NAME = "DolphinClient";
 	public static final String MODID = "dolphinclient";
 	public static final String COMMON_MODID = "dolphinclient-common";
-	public static final String CONFIG_FILE_NAME = "dolphinclient.json";
 	public static final String KEY_CATEGORY = "category.dolphinclient";
 	public static final AxoIdentifier BADGE_PATH = AxoIdentifier.of(MODID, "textures/badge.png");
 
 	// static utility methods
 	public static Path resolveConfigFile(String file) {
 		return FabricLoader.getInstance().getConfigDir().resolve(MODID).resolve(file);
-	}
-
-	public static Path resolveProfileConfigFile(String file) {
-		return Profiles.getInstance().resolveProfileFile(file);
 	}
 
 	public static boolean isOwnNamespace(String namespace) {
@@ -157,12 +149,7 @@ public abstract class DolphinClientCommon {
 	}
 
 	private void initConfig() {
-		var configFile = getMainConfigFile();
-		configManager = new ProfileConfigManager(configFile, config.getConfig(), ConfigMigration.CONFIG_VERSION,
-			(oldVersion, newVersion, config, json) -> {
-				ConfigMigration.apply(oldVersion.getMajor(), json);
-				return json;
-			});
+		configManager = new ProfileConfigManager(getMainConfigFile(), config.getConfig());
 
 		AxolotlClientConfig.getInstance().register(configManager);
 		configManager.load();
@@ -234,13 +221,13 @@ public abstract class DolphinClientCommon {
 	}
 
 	public Path getMainConfigFile() {
-		var path = resolveProfileConfigFile(CONFIG_FILE_NAME);
-		try {
-			Files.createDirectories(path.getParent());
-		} catch (IOException e) {
-			getLogger().warn("Failed to create config directory, config may not be saved correctly!", e);
+		return Profiles.getInstance().getCurrent().file();
+	}
+
+	public void useProfileFile(Path file) {
+		if (configManager != null && file != null) {
+			configManager.setFile(file);
 		}
-		return path;
 	}
 
 	public void reloadConfig() {

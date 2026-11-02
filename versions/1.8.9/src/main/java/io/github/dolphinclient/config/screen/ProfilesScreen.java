@@ -240,7 +240,7 @@ public class ProfilesScreen extends io.github.axolotlclient.AxolotlClientConfig.
 					ProfilesList.this.reload();
 					ProfilesList.this.centerScrollOn(PresetEntry.this);
 				});
-				this.label = preset.info().name();
+				this.label = preset.name();
 			}
 
 			@Override

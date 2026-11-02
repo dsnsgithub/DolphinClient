@@ -24,11 +24,13 @@
 package io.github.dolphinclient.modules.hud;
 
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import io.github.dolphinclient.DolphinClientCommon;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.Option;
@@ -44,6 +46,8 @@ import io.github.dolphinclient.bridge.render.AxoRenderContext;
 import io.github.dolphinclient.bridge.render.AxoWindow;
 import io.github.dolphinclient.bridge.util.AxoIdentifier;
 import io.github.dolphinclient.bridge.util.AxoProfiler;
+import io.github.dolphinclient.config.profiles.ProfileFile;
+import io.github.dolphinclient.config.profiles.Profiles;
 import io.github.dolphinclient.config.profiles.ProfileAware;
 import io.github.dolphinclient.modules.AbstractCommonModule;
 import io.github.dolphinclient.modules.hud.gui.component.HudEntry;
@@ -75,8 +79,6 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 	private static HudManagerCommon instance;
 
 	public static final int HUD_RESCALE_GRAB_TOLERANCE = 5;
-	private static final String HUD_DEPENDENCIES_SAVE_FILE_NAME = "hud_dependencies.json";
-	private static final String CUSTOM_MODULE_SAVE_FILE_NAME = "custom_hud.json";
 	private final AxoKeybinding key = AxoKeybinding.create(AxoKeys.KEY_RSHIFT, "key.openHud");
 	private final AxoKeybinding toggleHud = AxoKeybinding.create(AxoKeys.KEY_UNKNOWN, "key.toggle_hud");
 	private final OptionCategory hudCategory = OptionCategory.create("hud");
@@ -173,9 +175,9 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 	@SuppressWarnings("unchecked")
 	private void loadHudDependencyLinks() {
 		try {
-			var path = DolphinClientCommon.resolveProfileConfigFile(HUD_DEPENDENCIES_SAVE_FILE_NAME);
-			if (Files.exists(path)) {
-				var obj = (Map<String, Object>) GsonHelper.read(Files.readString(path));
+			var section = ProfileFile.section(Profiles.getInstance().getCurrent().file(), ProfileFile.HUD_DEPENDENCIES);
+			if (section != null && section.isJsonObject()) {
+				var obj = (Map<String, Object>) GsonHelper.read(section.toString());
 				obj.forEach((name, o) -> {
 					var hudId = AxoIdentifier.parse(name);
 					var hud = get(hudId);
@@ -208,10 +210,8 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 
 	public void saveHudDependencyLinks() {
 		try {
-			var path = DolphinClientCommon.resolveProfileConfigFile(HUD_DEPENDENCIES_SAVE_FILE_NAME);
-			Files.createDirectories(path.getParent());
-			var writer = Files.newBufferedWriter(path);
-			var json = new JsonWriter(writer);
+			var buffer = new StringWriter();
+			var json = new JsonWriter(buffer);
 			json.beginObject();
 			for (Map.Entry<AxoIdentifier, HudEntry> entry : entries.entrySet()) {
 				HudEntry hudEntry = entry.getValue();
@@ -238,6 +238,8 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 			}
 			json.endObject();
 			json.close();
+			ProfileFile.putSection(Profiles.getInstance().getCurrent().file(), ProfileFile.HUD_DEPENDENCIES,
+				GsonHelper.GSON.fromJson(buffer.toString(), JsonObject.class));
 		} catch (Exception e) {
 			DolphinClientCommon.getInstance().getLogger().warn("Failed to save hud dependency links!", e);
 		}
@@ -246,9 +248,9 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 	@SuppressWarnings("unchecked")
 	public void loadCustomEntries() {
 		try {
-			var path = DolphinClientCommon.resolveProfileConfigFile(CUSTOM_MODULE_SAVE_FILE_NAME);
-			if (Files.exists(path)) {
-				var obj = (List<Object>) GsonHelper.read(Files.readString(path));
+			var section = ProfileFile.section(Profiles.getInstance().getCurrent().file(), ProfileFile.CUSTOM_HUD);
+			if (section != null && section.isJsonArray()) {
+				var obj = (List<Object>) GsonHelper.read(section.toString());
 				obj.forEach(o -> {
 					var values = (Map<String, Object>) o;
 					AxoIdentifier id;
@@ -276,10 +278,8 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 
 	public void saveCustomEntries() {
 		try {
-			var path = DolphinClientCommon.resolveProfileConfigFile(CUSTOM_MODULE_SAVE_FILE_NAME);
-			Files.createDirectories(path.getParent());
-			var writer = Files.newBufferedWriter(path);
-			var json = new JsonWriter(writer);
+			var buffer = new StringWriter();
+			var json = new JsonWriter(buffer);
 			json.beginArray();
 			for (Map.Entry<AxoIdentifier, HudEntry> entry : entries.entrySet()) {
 				HudEntry hudEntry = entry.getValue();
@@ -298,6 +298,8 @@ public abstract class HudManagerCommon extends AbstractCommonModule implements P
 			}
 			json.endArray();
 			json.close();
+			ProfileFile.putSection(Profiles.getInstance().getCurrent().file(), ProfileFile.CUSTOM_HUD,
+				GsonHelper.GSON.fromJson(buffer.toString(), JsonArray.class));
 		} catch (IOException e) {
 			DolphinClientCommon.getInstance().getLogger().warn("Failed to save custom hud modules!", e);
 		}

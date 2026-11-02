@@ -11,15 +11,11 @@ Open the client menu in-game with **Right Shift**.
 
 ### Configuration
 
-DolphinClient uses `io.github.dolphinclient` for its own code and stores client
-settings, including the integrated 1.7 animations, in
-`config/dolphinclient/profiles/<profile-id>/dolphinclient.json`.
-Profile metadata and custom HUD layouts remain in the same DolphinClient directory.
-The bundled pack includes its animation defaults in that single settings file.
+DolphinClient uses `io.github.dolphinclient` for its own code. Each profile is one
+file, `config/dolphinclient/<profile-name>.json`, containing client settings,
+1.7 animations, custom HUD entries, keystrokes, and HUD links. There is no
+profile folder and no sidecar files.
 
-This hard fork no longer imports AxolotlClient settings, loads its module
-entrypoints, or advertises its mod IDs. Existing DolphinClient profiles continue
-to work; animation options use defaults when absent from a profile.
 The published AxolotlClient config/rendering libraries retain their upstream
 coordinates and API namespaces, as do the copyright and fork attribution labels.
 

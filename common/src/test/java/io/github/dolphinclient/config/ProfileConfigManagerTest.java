@@ -45,12 +45,12 @@ class ProfileConfigManagerTest {
 		animations.add(blocking);
 		root.add(animations);
 		root.add(general);
-		return new ProfileConfigManager(file, root, 11, (from, to, category, json) -> json);
+		return new ProfileConfigManager(file, root);
 	}
 
 	@Test
 	void savesAndReloadsGeneralAndAnimationsInOneFile(@TempDir Path temp) throws Exception {
-		var file = temp.resolve("dolphinclient.json");
+		var file = temp.resolve("Default.json");
 		var manager = manager(file);
 		animation.set(false);
 		general.set(false);
@@ -68,13 +68,13 @@ class ProfileConfigManagerTest {
 
 	@Test
 	void switchesProfilesWithoutLeakingMissingAnimationCategory(@TempDir Path temp) throws Exception {
-		var first = temp.resolve("first/dolphinclient.json");
-		var second = temp.resolve("second/dolphinclient.json");
+		var first = temp.resolve("First.json");
+		var second = temp.resolve("Second.json");
 		var manager = manager(first);
 		animation.set(false);
 		manager.save();
 		Files.createDirectories(second.getParent());
-		Files.writeString(second, "{\"version\":\"11.0.0\",\"config\":{\"customWindowTitle\":\"false\"}}");
+		Files.writeString(second, "{\"name\":\"Second\",\"current\":false,\"config\":{\"customWindowTitle\":\"false\"}}");
 		manager.setFile(second);
 		manager.load();
 		assertTrue(animation.get());
@@ -87,7 +87,7 @@ class ProfileConfigManagerTest {
 
 	@Test
 	void newProfileUsesDefaults(@TempDir Path temp) {
-		var manager = manager(temp.resolve("dolphinclient.json"));
+		var manager = manager(temp.resolve("Default.json"));
 		animation.set(false);
 		general.set(false);
 		manager.load();

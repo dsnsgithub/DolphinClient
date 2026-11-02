@@ -1,5 +1,6 @@
 {
-  "version": "11.0.0",
+  "name": "Default",
+  "current": true,
   "config": {
     "general": {
       "screenshotUtils": {
@@ -1297,5 +1298,7 @@
         "framedItemRotationOffset": "false"
       }
     }
-  }
+  },
+  "custom_hud": [],
+  "hud_dependencies": {}
 }

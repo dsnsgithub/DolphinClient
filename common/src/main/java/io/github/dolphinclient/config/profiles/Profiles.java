@@ -25,25 +25,22 @@ package io.github.dolphinclient.config.profiles;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import com.google.common.hash.Hashing;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonObject;
 import io.github.dolphinclient.DolphinClientCommon;
 import io.github.dolphinclient.bridge.AxoMinecraftClient;
 import io.github.dolphinclient.bridge.resource.AxoResource;
@@ -53,16 +50,13 @@ import io.github.dolphinclient.util.GsonHelper;
 import io.github.dolphinclient.util.ThreadExecuter;
 import lombok.Setter;
 import net.fabricmc.loader.api.FabricLoader;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 public class Profiles {
-	private static final Path PROFILES_CONFIG = DolphinClientCommon.resolveConfigFile("profiles").resolve("profiles.json");
-	private static final String PROFILE_EXPORT_FILE_EXTENSION = ".axoprofile";
+	private static final String PROFILE_EXPORT_FILE_EXTENSION = ".json";
 	private static final DateTimeFormatter EXPORT_TIME_FORMAT = new DateTimeFormatterBuilder().appendPattern("yyyy_MM_dd-HH_mm_ss").toFormatter();
-	private static final String PROFILE_INFO_FILE = "profile_info.json";
 
 	public static Profiles getInstance() {
 		return INSTANCE;
@@ -70,87 +64,146 @@ public class Profiles {
 
 	private static final Profiles INSTANCE = new Profiles();
 
-	private ProfileStorage storage;
+	private final List<Profile> available = new ArrayList<>();
+	private Profile current;
+
+	public static Path directory() {
+		return FabricLoader.getInstance().getConfigDir().resolve(DolphinClientCommon.MODID);
+	}
 
 	public void loadProfiles() {
-		if (Files.exists(PROFILES_CONFIG)) {
-			try (var stream = Files.newBufferedReader(PROFILES_CONFIG)) {
-				storage = GsonHelper.GSON.fromJson(stream, ProfileStorage.class);
-			} catch (IOException e) {
-				DolphinClientCommon.getInstance().getLogger().warn("Failed to load profiles!", e);
+		available.clear();
+		current = null;
+		try {
+			Files.createDirectories(directory());
+			try (var files = Files.list(directory())) {
+				files.filter(Files::isRegularFile)
+					.filter(path -> path.getFileName().toString().endsWith(".json"))
+					.sorted()
+					.forEach(this::readProfile);
 			}
-		} else {
-			storage = new ProfileStorage();
-			storage.current = newProfile("Default");
+		} catch (IOException e) {
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to load profiles!", e);
+		}
+		if (available.isEmpty()) {
+			current = new Profile("Default", null);
+			available.add(current);
 			saveProfiles();
-			for (String name : new String[]{
-				DolphinClientCommon.CONFIG_FILE_NAME,
-				"custom_hud.json",
-				"keystrokes.json"
-			}) {
-				var oldPath = DolphinClientCommon.resolveConfigFile(name);
-				var newPath = resolveProfileFile(name);
-				if (Files.exists(oldPath) && !Files.exists(newPath)) {
-					try {
-						Files.createDirectories(newPath.getParent());
-						Files.move(oldPath, newPath);
-					} catch (IOException e) {
-						DolphinClientCommon.getInstance().getLogger().warn("Failed to move {} to profile-based config path at {}", oldPath, newPath, e);
-					}
-				}
-			}
+			return;
+		}
+		if (current == null) {
+			current = available.get(0);
+			saveProfiles();
 		}
 	}
 
+	private void readProfile(Path path) {
+		try {
+			JsonObject document = ProfileFile.read(path);
+			String name = document.has(ProfileFile.NAME)
+				? document.get(ProfileFile.NAME).getAsString()
+				: stem(path);
+			Profile profile = new Profile(name, path);
+			available.add(profile);
+			if (current == null && document.has(ProfileFile.CURRENT) && document.get(ProfileFile.CURRENT).getAsBoolean()) {
+				current = profile;
+			}
+		} catch (IOException e) {
+			DolphinClientCommon.getInstance().getLogger().warn("Skipping profile file {}", path, e);
+		}
+	}
 
 	public void saveProfiles() {
 		try {
-			Files.createDirectories(PROFILES_CONFIG.getParent());
-			try (var stream = Files.newBufferedWriter(PROFILES_CONFIG)) {
-				GsonHelper.GSON.toJson(storage, stream);
+			Files.createDirectories(directory());
+			Set<Path> used = new HashSet<>();
+			for (Profile profile : available) {
+				Path target = uniqueFile(profile.name(), profile.file(), used);
+				if (profile.file() != null && Files.exists(profile.file()) && !profile.file().equals(target)) {
+					Files.move(profile.file(), target);
+				}
+				String fileStem = target.getFileName().toString();
+				fileStem = fileStem.substring(0, fileStem.length() - ".json".length());
+				if (!fileStem.equals(profile.name())) {
+					profile.setName(fileStem);
+				}
+				profile.file(target);
+				used.add(target);
+				JsonObject document = ProfileFile.read(target);
+				document.addProperty(ProfileFile.NAME, profile.name());
+				document.addProperty(ProfileFile.CURRENT, profile == current);
+				ProfileFile.write(target, document);
+			}
+			if (current != null) {
+				DolphinClientCommon.getInstance().useProfileFile(current.file());
 			}
 		} catch (IOException e) {
-			DolphinClientCommon.getInstance().getLogger().warn("Failed to save profiles, falling back to 'default'", e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to save profiles!", e);
 		}
+	}
+
+	private Path uniqueFile(String name, @Nullable Path existing, Set<Path> used) {
+		String base = ProfileFile.fileName(name);
+		String stem = base.substring(0, base.length() - ".json".length());
+		Path candidate = directory().resolve(base);
+		int suffix = 2;
+		while (used.contains(candidate) || (Files.exists(candidate) && !candidate.equals(existing))) {
+			candidate = directory().resolve(stem + " " + suffix + ".json");
+			suffix++;
+		}
+		return candidate;
 	}
 
 	public void iterateAvailable(Consumer<Profile> action) {
-		storage.available().forEach(action);
+		available.forEach(action);
 	}
 
 	public void remove(Profile profile) {
-		storage.available().remove(profile);
+		available.remove(profile);
+		if (profile.file() == null) {
+			return;
+		}
+		try {
+			Files.deleteIfExists(profile.file());
+		} catch (IOException e) {
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to delete profile {}", profile.name(), e);
+		}
 	}
 
 	public void switchTo(Profile profile) {
-		if (!storage.available().contains(profile)) {
+		if (!available.contains(profile)) {
 			throw new IllegalArgumentException("Unknown profile!");
 		}
 		DolphinClientCommon.getInstance().getLogger().debug("Switching to profile {}", profile.name());
-		storage.current = profile;
+		if (current != null && current != profile) {
+			DolphinClientCommon.getInstance().saveConfig();
+		}
+		current = profile;
+		saveProfiles();
 		DolphinClientCommon.getInstance().reloadConfig();
 	}
 
 	public Profile getCurrent() {
-		return storage.current();
+		return current;
 	}
 
-	public Path resolveProfileFile(String path) {
-		return getCurrent().getPath().resolve(path);
-	}
-
-	@SuppressWarnings("UnstableApiUsage")
 	public Profile newProfile(String name) {
-		var p = new Profile(name, Hashing.sha512().hashUnencodedChars(UUID.randomUUID().toString()).toString());
-		storage.available().add(p);
-		return p;
+		Profile profile = new Profile(name, null);
+		available.add(profile);
+		saveProfiles();
+		return profile;
 	}
 
 	public Profile duplicate(Profile profile) {
-		DolphinClientCommon.getInstance().saveConfig();
-		var duplicate = newProfile(AxoI18n.translate("profiles.duplicated", profile.name()));
+		if (profile == current) {
+			DolphinClientCommon.getInstance().saveConfig();
+		}
+		Profile duplicate = newProfile(AxoI18n.translate("profiles.duplicated", profile.name()));
 		try {
-			Files.copy(profile.getPath(), duplicate.getPath());
+			JsonObject document = ProfileFile.read(profile.file());
+			document.addProperty(ProfileFile.NAME, duplicate.name());
+			document.addProperty(ProfileFile.CURRENT, false);
+			ProfileFile.write(duplicate.file(), document);
 		} catch (IOException e) {
 			DolphinClientCommon.getInstance().getLogger().warn("Failed to duplicate profile!");
 		}
@@ -160,6 +213,9 @@ public class Profiles {
 	public CompletableFuture<?> exportProfile(Profile profile) {
 		return CompletableFuture.runAsync(() -> {
 			try (MemoryStack stack = MemoryStack.stackPush()) {
+				if (profile == current) {
+					DolphinClientCommon.getInstance().saveConfig();
+				}
 				var pointers = stack.mallocPointer(1);
 				pointers.put(stack.UTF8("*" + PROFILE_EXPORT_FILE_EXTENSION));
 				pointers.flip();
@@ -177,20 +233,9 @@ public class Profiles {
 					return;
 				}
 				var outPath = Path.of(out);
-				Files.deleteIfExists(outPath);
-				try (var fs = FileSystems.newFileSystem(outPath, Map.of("create", "true"))) {
-					var realRoot = profile.getPath();
-					Files.walkFileTree(realRoot, new SimpleFileVisitor<>() {
-						@Override
-						public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
-							var zipped = fs.getPath("profile").resolve(realRoot.relativize(file).toString());
-							Files.createDirectories(zipped.getParent());
-							Files.copy(file.toAbsolutePath(), zipped);
-							return super.visitFile(file, attrs);
-						}
-					});
-					Files.writeString(fs.getPath(PROFILE_INFO_FILE), GsonHelper.GSON.toJson(new ProfileInfo(profile)));
-				}
+				JsonObject document = ProfileFile.read(profile.file());
+				document.remove(ProfileFile.CURRENT);
+				ProfileFile.write(outPath, document);
 				DolphinClientCommon.getInstance().getNotificationProvider()
 					.addStatus("profiles.profile.export.notification.success",
 						"profiles.profile.export.notification.success.desc", profile.name(), FabricLoader.getInstance().getGameDir().relativize(outPath));
@@ -215,9 +260,8 @@ public class Profiles {
 					null, true
 				);
 				if (files == null) return Collections.emptyList();
-				var imported = Arrays.stream(files.split("\\|")).map(Path::of)
-					.map(this::readProfile).filter(Objects::nonNull).toList();
-				saveProfiles();
+				var imported = java.util.Arrays.stream(files.split("\\|")).map(Path::of)
+					.map(this::importProfileFile).filter(Objects::nonNull).toList();
 				if (!imported.isEmpty()) {
 					var count = imported.size();
 					if (count == 1) {
@@ -235,47 +279,29 @@ public class Profiles {
 		}, ThreadExecuter.service());
 	}
 
-	private @Nullable Profile readProfile(Path p) {
-		try (var fs = FileSystems.newFileSystem(p)) {
-			var profileInfoPath = fs.getPath(PROFILE_INFO_FILE);
-			if (!Files.exists(profileInfoPath)) {
-				DolphinClientCommon.getInstance().getLogger().warn("Skipping bad profile file at {}", p);
-				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", p.getFileName());
+	private @Nullable Profile importProfileFile(Path path) {
+		try {
+			JsonObject document = ProfileFile.read(path);
+			if (!document.has(ProfileFile.CONFIG)) {
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus(
+					"profiles.profile.import.notification.failed",
+					"profiles.profile.import.notification.malformed_profile",
+					path.getFileName());
 				return null;
 			}
-			var profileInfo = GsonHelper.GSON.fromJson(Files.readString(profileInfoPath), ProfileInfo.class);
-			DolphinClientCommon.getInstance().getLogger().debug("Extracting profile: {}", profileInfo);
-			var newProfile = newProfile(profileInfo.name());
-			Files.createDirectories(newProfile.getPath());
-			var fakeRoot = fs.getPath("/profile");
-			if (!Files.exists(fakeRoot)) {
-				DolphinClientCommon.getInstance().getLogger().debug("Profile is empty!");
-				return newProfile;
-			}
-			Files.walkFileTree(fakeRoot, new SimpleFileVisitor<>() {
-				@Override
-				public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
-					var outPath = newProfile.getPath().resolve(fakeRoot.relativize(file).toString()).normalize();
-					DolphinClientCommon.getInstance().getLogger().debug("Extracting profile file {} to {}", file, outPath);
-					if (!outPath.startsWith(newProfile.getPath())) {
-						throw new AccessDeniedException(file.toString(), profileInfo.name(), null);
-					}
-					Files.copy(file, outPath);
-					return super.visitFile(file, attrs);
-				}
-			});
-			DolphinClientCommon.getInstance().getLogger().debug("Extracted profile {}", newProfile.name());
-			return newProfile;
-		} catch (AccessDeniedException e) {
-			DolphinClientCommon.getInstance().getLogger().warn("Profile {} tried to escape its directory, aborting import.", p);
-			DolphinClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", p.getFileName());
+			String name = document.has(ProfileFile.NAME) ? document.get(ProfileFile.NAME).getAsString() : stem(path);
+			document.addProperty(ProfileFile.CURRENT, false);
+			Profile profile = newProfile(name);
+			document.addProperty(ProfileFile.NAME, profile.name());
+			ProfileFile.write(profile.file(), document);
+			return profile;
 		} catch (Exception e) {
-			DolphinClientCommon.getInstance().getLogger().warn("Failed to import profile from {}:", p, e);
+			DolphinClientCommon.getInstance().getLogger().warn("Failed to import profile from {}:", path, e);
 			DolphinClientCommon.getInstance().getNotificationProvider()
 				.addStatus("profiles.profile.import.notification.failed",
 					"profiles.profile.import.notification.failed.generic");
+			return null;
 		}
-		return null;
 	}
 
 	public List<ProfilePreset> findPresets() {
@@ -285,13 +311,12 @@ public class Profiles {
 		presetCandidates.putAll(resourceManager.br$listResources(DolphinClientCommon.MODID, "profiles/presets", id -> id.br$getPath().endsWith(PROFILE_EXPORT_FILE_EXTENSION)));
 		List<ProfilePreset> foundPresets = new ArrayList<>();
 		presetCandidates.forEach((id, resource) -> {
-			try (var in = new ZipInputStream(resource.br$asStream())) {
-				ZipEntry entry;
-				do {
-					entry = in.getNextEntry();
-				} while (!entry.getName().equals(PROFILE_INFO_FILE));
-				var profileInfo = GsonHelper.GSON.fromJson(new InputStreamReader(in), ProfileInfo.class);
-				foundPresets.add(new ProfilePreset(profileInfo, id, resource));
+			try (var in = new InputStreamReader(resource.br$asStream())) {
+				JsonObject document = GsonHelper.GSON.fromJson(in, JsonObject.class);
+				String name = document != null && document.has(ProfileFile.NAME)
+					? document.get(ProfileFile.NAME).getAsString()
+					: stem(Path.of(id.br$getPath()));
+				foundPresets.add(new ProfilePreset(name, id, resource));
 			} catch (IOException e) {
 				DolphinClientCommon.getInstance().getLogger().warn("Failed to read profile preset from {}", id, e);
 			}
@@ -299,23 +324,29 @@ public class Profiles {
 		return foundPresets;
 	}
 
-	public record ProfilePreset(ProfileInfo info, AxoIdentifier id, AxoResource resource) {
+	private static String stem(Path path) {
+		String fileName = path.getFileName().toString();
+		return fileName.endsWith(".json") ? fileName.substring(0, fileName.length() - ".json".length()) : fileName;
+	}
+
+	public record ProfilePreset(String name, AxoIdentifier id, AxoResource resource) {
 		public void importProfile() {
-			var tmp = PROFILES_CONFIG.resolveSibling("tmp").resolve(info.id()+".zip");
-			try {
-				Files.createDirectories(tmp.getParent());
-				Files.copy(resource.br$asStream(), tmp);
-				var profile = Profiles.getInstance().readProfile(tmp);
-				Files.delete(tmp);
-				Files.delete(tmp.getParent());
-				if (profile == null) {
+			try (var in = resource.br$asStream()) {
+				JsonObject document = GsonHelper.GSON.fromJson(new InputStreamReader(in), JsonObject.class);
+				if (document == null) {
 					return;
 				}
-				Profiles.getInstance().saveProfiles();
+				document.addProperty(ProfileFile.CURRENT, false);
+				Profile profile = Profiles.getInstance().newProfile(name);
+				document.addProperty(ProfileFile.NAME, profile.name());
+				ProfileFile.write(profile.file(), document);
 				Profiles.getInstance().switchTo(profile);
 			} catch (IOException e) {
-				DolphinClientCommon.getInstance().getLogger().warn("Skipping bad profile file at {}, {}:", id(), info().name(), e);
-				DolphinClientCommon.getInstance().getNotificationProvider().addStatus("profiles.profile.import.notification.failed", "profiles.profile.import.notification.malformed_profile", info().name());
+				DolphinClientCommon.getInstance().getLogger().warn("Skipping bad profile preset {}, {}:", id(), name(), e);
+				DolphinClientCommon.getInstance().getNotificationProvider().addStatus(
+					"profiles.profile.import.notification.failed",
+					"profiles.profile.import.notification.malformed_profile",
+					name());
 			}
 		}
 	}
@@ -323,122 +354,28 @@ public class Profiles {
 	public static final class Profile {
 		@Setter
 		private String name;
-		private final String id;
+		private Path file;
 
-		public Profile(String name, String id) {
+		public Profile(String name, Path file) {
 			this.name = name;
-			this.id = id;
+			this.file = file;
 		}
 
-		public Path getPath() {
-			return DolphinClientCommon.resolveConfigFile("profiles").resolve(id());
+		public Path file() {
+			return file;
+		}
+
+		void file(Path file) {
+			this.file = file;
 		}
 
 		public String name() {
 			return name;
 		}
 
-		public String id() {
-			return id;
-		}
-
 		@Override
 		public String toString() {
-			return "Profile[" +
-				"name=" + name + ", " +
-				"id=" + id + ']';
-		}
-	}
-
-	@JsonAdapter(ProfileStorageLoader.class)
-	public static final class ProfileStorage {
-		private Profile current;
-		private final List<Profile> available = new ArrayList<>();
-
-		private ProfileStorage(Profile current, Collection<Profile> available) {
-			this.current = current;
-			this.available.addAll(available);
-		}
-
-		private ProfileStorage() {
-
-		}
-
-		public Profile current() {
-			return current;
-		}
-
-		public List<Profile> available() {
-			return available;
-		}
-	}
-
-	public static class ProfileStorageLoader extends TypeAdapter<ProfileStorage> {
-
-		@Override
-		public void write(JsonWriter out, ProfileStorage value) throws IOException {
-			if (value == null) {
-				out.nullValue();
-				return;
-			}
-
-			out.beginObject();
-			out.name("current").value(value.current().id());
-			out.name("available").beginArray();
-			for (Profile entry : value.available()) {
-				out.beginObject();
-				out.name("name").value(entry.name());
-				out.name("id").value(entry.id());
-				out.endObject();
-			}
-			out.endArray();
-			out.endObject();
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public ProfileStorage read(JsonReader in) throws IOException {
-			if (in.peek() != JsonToken.BEGIN_OBJECT) {
-				return null;
-			}
-
-			Map<String, Object> obj = (Map<String, Object>) GsonHelper.read(in);
-			if (obj == null) return null;
-			var available = ((List<Map<String, String>>) obj.get("available")).stream()
-				.map(e -> new Profile(e.get("name"), e.get("id"))).toList();
-			Map<String, Profile> profiles = available.stream().collect(Collectors.toMap(Profile::id, Function.identity()));
-			return new ProfileStorage(profiles.get((String) obj.get("current")), available);
-		}
-	}
-
-	@JsonAdapter(ProfileInfo.ProfileInfoAdapter.class)
-	public record ProfileInfo(String name, String id) {
-		public ProfileInfo(Profile p) {
-			this(p.name(), p.id());
-		}
-
-		public static class ProfileInfoAdapter extends TypeAdapter<ProfileInfo> {
-
-			@Override
-			public void write(JsonWriter jsonWriter, ProfileInfo profileInfo) throws IOException {
-				if (profileInfo == null) {
-					jsonWriter.nullValue();
-					return;
-				}
-				jsonWriter.beginObject();
-				jsonWriter.name("name").value(profileInfo.name())
-					.name("id").value(profileInfo.id());
-				jsonWriter.endObject();
-			}
-
-			@Override
-			public ProfileInfo read(JsonReader jsonReader) throws IOException {
-				if (jsonReader.peek() == JsonToken.NULL) return null;
-
-				@SuppressWarnings("unchecked") var map = (Map<String, String>) GsonHelper.read(jsonReader);
-				if (map == null) return null;
-				return new ProfileInfo(map.get("name"), map.get("id"));
-			}
+			return "Profile[name=" + name + ", file=" + file + ']';
 		}
 	}
 }

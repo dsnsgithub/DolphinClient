@@ -24,18 +24,22 @@ package io.github.dolphinclient.mixin;
 
 import java.util.List;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.dolphinclient.bridge.events.Events;
 import io.github.dolphinclient.bridge.events.types.ReceiveChatMessageEvent;
+import io.github.dolphinclient.bridge.impl.AxoRenderContextImpl;
 import io.github.dolphinclient.modules.hud.HudManager;
 import io.github.dolphinclient.modules.hypixel.NickHider;
 import io.github.dolphinclient.util.Util;
 import net.minecraft.client.gui.ChatMessage;
 import net.minecraft.client.gui.chat.ChatGui;
+import net.minecraft.client.render.platform.GlStateManager;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -97,17 +101,54 @@ public abstract class ChatHudMixin {
 	public void dolphinclient$render(int ticks, CallbackInfo ci) {
 		io.github.dolphinclient.modules.hud.gui.hud.ChatHud hud = (io.github.dolphinclient.modules.hud.gui.hud.ChatHud) HudManager
 			.getInstance().get(io.github.dolphinclient.modules.hud.gui.hud.ChatHud.ID);
-		if (hud.isEnabled()) {
+		if (hud != null && hud.usesCustomPosition()) {
 			hud.ticks = ticks;
 			ci.cancel();
 		}
+	}
+
+	/**
+	 * Vanilla has already applied {@code translate(0, scaledHeight - 48)},
+	 * {@code translate(2, 20)}, and the chat scale. Drawing in that matrix keeps
+	 * the anchor exact at every GUI scale and resolution.
+	 */
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;scalef(FFF)V", shift = At.Shift.AFTER), cancellable = true)
+	private void dolphinclient$renderAtVanillaAnchor(int ticks, CallbackInfo ci) {
+		io.github.dolphinclient.modules.hud.gui.hud.ChatHud hud = (io.github.dolphinclient.modules.hud.gui.hud.ChatHud) HudManager
+			.getInstance().get(io.github.dolphinclient.modules.hud.gui.hud.ChatHud.ID);
+		if (hud == null || !hud.appliesOnVanillaChat()) {
+			return;
+		}
+		hud.ticks = ticks;
+		hud.renderAtVanillaAnchor(AxoRenderContextImpl.getInstance());
+		GlStateManager.popMatrix();
+		ci.cancel();
+	}
+
+	@ModifyExpressionValue(method = "getMessageAt", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/TextRenderer;fontHeight:I", ordinal = 0))
+	private int dolphinclient$clickLineHeight(int fontHeight) {
+		return vanillaClickLineHeight(fontHeight);
+	}
+
+	@ModifyExpressionValue(method = "getMessageAt", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/TextRenderer;fontHeight:I", ordinal = 1))
+	private int dolphinclient$clickLineHeightAgain(int fontHeight) {
+		return vanillaClickLineHeight(fontHeight);
+	}
+
+	private int vanillaClickLineHeight(int fontHeight) {
+		io.github.dolphinclient.modules.hud.gui.hud.ChatHud hud = (io.github.dolphinclient.modules.hud.gui.hud.ChatHud) HudManager
+			.getInstance().get(io.github.dolphinclient.modules.hud.gui.hud.ChatHud.ID);
+		if (hud != null && hud.appliesOnVanillaChat()) {
+			return fontHeight + hud.lineSpacing.get();
+		}
+		return fontHeight;
 	}
 
 	@Inject(method = "getMessageAt", at = @At("HEAD"), cancellable = true)
 	public void dolphinclient$getTextAt(int x, int y, CallbackInfoReturnable<Text> cir) {
 		io.github.dolphinclient.modules.hud.gui.hud.ChatHud hud = (io.github.dolphinclient.modules.hud.gui.hud.ChatHud) HudManager
 			.getInstance().get(io.github.dolphinclient.modules.hud.gui.hud.ChatHud.ID);
-		if (hud != null && hud.isEnabled()) {
+		if (hud != null && hud.usesCustomPosition()) {
 			cir.setReturnValue(hud.getTextAt(Util.toMCCoordsX(x), Util.toMCCoordsY(y)));
 		}
 	}

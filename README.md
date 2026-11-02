@@ -9,19 +9,6 @@ Download [Dolphin Optimized.mrpack](https://github.com/dsnsgithub/DolphinClient/
 Open the client menu in-game with **Right Shift**.
 <img width="1000" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
 
-### Configuration
-
-DolphinClient uses `io.github.dolphinclient` for its own code. Each profile is one
-file, `config/dolphinclient/<profile-name>.json`, containing client settings,
-1.7 animations, custom HUD entries, keystrokes, and HUD links. There is no
-profile folder and no sidecar files.
-
-A new profile uses the bundled Default profile as its option defaults, including
-the 1.7 animation preset. Older profile folders and config versions are not
-read. The published AxolotlClient config/rendering libraries retain their
-upstream coordinates and API namespaces, as do the copyright and fork
-attribution labels.
-
 ### Performance
 When I say **insanely optimized**, I mean it. Most "optimization" clients still use Forge and Optifine, which can't compete with modern optimizations afforded by Fabric.
 The combination of backporting modern optimizations + the relatively lightweight 1.8 Minecraft version means it **smokes** every other popular 1.8.9 client.

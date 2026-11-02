@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.google.gson.JsonObject;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,38 @@ class ProfileConfigManagerTest {
 		manager.load();
 		assertFalse(animation.get());
 		assertTrue(general.get());
+	}
+
+	@Test
+	void missingCategoryUsesBundledProfileDefaults(@TempDir Path temp) throws Exception {
+		var fastGrass = new BooleanOption("fastGrass", true);
+		var models = OptionCategory.create("models");
+		models.add(fastGrass);
+		var resources = OptionCategory.create("resources");
+		resources.add(models);
+		var animations = OptionCategory.create("dolphinclient-oldanimations");
+		animations.add(resources);
+		var bundledRoot = OptionCategory.create("config");
+		bundledRoot.add(animations);
+		var manager = new ProfileConfigManager(temp.resolve("Empty.json"), bundledRoot);
+		manager.load();
+		assertFalse(fastGrass.get());
+
+		var saved = new JsonObject();
+		var savedConfig = new JsonObject();
+		var savedAnimations = new JsonObject();
+		var savedResources = new JsonObject();
+		var savedModels = new JsonObject();
+		savedModels.addProperty("fastGrass", "true");
+		savedResources.add("models", savedModels);
+		savedAnimations.add("resources", savedResources);
+		savedConfig.add("dolphinclient-oldanimations", savedAnimations);
+		saved.add("config", savedConfig);
+		Files.writeString(temp.resolve("Saved.json"), saved.toString());
+		fastGrass.set(false);
+		manager.setFile(temp.resolve("Saved.json"));
+		manager.load();
+		assertTrue(fastGrass.get());
 	}
 
 	@Test

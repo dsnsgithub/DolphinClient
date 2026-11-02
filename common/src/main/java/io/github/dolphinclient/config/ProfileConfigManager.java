@@ -23,16 +23,21 @@
 package io.github.dolphinclient.config;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 import com.google.gson.JsonObject;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.managers.JsonConfigManager;
 import io.github.dolphinclient.config.profiles.ProfileFile;
+import io.github.dolphinclient.util.GsonHelper;
 
-/** Loads one profile document, resetting categories that the file does not contain. */
+/** Loads one profile document. Missing categories fall back to the bundled Default profile. */
 public class ProfileConfigManager extends JsonConfigManager {
+	private static final String BUNDLED_PROFILE = "assets/dolphinclient/default-profile.json";
+
 	public ProfileConfigManager(Path file, OptionCategory root) {
 		super(file, root);
 	}
@@ -40,10 +45,27 @@ public class ProfileConfigManager extends JsonConfigManager {
 	@Override
 	public void load() {
 		setDefaults(getRoot());
+		applyBundledDefaults();
 		try {
 			JsonObject document = ProfileFile.read(getFile());
 			if (document.has(ProfileFile.CONFIG) && document.get(ProfileFile.CONFIG).isJsonObject()) {
 				load(getRoot(), document.getAsJsonObject(ProfileFile.CONFIG));
+			}
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+
+	private void applyBundledDefaults() {
+		try (var in = ProfileConfigManager.class.getClassLoader().getResourceAsStream(BUNDLED_PROFILE)) {
+			if (in == null) {
+				return;
+			}
+			try (var reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+				JsonObject document = GsonHelper.GSON.fromJson(reader, JsonObject.class);
+				if (document != null && document.has(ProfileFile.CONFIG) && document.get(ProfileFile.CONFIG).isJsonObject()) {
+					load(getRoot(), document.getAsJsonObject(ProfileFile.CONFIG));
+				}
 			}
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);

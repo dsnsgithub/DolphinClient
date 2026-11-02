@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.google.gson.JsonObject;
 import io.github.axolotlclient.AxolotlClientConfig.api.options.OptionCategory;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import org.junit.jupiter.api.Test;
@@ -45,12 +46,12 @@ class ProfileConfigManagerTest {
 		animations.add(blocking);
 		root.add(animations);
 		root.add(general);
-		return new ProfileConfigManager(file, root, 11, (from, to, category, json) -> json);
+		return new ProfileConfigManager(file, root);
 	}
 
 	@Test
 	void savesAndReloadsGeneralAndAnimationsInOneFile(@TempDir Path temp) throws Exception {
-		var file = temp.resolve("dolphinclient.json");
+		var file = temp.resolve("Default.json");
 		var manager = manager(file);
 		animation.set(false);
 		general.set(false);
@@ -68,13 +69,13 @@ class ProfileConfigManagerTest {
 
 	@Test
 	void switchesProfilesWithoutLeakingMissingAnimationCategory(@TempDir Path temp) throws Exception {
-		var first = temp.resolve("first/dolphinclient.json");
-		var second = temp.resolve("second/dolphinclient.json");
+		var first = temp.resolve("First.json");
+		var second = temp.resolve("Second.json");
 		var manager = manager(first);
 		animation.set(false);
 		manager.save();
 		Files.createDirectories(second.getParent());
-		Files.writeString(second, "{\"version\":\"11.0.0\",\"config\":{\"customWindowTitle\":\"false\"}}");
+		Files.writeString(second, "{\"name\":\"Second\",\"current\":false,\"config\":{\"customWindowTitle\":\"false\"}}");
 		manager.setFile(second);
 		manager.load();
 		assertTrue(animation.get());
@@ -86,8 +87,40 @@ class ProfileConfigManagerTest {
 	}
 
 	@Test
+	void missingCategoryUsesBundledProfileDefaults(@TempDir Path temp) throws Exception {
+		var fastGrass = new BooleanOption("fastGrass", true);
+		var models = OptionCategory.create("models");
+		models.add(fastGrass);
+		var resources = OptionCategory.create("resources");
+		resources.add(models);
+		var animations = OptionCategory.create("dolphinclient-oldanimations");
+		animations.add(resources);
+		var bundledRoot = OptionCategory.create("config");
+		bundledRoot.add(animations);
+		var manager = new ProfileConfigManager(temp.resolve("Empty.json"), bundledRoot);
+		manager.load();
+		assertFalse(fastGrass.get());
+
+		var saved = new JsonObject();
+		var savedConfig = new JsonObject();
+		var savedAnimations = new JsonObject();
+		var savedResources = new JsonObject();
+		var savedModels = new JsonObject();
+		savedModels.addProperty("fastGrass", "true");
+		savedResources.add("models", savedModels);
+		savedAnimations.add("resources", savedResources);
+		savedConfig.add("dolphinclient-oldanimations", savedAnimations);
+		saved.add("config", savedConfig);
+		Files.writeString(temp.resolve("Saved.json"), saved.toString());
+		fastGrass.set(false);
+		manager.setFile(temp.resolve("Saved.json"));
+		manager.load();
+		assertTrue(fastGrass.get());
+	}
+
+	@Test
 	void newProfileUsesDefaults(@TempDir Path temp) {
-		var manager = manager(temp.resolve("dolphinclient.json"));
+		var manager = manager(temp.resolve("Default.json"));
 		animation.set(false);
 		general.set(false);
 		manager.load();

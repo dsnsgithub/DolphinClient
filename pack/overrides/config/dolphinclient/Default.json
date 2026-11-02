@@ -1117,7 +1117,7 @@
       },
       "enabled": "true",
       "hitboxes.line_width": "2",
-      "hitboxes.show_look_vector": "true",
+      "hitboxes.show_look_vector": "false",
       "hitboxes.show_eye_height": "true",
       "hitboxes.show_invisible": "false"
     },

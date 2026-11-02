@@ -33,6 +33,7 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
 import io.github.axolotlclient.bridge.render.AxoRenderContext;
 import io.github.axolotlclient.mixin.ChatHudAccessor;
+import io.github.axolotlclient.modules.hud.HudManager;
 import io.github.axolotlclient.modules.hud.gui.entry.TextHudEntry;
 import io.github.axolotlclient.modules.hud.util.DrawPosition;
 import net.minecraft.client.Minecraft;
@@ -58,6 +59,11 @@ public class ChatHud extends TextHudEntry {
 	public final IntegerOption lineSpacing = new IntegerOption("lineSpacing", 0, 0, 10);
 	public final BooleanOption keepMessagesOnDisconnect = new BooleanOption("keep_messages_on_disconnect", false);
 	public final BooleanOption animateChat = new BooleanOption("animate_chat", false);
+	/**
+	 * Off by default. Chat keeps the vanilla anchor at every GUI scale and
+	 * resolution until this is turned on; background and transparency still apply.
+	 */
+	public final BooleanOption customPosition = new BooleanOption("custom_position", false);
 
 	public int ticks;
 	private int lastHeight;
@@ -87,90 +93,135 @@ public class ChatHud extends TextHudEntry {
 
 	public void resetAnimation() {
 		percentComplete = 0;
+		prevMillis = System.currentTimeMillis();
 	}
 
-	@Override
-	public void render(AxoRenderContext context, float delta) {
+	public boolean usesCustomPosition() {
+		return ChatPosition.usesCustomPosition(isEnabled(), HudManager.getInstance().hudsEnabled(), customPosition.get());
+	}
+
+	/**
+	 * Module features draw, but the matrix is the one vanilla just set up:
+	 * {@code (0, scaledHeight - 48)} then {@code (2, 20)} then the chat scale.
+	 */
+	public boolean appliesOnVanillaChat() {
+		return isEnabled() && HudManager.getInstance().hudsEnabled() && !customPosition.get();
+	}
+
+	private void updateAnimationClock() {
 		long current = System.currentTimeMillis();
 		long diff = current - prevMillis;
 		prevMillis = current;
 		updatePercentage(diff);
 		float t = percentComplete - 1;
 		animationPercent = MathHelper.clamp(1 - (float) Math.pow(t, 4), 0, 1);
+	}
+
+	@Override
+	public void render(AxoRenderContext context, float delta) {
+		if (!customPosition.get()) {
+			return;
+		}
+		updateAnimationClock();
+		if (this.client.options.chatVisibility == PlayerEntity.ChatVisibility.HIDDEN) {
+			return;
+		}
+		GlStateManager.pushMatrix();
+		scale(context);
+		DrawPosition pos = getPos();
+		List<ChatMessage> visibleMessages = ((ChatHudAccessor) client.gui.getChat()).getVisibleMessages();
+		if (!visibleMessages.isEmpty()) {
+			float g = getScale();
+			int innerWidth = MathHelper.ceil((float) getWidth() / g);
+			GlStateManager.pushMatrix();
+			if (animateChat.get() && !((ChatHudAccessor) this.client.gui.getChat()).hasUnreadNewMessages()) {
+				GlStateManager.translatef(0, (9 - 9 * animationPercent) * getScale(), 0);
+			}
+			drawMessages(context, pos.x, pos.y + getHeight(), innerWidth, getFontHeight(), false);
+			GlStateManager.popMatrix();
+		}
+		GlStateManager.popMatrix();
+	}
+
+	/**
+	 * Called from inside {@code ChatGui.render} after vanilla has translated and scaled.
+	 * Local {@code (0, 0)} is the vanilla anchor for the current GUI scale and resolution.
+	 */
+	public void renderAtVanillaAnchor(AxoRenderContext context) {
+		updateAnimationClock();
+		if (this.client.options.chatVisibility == PlayerEntity.ChatVisibility.HIDDEN) {
+			return;
+		}
+		float chatScale = client.gui.getChat().getChatScale();
+		int innerWidth = MathHelper.ceil(client.gui.getChat().getWidth() / chatScale);
+		int lineHeight = 9 + lineSpacing.get();
+		GlStateManager.pushMatrix();
+		if (animateChat.get() && !((ChatHudAccessor) this.client.gui.getChat()).hasUnreadNewMessages()) {
+			GlStateManager.translatef(0, lineHeight * (1.0F - animationPercent), 0);
+		}
+		drawMessages(context, 0, 0, innerWidth, lineHeight, true);
+		GlStateManager.popMatrix();
+	}
+
+	private void drawMessages(AxoRenderContext context, int left, int bottom, int innerWidth, int scrollbarRow, boolean vanillaAnchor) {
 		int scrolledLines = ((ChatHudAccessor) client.gui.getChat()).getScrolledLines();
 		List<ChatMessage> visibleMessages = ((ChatHudAccessor) client.gui.getChat()).getVisibleMessages();
-
-		if (this.client.options.chatVisibility != PlayerEntity.ChatVisibility.HIDDEN) {
-			GlStateManager.pushMatrix();
-			scale(context);
-			DrawPosition pos = getPos();
-
-			int i = getVisibleLineCount();
-			int j = 0;
-			int k = visibleMessages.size();
-			if (k > 0) {
-				float g = getScale();
-				int l = MathHelper.ceil((float) getWidth() / g);
-				GlStateManager.pushMatrix();
-				if (animateChat.get() && !((ChatHudAccessor) this.client.gui.getChat()).hasUnreadNewMessages()) {
-					GlStateManager.translatef(0, (9 - 9 * animationPercent) * getScale(), 0);
-				}
-
-				for (int m = 0; m + scrolledLines < visibleMessages.size() && m < i; ++m) {
-					ChatMessage chatHudLine = visibleMessages.get(m + scrolledLines);
-					if (chatHudLine != null) {
-						int n = ticks - chatHudLine.getTimeOfCreation();
-						if (n < 200 || isChatFocused()) {
-							double d = MathHelper.clamp((1.0 - n / 200.0) * 10.0, 0.0, 1.0);
-							d *= d;
-							if (animateChat.get() && m + scrolledLines < newLines) {
-								d *= animationPercent;
-							}
-
-							++j;
-							int alpha = Math.max(bgColor.get().getAlpha(), textColor.get().getAlpha());
-							int opacity = isChatFocused() ? alpha : (int) (alpha * d);
-							if (opacity > 3) {
-								int y = pos.y + getHeight() - (m * (9 + lineSpacing.get()));
-								if (background.get()) {
-									Color bg = bgColor.get();
-									if (!isChatFocused()) {
-										bg = bg.withAlpha((int) (bg.getAlpha() * d));
-									}
-									context.br$fillRect(pos.x, y - (9 + lineSpacing.get()), l + 4, 9 + lineSpacing.get(),
-										bg.toInt());
-								}
-								String string = chatHudLine.getText().getFormattedString();
-								GlStateManager.enableBlend();
-								Color text = textColor.get();
-								if (!isChatFocused()) {
-									text = text.withAlpha((int) (text.getAlpha() * d));
-								}
-								context.br$drawString(string, pos.x, (y - 8),
-									text, shadow.get());
-								GlStateManager.disableAlphaTest();
-								GlStateManager.disableBlend();
-							}
-						}
-					}
-				}
-
-				if (isChatFocused()) {
-					int m = getFontHeight();
-					GlStateManager.translatef(-3.0F, 0.0F, 0.0F);
-					int r = k * m + k;
-					int n = j * m + j;
-					int y = (pos.y + getHeight()) - scrolledLines * n / k;
-					if (((ChatHudAccessor) client.gui.getChat()).getMessages()
-						.size() > getVisibleLineCount()) {
-						int height = n * n / r;
-						context.br$fillRect(pos.x, y, 2, -height, scrollbarColor.get().toInt());
-					}
-				}
-
-				GlStateManager.popMatrix();
+		int visible = getVisibleLineCount();
+		int count = visibleMessages.size();
+		if (count <= 0) {
+			return;
+		}
+		int lineHeight = 9 + lineSpacing.get();
+		int considered = 0;
+		for (int m = 0; m + scrolledLines < count && m < visible; ++m) {
+			ChatMessage chatHudLine = visibleMessages.get(m + scrolledLines);
+			if (chatHudLine == null) {
+				continue;
 			}
-			GlStateManager.popMatrix();
+			int age = ticks - chatHudLine.getTimeOfCreation();
+			if (age >= 200 && !isChatFocused()) {
+				continue;
+			}
+			double fade = MathHelper.clamp((1.0 - age / 200.0) * 10.0, 0.0, 1.0);
+			fade *= fade;
+			if (animateChat.get() && m + scrolledLines < newLines) {
+				fade *= animationPercent;
+			}
+
+			++considered;
+			int alpha = Math.max(bgColor.get().getAlpha(), textColor.get().getAlpha());
+			int opacity = isChatFocused() ? alpha : (int) (alpha * fade);
+			if (opacity > 3) {
+				int y = ChatPosition.lineBottom(bottom, m, lineHeight);
+				if (background.get()) {
+					Color bg = bgColor.get();
+					if (!isChatFocused()) {
+						bg = bg.withAlpha((int) (bg.getAlpha() * fade));
+					}
+					context.br$fillRect(left, y - lineHeight, innerWidth + 4, lineHeight, bg.toInt());
+				}
+				String string = chatHudLine.getText().getFormattedString();
+				GlStateManager.enableBlend();
+				Color text = textColor.get();
+				if (!isChatFocused()) {
+					text = text.withAlpha((int) (text.getAlpha() * fade));
+				}
+				context.br$drawString(string, left, y - 8, text, shadow.get());
+				GlStateManager.disableAlphaTest();
+				GlStateManager.disableBlend();
+			}
+		}
+
+		boolean overflow = vanillaAnchor
+			? count != considered
+			: ((ChatHudAccessor) client.gui.getChat()).getMessages().size() > visible;
+		if (isChatFocused() && overflow) {
+			int total = count * scrollbarRow + count;
+			int shown = considered * scrollbarRow + considered;
+			int barY = bottom - scrolledLines * shown / count;
+			int barHeight = total == 0 ? 0 : shown * shown / total;
+			GlStateManager.translatef(-3.0F, 0.0F, 0.0F);
+			context.br$fillRect(left, barY, 2, -barHeight, scrollbarColor.get().toInt());
 		}
 	}
 
@@ -247,6 +298,20 @@ public class ChatHud extends TextHudEntry {
 	}
 
 	@Override
+	public boolean movable() {
+		return customPosition.get();
+	}
+
+	@Override
+	public void renderPlaceholder(AxoRenderContext ctx, float delta) {
+		if (!customPosition.get()) {
+			hovered = false;
+			return;
+		}
+		super.renderPlaceholder(ctx, delta);
+	}
+
+	@Override
 	public void tick() {
 		//setWidth((int) (client.options.chatWidth*320));
 		if (lastHeight != getHeight(client.options.unfocusedChatHeight)) {
@@ -274,6 +339,8 @@ public class ChatHud extends TextHudEntry {
 	@Override
 	public List<Option<?>> getConfigurationOptions() {
 		List<Option<?>> options = super.getConfigurationOptions();
+		int enabledIndex = options.indexOf(enabled);
+		options.add(enabledIndex < 0 ? 0 : enabledIndex + 1, customPosition);
 		options.add(background);
 		options.add(bgColor);
 		options.add(lineSpacing);

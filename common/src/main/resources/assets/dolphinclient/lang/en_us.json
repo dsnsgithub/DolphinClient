@@ -123,6 +123,8 @@
 	"category.dolphinclient": "DolphinClient",
 	"key.category.dolphinclient.title": "DolphinClient",
 	"chathud": "Chat",
+	"custom_position": "Custom Position",
+	"custom_position.tooltip": "Off: chat stays at the vanilla position at every GUI scale and resolution. Background, transparency, and the other chat options still apply. On: the chat can be moved in the HUD editor.",
 	"chroma": "Chroma",
 	"chromaSpeed": "Chroma Speed",
 	"clear": "Clear",

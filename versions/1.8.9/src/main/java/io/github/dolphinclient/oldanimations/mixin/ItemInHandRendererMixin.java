@@ -1,0 +1,190 @@
+/*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * For more information, see the LICENSE file.
+ */
+
+package io.github.dolphinclient.oldanimations.mixin;
+
+import com.llamalad7.mixinextras.expression.Expression;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import io.github.dolphinclient.oldanimations.config.OldAnimationsConfig;
+import io.github.dolphinclient.oldanimations.util.ItemUtil;
+import io.github.dolphinclient.oldanimations.util.PlayerUtil;
+import net.minecraft.block.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.living.player.ClientPlayerEntity;
+import net.minecraft.client.render.ItemInHandRenderer;
+import net.minecraft.client.render.entity.ItemRenderer;
+import net.minecraft.client.render.model.block.ModelTransformations;
+import net.minecraft.client.render.platform.GlStateManager;
+import net.minecraft.entity.living.LivingEntity;
+import net.minecraft.entity.living.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(ItemInHandRenderer.class /* C_7203066 */)
+public abstract class ItemInHandRendererMixin {
+	@Shadow
+	@Final
+	private ItemRenderer renderer;
+
+	@Shadow
+	private ItemStack itemInHand;
+
+	@Shadow
+	private int selectedSlot;
+
+	@Shadow
+	@Final
+	private Minecraft minecraft;
+
+	@ModifyArg(method = "renderInFirstPerson",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/ItemInHandRenderer;applyFirstPersonTransform(FF)V"),
+		slice = @Slice(
+			from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/ItemInHandRenderer;applyConsuming(Lnet/minecraft/client/entity/living/player/ClientPlayerEntity;F)V"),
+			to = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/ItemInHandRenderer;applyBowNocking(FLnet/minecraft/client/entity/living/player/ClientPlayerEntity;)V")
+		),
+		index = 1
+	)
+	public float dolphinclient$allowUseAndSwing(float g, @Local(index = 1, argsOnly = true) float f) {
+		/* we are using the swing progress. the local is culled (?) before we can use it */
+		return OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.blockHitting.get() ? minecraft.player.getAttackAnimationProgress(f) : g;
+	}
+
+	@WrapOperation(method = "applyBowNocking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/platform/GlStateManager;scalef(FFF)V"))
+	private void dolphinclient$applyBowTransform(float f, float g, float h, Operation<Void> original) {
+		boolean isEnabled = OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.oldBowRotation.get();
+		/* original transformations from 1.7 */
+		if (isEnabled) {
+			GlStateManager.rotatef(-335.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.rotatef(-50.0F, 0.0F, 1.0F, 0.0F);
+		}
+		original.call(f, g, h);
+		if (isEnabled) {
+			GlStateManager.rotatef(50.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotatef(335.0F, 0.0F, 0.0F, 1.0F);
+		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/ItemRenderer;renderItemInHand(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/living/LivingEntity;Lnet/minecraft/client/render/model/block/ModelTransformations$Type;)V"))
+	private void dolphinclient$applyHeldItemTransforms(LivingEntity livingEntity, ItemStack itemStack, ModelTransformations.Type type, CallbackInfo ci) {
+		if (!OldAnimationsConfig.isEnabled()) {
+			return;
+		}
+
+		if ((!OldAnimationsConfig.instance.firstPersonPositions.get() || type != ModelTransformations.Type.FIRST_PERSON) &&
+			(!OldAnimationsConfig.instance.thirdPersonPositions.get() || type != ModelTransformations.Type.THIRD_PERSON)) {
+			return;
+		}
+
+		if (ItemUtil.INSTANCE.isCustomRenderer(itemStack)) {
+			Item item = itemStack.getItem();
+			if (item instanceof BlockItem) {
+				Block block = Block.byItem(item);
+				if (block instanceof ChestBlock) {
+					GlStateManager.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+				}
+			}
+			return;
+		}
+
+		if (renderer.isGui3d(itemStack)) {
+			//todo: some blocks are weirdly rotated
+			Item item = itemStack.getItem();
+			if (item instanceof BlockItem) {
+				GlStateManager.rotatef(90.0F, 0.0F, 1.0F, 0.0F);
+				Block block = Block.byItem(item);
+				if (block instanceof FurnaceBlock || block instanceof DispenserBlock ||
+					block instanceof DropperBlock || block instanceof PumpkinBlock) {
+					GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+				}
+			}
+		} else {
+			/* original transformations from 1.7 */
+			GlStateManager.translatef(0.0F, -0.3F, 0.0F);
+			GlStateManager.scalef(1.5F, 1.5F, 1.5F);
+			GlStateManager.rotatef(50.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotatef(335.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translatef(-0.9375F, -0.0625F, 0.0F);
+			/* we need to adapt the 1.7 transformations to fit in 1.8 */
+			/* these translations are taken from snapshot 14w25a which introduced item/block models */
+			GlStateManager.translatef(0.5F, 0.5F, 0.25F);
+			GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.translatef(0.0F, 0.0F, 0.28125F);
+		}
+	}
+
+	@Inject(method = "renderInFirstPerson", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/ItemInHandRenderer;render(Lnet/minecraft/entity/living/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/block/ModelTransformations$Type;)V"))
+	private void dolphinclient$applyRodRotation(float tickDelta, CallbackInfo ci) {
+		/* original transformation from 1.7 */
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.firstPersonPositions.get() && itemInHand.getItem().shouldRotate()) {
+			GlStateManager.rotatef(180.0F, 0.0F, 1.0F, 0.0F);
+		}
+	}
+
+	@Expression("? != null")
+	@ModifyExpressionValue(method = "tick", at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 1))
+	private boolean dolphinclient$compareDamage(boolean original, @Local /* go away :( */ ItemStack itemStack) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.equipLogic.get()) {
+			/* adapted from 1.7 */
+			return original && itemStack != itemInHand && itemStack.getItem() == itemInHand.getItem() && itemStack.getDamage() == itemInHand.getDamage();
+		}
+		return original;
+	}
+
+	@ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEqualForHoldAnimation(Lnet/minecraft/item/ItemStack;)Z"))
+	private boolean dolphinclient$disableStackEquality(boolean original, @Local ItemStack itemStack) {
+		/* adapted from 1.7 */
+		return (!OldAnimationsConfig.isEnabled() || !OldAnimationsConfig.instance.equipLogic.get()) && original;
+	}
+
+	@ModifyVariable(method = "tick", at = @At(value = "STORE", ordinal = 1), index = 3)
+	private boolean dolphinclient$updateItemStack(boolean original, @Local ItemStack itemStack) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.equipLogic.get()) {
+			/* adapted from 1.7 */
+			itemInHand = itemStack;
+			return false;
+		}
+		return original;
+	}
+
+	@ModifyVariable(method = "tick", at = @At(value = "STORE", ordinal = 3), index = 3)
+	private boolean dolphinclient$makeAssignmentRedundant(boolean original, @Local PlayerEntity playerEntity, @Local ItemStack itemStack) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.equipLogic.get()) {
+			/* adapted from 1.7 */
+			return selectedSlot != playerEntity.inventory.selectedSlot || itemStack != itemInHand;
+		}
+		return original;
+	}
+
+	@WrapOperation(method = "setHandLightColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/living/player/ClientPlayerEntity;getEyeHeight()F"))
+	private float dolphinclient$useLerpEyeHeight_Hand(ClientPlayerEntity instance, Operation<Float> original) {
+		if (OldAnimationsConfig.isEnabled() && OldAnimationsConfig.instance.smoothSneaking.get()) {
+			/* not sure if this will even do anything significant lol */
+			return PlayerUtil.INSTANCE.getEyeHeight();
+		}
+		return original.call(instance);
+	}
+}

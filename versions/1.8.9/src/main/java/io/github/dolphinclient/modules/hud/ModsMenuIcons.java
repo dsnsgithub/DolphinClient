@@ -106,6 +106,7 @@ final class ModsMenuIcons {
 		put("bedwars", Items.BED);
 		put("titles", Items.SIGN);
 
+		put("dolphinclient-oldanimations", Items.CLOCK);
 		put("blockingItemUsing", Items.IRON_SWORD);
 		put("sneaking", Items.IRON_BOOTS);
 		put("items", Items.DIAMOND);

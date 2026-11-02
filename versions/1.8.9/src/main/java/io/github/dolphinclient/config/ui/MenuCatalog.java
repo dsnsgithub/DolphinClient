@@ -48,7 +48,6 @@ public final class MenuCatalog {
 	public enum Tab {
 		HUD,
 		MODS,
-		ANIMATIONS,
 		SETTINGS
 	}
 
@@ -162,13 +161,11 @@ public final class MenuCatalog {
 	}
 
 	/**
-	 * The 1.7 tab lists the feature groups directly. The parent category and
-	 * Misc grab bag are gone, so only the remaining configurable groups appear.
+	 * 1.7 animations are one Mods entry. The category's enabled option is the
+	 * master switch; feature groups stay sections inside that module.
 	 */
 	private static void absorbAnimations(List<Module> modules, OptionCategory category) {
-		for (OptionCategory child : category.getSubCategories()) {
-			modules.add(moduleFrom(child.getName(), Tab.ANIMATIONS, firstEnabled(child.getOptions()), nodesFrom(child, false)));
-		}
+		modules.add(moduleFrom(category.getName(), Tab.MODS, firstEnabled(category.getOptions()), nodesFrom(category, false)));
 	}
 
 	private static void absorb(List<Module> modules, OptionCategory category, Tab tab) {

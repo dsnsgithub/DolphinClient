@@ -20,7 +20,7 @@ repositories {
 }
 
 loom {
-	accessWidenerPath.set(file("src/main/resources/axolotlclient.classtweaker"))
+	accessWidenerPath.set(file("src/main/resources/dolphinclient.classtweaker"))
 
 	mods {
 		create("dolphinclient") {

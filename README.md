@@ -17,9 +17,10 @@ file, `config/dolphinclient/<profile-name>.json`, containing client settings,
 profile folder and no sidecar files.
 
 A new profile uses the bundled Default profile as its option defaults, including
-the 1.7 animation preset. The published AxolotlClient config/rendering libraries
-retain their upstream coordinates and API namespaces, as do the copyright and
-fork attribution labels.
+the 1.7 animation preset. Older profile folders and config versions are not
+read. The published AxolotlClient config/rendering libraries retain their
+upstream coordinates and API namespaces, as do the copyright and fork
+attribution labels.
 
 ### Performance
 When I say **insanely optimized**, I mean it. Most "optimization" clients still use Forge and Optifine, which can't compete with modern optimizations afforded by Fabric.

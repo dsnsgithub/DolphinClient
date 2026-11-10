@@ -17,6 +17,8 @@
 	"alignToBottom": "Align to Bottom Screen Edge",
 	"animate_chat": "Animate Chat",
 	"keep_messages_on_disconnect": "Keep messages after disconnect",
+	"keep_vanilla_position": "Match Vanilla Chat",
+	"keep_vanilla_position.tooltip": "Keeps the chat exactly where the vanilla chat is, even when changing the chat height or window size.<br>Moving or resizing it in the HUD editor disables this again.",
 	"lcu.command.parse_error": "Failed to parse Command: %s at %s: %s",
 	"multiplayer.status.and_more": "... and %s more ...",
 	"multiplayer.status.cancelled": "Cancelled",

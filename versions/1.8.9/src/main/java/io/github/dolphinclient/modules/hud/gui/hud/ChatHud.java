@@ -32,6 +32,7 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.options.BooleanOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.ColorOption;
 import io.github.axolotlclient.AxolotlClientConfig.impl.options.IntegerOption;
 import io.github.dolphinclient.bridge.render.AxoRenderContext;
+import io.github.dolphinclient.bridge.render.AxoWindow;
 import io.github.dolphinclient.mixin.ChatHudAccessor;
 import io.github.dolphinclient.modules.hud.gui.entry.TextHudEntry;
 import io.github.dolphinclient.modules.hud.util.DrawPosition;
@@ -58,6 +59,18 @@ public class ChatHud extends TextHudEntry {
 	public final IntegerOption lineSpacing = new IntegerOption("lineSpacing", 0, 0, 10);
 	public final BooleanOption keepMessagesOnDisconnect = new BooleanOption("keep_messages_on_disconnect", false);
 	public final BooleanOption animateChat = new BooleanOption("animate_chat", false);
+	public final BooleanOption keepVanillaPosition = new BooleanOption("keep_vanilla_position", true);
+
+	/**
+	 * Vanilla 1.8.9 renders the chat pane with its left edge 2 scaled pixels from the
+	 * screen edge (ChatGui translates (2, 20) and the game overlay shifts everything by
+	 * another (0, height - 48)), which puts the bottom of the lowest line exactly
+	 * 28 scaled pixels above the screen's bottom edge, no matter the chat height or scale.
+	 */
+	private static final int VANILLA_X = 2;
+	private static final int VANILLA_BOTTOM_MARGIN = 28;
+
+	private boolean applyingVanillaPosition;
 
 	public int ticks;
 	private int lastHeight;
@@ -200,6 +213,43 @@ public class ChatHud extends TextHudEntry {
 		return this.client.screen instanceof ChatScreen;
 	}
 
+	@Override
+	public void setX(int x) {
+		// Any external position change means the user wants their own position.
+		if (!applyingVanillaPosition && x != getTruePos().x()) {
+			keepVanillaPosition.set(false);
+		}
+		super.setX(x);
+	}
+
+	@Override
+	public void setY(int y) {
+		if (!applyingVanillaPosition && y != getTruePos().y()) {
+			keepVanillaPosition.set(false);
+		}
+		super.setY(y);
+	}
+
+	private void applyVanillaPosition() {
+		var window = AxoWindow.getWindow();
+		if (window == null) {
+			return;
+		}
+		int scaledHeight = (int) window.br$getScaledHeight();
+		int y = MathHelper.clamp(scaledHeight - VANILLA_BOTTOM_MARGIN - getTrueHeight(), 0, scaledHeight);
+		applyingVanillaPosition = true;
+		try {
+			if (getTruePos().x() != VANILLA_X) {
+				setX(VANILLA_X);
+			}
+			if (getTruePos().y() != y) {
+				setY(y);
+			}
+		} finally {
+			applyingVanillaPosition = false;
+		}
+	}
+
 	protected int getFontHeight() {
 		return MathHelper.floor(Minecraft.getInstance().textRenderer.fontHeight);
 	}
@@ -254,6 +304,9 @@ public class ChatHud extends TextHudEntry {
 			onBoundsUpdate();
 			lastHeight = getHeight();
 		}
+		if (keepVanillaPosition.get()) {
+			applyVanillaPosition();
+		}
 	}
 
 	@Override
@@ -281,6 +334,7 @@ public class ChatHud extends TextHudEntry {
 		options.add(chatHistory);
 		options.add(animateChat);
 		options.add(keepMessagesOnDisconnect);
+		options.add(keepVanillaPosition);
 		return options;
 	}
 }

@@ -17,6 +17,8 @@
 	"alignToBottom": "Aligner sur le bord inférieur de l'écran",
  	"animate_chat": "Animer le tchat",
  	"keep_messages_on_disconnect": "Conserver les messages après déconnexion",
+ 	"keep_vanilla_position": "Comme le tchat vanilla",
+ 	"keep_vanilla_position.tooltip": "Garde le tchat exactement là où se trouve le tchat vanilla, même en changeant la hauteur du tchat ou la taille de la fenêtre.<br>Le déplacer ou le redimensionner dans l'éditeur HUD le désactive à nouveau.",
  	"lcu.command.parse_error": "Échec de l'analyse de la commande : %s at %s: %s",
 	"multiplayer.status.and_more": "... et %s de plus ...",
 	"multiplayer.status.cancelled": "Annulé",

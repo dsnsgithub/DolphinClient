@@ -3,6 +3,8 @@ plugins {
 	id("ploceus")
 }
 
+apply(from = rootProject.file("gradle/compact-jar.gradle.kts"))
+
 val minecraftVersion = "1.8.9"
 val featherBuild = "1"
 val lwjglVersion = "3.4.2"

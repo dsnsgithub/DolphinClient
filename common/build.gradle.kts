@@ -1,5 +1,11 @@
 import org.objectweb.asm.*
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 
 plugins {
 	id("java")
@@ -33,8 +39,9 @@ dependencies {
 	shadow(implementation("io.github.cdagaming:DiscordIPC:0.11.3") {
 		isTransitive = false
 	})
-	shadow(runtimeOnly(compileOnly("com.kohlschutter.junixsocket:junixsocket-common:2.10.1")!!)!!)
-	shadow(runtimeOnly(compileOnly("com.kohlschutter.junixsocket:junixsocket-native-common:2.10.1")!!)!!)
+	// The IPC pipe for Unix platforms (shadow/unixpipe/UnixPipe.java) runs on the JDK's
+	// built-in Unix domain sockets instead of junixsocket, keeping ~6 MB of socket
+	// classes and native libraries for 16 platforms out of the jar.
 
 	compileOnly("net.hypixel:mod-api:1.0.1")
 	compileOnly("com.mojang:brigadier:1.0.18")
@@ -44,6 +51,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 	testImplementation("io.github.axolotlclient.AxolotlClient-config:AxolotlClientConfig-common:${project.property("config")}")
 	testImplementation("com.google.code.gson:gson:2.10")
+	testCompileOnly("org.slf4j:slf4j-api:2.0.1")
 	testRuntimeOnly("org.slf4j:slf4j-api:2.0.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -119,9 +127,59 @@ tasks.test {
 	useJUnitPlatform()
 }
 
+// The UnixPipe replacement is exercised directly (unrelocated) by tests.
+sourceSets.test {
+	java.srcDir(file("src/unixpipe/java"))
+}
+
 tasks.withType(AbstractArchiveTask::class).configureEach {
 	isPreserveFileTimestamps = false
 	isReproducibleFileOrder = true
+}
+
+// Compiles the UnixPipe replacement (see src/unixpipe) against the same classpath
+// as the main sourceset, then swaps it into the shaded DiscordIPC jar in place of
+// the junixsocket-based original right after shadowJar runs.
+val unixPipeReplacement = tasks.register<JavaCompile>("compileUnixPipeReplacement") {
+	source(file("src/unixpipe/java"))
+	classpath = sourceSets.main.get().compileClasspath
+	destinationDirectory = layout.buildDirectory.dir("unixpipe")
+}
+
+tasks.shadowJar {
+	dependsOn(unixPipeReplacement)
+	actions.addLast {
+		val classFile = unixPipeReplacement.get().outputs.files.files
+			.flatMap { it.walkTopDown() }
+			.single { it.name == "UnixPipe.class" }
+		// Relocate the replacement the same way the shadow plugin relocated the
+		// original, so Pipe.createPipe() resolves it.
+		val relocated = classFile.readBytes().toString(Charsets.ISO_8859_1)
+			.replace("com/jagrosh/", "io/github/dolphinclient/shadow/jagrosh/")
+			.toByteArray(Charsets.ISO_8859_1)
+		val jar = archiveFile.get().asFile
+		val swapped = File(temporaryDir, jar.name)
+		ZipFile(jar).use { src ->
+			ZipOutputStream(swapped.outputStream().buffered()).use { out ->
+				for (entry in src.entries().asSequence()) {
+					val bytes = if (entry.name == "io/github/dolphinclient/shadow/jagrosh/discordipc/entities/pipe/UnixPipe.class")
+						relocated
+					else
+						src.getInputStream(entry).readBytes()
+					val outEntry = ZipEntry(entry.name)
+					outEntry.time = entry.time
+					outEntry.method = entry.method
+					outEntry.extra = entry.extra
+					outEntry.comment = entry.comment
+					out.putNextEntry(outEntry)
+					out.write(bytes)
+					out.closeEntry()
+				}
+			}
+		}
+		check(swapped.length() > 0)
+		Files.move(swapped.toPath(), jar.toPath(), StandardCopyOption.REPLACE_EXISTING)
+	}
 }
 
 tasks.shadowJar {
@@ -129,8 +187,6 @@ tasks.shadowJar {
 	mergeServiceFiles()
 	minimize {
 		exclude(dependency("io.github.CDAGaming:DiscordIPC:.*"))
-		exclude(dependency("com.kohlschutter.junixsocket:junixsocket-common:.*"))
-		exclude(dependency("com.kohlschutter.junixsocket:junixsocket-native-common:.*"))
 	}
 
 	relocate("com.jagrosh", "io.github.dolphinclient.shadow.jagrosh")

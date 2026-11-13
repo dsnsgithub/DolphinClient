@@ -39,10 +39,23 @@ class LevelHeadPlacementTest {
 	}
 
 	@Test
-	void clearsTheBelowNameScoreboardLine() {
-		int extra = LevelHeadPlacement.extraPixels(FONT, true, NAME, null, BASE);
-		double line = FONT * LevelHeadPlacement.LINE_FACTOR;
-		assertTrue(BASE + extra >= line * 2 - 0.01, "level should sit a full line above the scoreboard tag");
+	void doesNotCountTheScoreboardLineTwice() {
+		// PlayerRenderer has already raised the username above the below-name score.
+		assertEquals(0, LevelHeadPlacement.extraPixels(FONT, true, NAME, null, BASE));
+	}
+
+	@Test
+	void measuresTitlesFromTheUsernameRaisedByTheScoreboard() {
+		double lineBlocks = FONT * LevelHeadPlacement.LINE_FACTOR * LevelHeadPlacement.NAMETAG_SCALE;
+		double raisedName = NAME + lineBlocks;
+		double[] tags = {raisedName + 0.3};
+		assertEquals(LevelHeadPlacement.extraPixels(FONT, false, raisedName, tags, BASE),
+			LevelHeadPlacement.extraPixels(FONT, true, NAME, tags, BASE));
+	}
+
+	@Test
+	void ignoresTagsBelowTheRaisedUsername() {
+		assertEquals(0, LevelHeadPlacement.extraPixels(FONT, true, NAME, new double[]{NAME + 0.1}, BASE));
 	}
 
 	@Test

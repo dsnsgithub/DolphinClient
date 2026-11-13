@@ -46,6 +46,7 @@ import net.minecraft.client.render.vertex.DefaultVertexFormat;
 import net.minecraft.client.render.vertex.Tesselator;
 import net.minecraft.client.render.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.living.LivingEntity;
 import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.math.Box;
@@ -143,7 +144,10 @@ public abstract class EntityRendererMixin<T extends Entity> {
 		double nameAnchor = entity.y + entity.height + 0.5;
 		double[] tags = null;
 		if (entity.world != null) {
-			Box box = new Box(entity.x - 1.0, nameAnchor, entity.z - 1.0, entity.x + 1.0, nameAnchor + 3.0, entity.z + 1.0);
+			// A nametag floats up to a couple of blocks above its carrier's hitbox, so the
+			// query has to reach below the anchor to find tags parked right above the username.
+			Box box = new Box(entity.x - 1.0, nameAnchor - 3.0, entity.z - 1.0,
+				entity.x + 1.0, nameAnchor + 3.0, entity.z + 1.0);
 			List<Double> above = new ArrayList<>();
 			for (Entity other : entity.world.getEntities(entity, box)) {
 				if (other == entity || !other.hasCustomName() || !other.isCustomNameVisible()) {
@@ -155,6 +159,11 @@ public abstract class EntityRendererMixin<T extends Entity> {
 					continue;
 				}
 				double anchor = other.y + other.height + 0.5;
+				// Vanilla lowers a nametag by half the height on baby-sized carriers, and
+				// ArmorStandEntity reports every small stand as a baby.
+				if (other instanceof LivingEntity living && living.isBaby()) {
+					anchor -= other.height / 2.0;
+				}
 				if (anchor > nameAnchor + 0.05) {
 					above.add(anchor);
 				}

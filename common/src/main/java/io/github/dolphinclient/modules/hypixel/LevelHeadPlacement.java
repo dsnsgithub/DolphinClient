@@ -46,22 +46,21 @@ public final class LevelHeadPlacement {
 	 * @return extra pixels to move the level up
 	 */
 	public static int extraPixels(int fontHeight, boolean belowNameLine, double nameAnchor, double[] tagsAbove, int baseAbove) {
-		double line = fontHeight * LINE_FACTOR;
-		int count = (belowNameLine ? 1 : 0) + (tagsAbove == null ? 0 : tagsAbove.length);
-		if (count == 0) {
+		if (tagsAbove == null) {
 			return 0;
 		}
-		double[] rises = new double[count];
+		double line = fontHeight * LINE_FACTOR;
+		// While the below-name row is shown, PlayerRenderer draws the username one line
+		// above the score and hangs the level off that raised point, so measure other
+		// tags from there instead of counting the scoreboard row a second time.
+		double anchor = nameAnchor + (belowNameLine ? line * NAMETAG_SCALE : 0.0);
+		double maxGap = line * NAMETAG_SCALE * 2.5;
+		double[] rises = new double[tagsAbove.length];
 		int n = 0;
-		if (belowNameLine) {
-			rises[n++] = line * NAMETAG_SCALE;
-		}
-		if (tagsAbove != null) {
-			for (double tag : tagsAbove) {
-				double rise = tag - nameAnchor;
-				if (rise > 0.001) {
-					rises[n++] = rise;
-				}
+		for (double tag : tagsAbove) {
+			double rise = tag - anchor;
+			if (rise > 0.001) {
+				rises[n++] = rise;
 			}
 		}
 		if (n == 0) {
@@ -70,7 +69,6 @@ public final class LevelHeadPlacement {
 		double[] stacked = n == rises.length ? rises : Arrays.copyOf(rises, n);
 		Arrays.sort(stacked);
 		// Only the lines that actually touch the name. A sign floating well above the head is not part of the nametag.
-		double maxGap = line * NAMETAG_SCALE * 2.5;
 		double top = 0.0;
 		double cursor = 0.0;
 		for (double rise : stacked) {

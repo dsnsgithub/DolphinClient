@@ -23,7 +23,6 @@
 
 package io.github.dolphinclient.modules.hud.gui.hud;
 
-import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -39,6 +38,8 @@ import io.github.axolotlclient.AxolotlClientConfig.impl.util.GraphicsImpl;
 import io.github.dolphinclient.bridge.impl.AxoRenderContextImpl;
 import io.github.dolphinclient.bridge.render.AxoRenderContext;
 import io.github.dolphinclient.config.profiles.ProfileAware;
+import io.github.dolphinclient.config.profiles.ProfileFile;
+import io.github.dolphinclient.config.profiles.Profiles;
 import io.github.dolphinclient.mixin.KeyBindAccessor;
 import io.github.dolphinclient.modules.hud.ClickInputTracker;
 import io.github.dolphinclient.modules.hud.gui.entry.TextHudEntry;
@@ -78,7 +79,6 @@ import static io.github.dolphinclient.util.DrawUtil.drawString;
 
 public class KeystrokeHud extends TextHudEntry implements ProfileAware {
 
-	private static final String KEYSTROKE_SAVE_FILE_NAME = "keystrokes.json";
 	public static final Identifier ID = new Identifier("kronhud", "keystrokehud");
 
 	private final ColorOption pressedTextColor = new ColorOption("heldtextcolor", new Color(0xFF000000));
@@ -545,9 +545,8 @@ public class KeystrokeHud extends TextHudEntry implements ProfileAware {
 	public void saveKeystrokes() {
 		if (keystrokes == null) return;
 		try {
-			var path = DolphinClientCommon.resolveProfileConfigFile(KEYSTROKE_SAVE_FILE_NAME);
-			Files.createDirectories(path.getParent());
-			Files.writeString(path, GsonHelper.GSON.toJson(keystrokes.stream().map(Keystroke::serialize).toList()));
+			ProfileFile.putSection(Profiles.getInstance().getCurrent().file(), ProfileFile.KEYSTROKES,
+				GsonHelper.GSON.toJsonTree(keystrokes.stream().map(Keystroke::serialize).toList()));
 		} catch (Exception e) {
 			DolphinClientCommon.getInstance().getLogger().warn("Failed to save keystroke configuration!", e);
 		}
@@ -556,9 +555,9 @@ public class KeystrokeHud extends TextHudEntry implements ProfileAware {
 	@SuppressWarnings("unchecked")
 	public void loadKeystrokes() {
 		try {
-			var path = DolphinClientCommon.resolveProfileConfigFile(KEYSTROKE_SAVE_FILE_NAME);
-			if (Files.exists(path)) {
-				List<?> entries = (List<?>) GsonHelper.read(Files.readString(path));
+			var section = ProfileFile.section(Profiles.getInstance().getCurrent().file(), ProfileFile.KEYSTROKES);
+			if (section != null && section.isJsonArray()) {
+				List<?> entries = (List<?>) GsonHelper.read(section.toString());
 				var loaded = entries.stream().map(e -> (Map<String, Object>) e)
 					.map(KeystrokeHud.this::deserializeKey)
 					.toList();

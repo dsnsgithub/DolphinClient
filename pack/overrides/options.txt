@@ -35,7 +35,7 @@ overrideWidth:0
 overrideHeight:0
 heldItemTooltips:true
 chatHeightFocused:1.0
-chatHeightUnfocused:0.44366196
+chatHeightUnfocused:1.0
 chatScale:1.0
 chatWidth:1.0
 showInventoryAchievementHint:false

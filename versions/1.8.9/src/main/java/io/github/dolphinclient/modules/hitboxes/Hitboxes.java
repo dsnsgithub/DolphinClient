@@ -63,7 +63,7 @@ public class Hitboxes extends AbstractModule {
 
 	private final BooleanOption enabled = new BooleanOption("enabled", false);
 	private final IntegerOption lineWidth = new IntegerOption("hitboxes.line_width", 2, 1, 7);
-	private final BooleanOption showLookVector = new BooleanOption("hitboxes.show_look_vector", true);
+	private final BooleanOption showLookVector = new BooleanOption("hitboxes.show_look_vector", false);
 	private final BooleanOption showEyeHeight = new BooleanOption("hitboxes.show_eye_height", true);
 	private final BooleanOption showInvisible = new BooleanOption("hitboxes.show_invisible", false);
 

@@ -4,16 +4,17 @@ Dolphin Optimized is an **insanely** optimized Minecraft client/mod collection f
 
 Download [Dolphin Optimized.mrpack](https://github.com/dsnsgithub/DolphinClient/releases), then drag it into Prism Launcher to run.
 
-<img width="1000" alt="2026-08-26_15 20 15" src="https://github.com/user-attachments/assets/6bfbac4f-85e6-42da-98d7-ef623f73ca2e" />
+<img width="1000" alt="main client picture" src="https://github.com/user-attachments/assets/9fdb28fa-ba15-4cdb-a1b4-d3b5d75c6e5a" />
 
 Open the client menu in-game with **Right Shift**.
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
+<img width="1000" alt="mod menu" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
 
 ### Performance
 When I say **insanely optimized**, I mean it. Most "optimization" clients still use Forge and Optifine, which can't compete with modern optimizations afforded by Fabric.
 The combination of backporting modern optimizations + the relatively lightweight 1.8 Minecraft version means it **smokes** every other popular 1.8.9 client.
 
-<img width="600" alt="2026-08-26_18 26 41" src="https://github.com/user-attachments/assets/dca9b006-ef06-4f96-8f7d-8ea288e372dd" />
+<img width="600" alt="f3 screen" src="https://github.com/user-attachments/assets/f271b932-3446-4c83-971e-9022d45f4008" />
+
 
 Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 - 800 FPS on Lunar Client => ~3000 fps in Housing (/visit DSNS)
@@ -26,20 +27,19 @@ Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 
 Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod) (with rewritten configuration + tweaks), while Dolphin Optimized also includes a potent combination of optimization mods.
 
-For those nerdy and curious to care, Dolphin Optimized is built on:
+For those nerdy and curious enough to care, Dolphin Optimized is built on:
 
-- [Argentum](https://github.com/rhysdh540/argentum) (Sodium for 1.8.9)
-- [Argentum Extras](https://github.com/rhysdh540/argentum) (Sodium Tweaks for 1.8.9)
+- [Argentum](https://modrinth.com/mod/argentum) (Sodium for 1.8.9)
+- [Argentum Extras](https://modrinth.com/mod/argentum-extras) (Sodium Tweaks for 1.8.9)
 - [Async Logger](https://modrinth.com/mod/asynclogger) (improved Minecraft logging)
-- [Cera](https://github.com/rhysdh540/argentum) (OptiFine compatability)
+- [Cera](https://modrinth.com/mod/cera) (OptiFine compatability)
 - DolphinClient (Lunar Client HUD replacement: Hypixel mods, clean GUI, 1.7 Animations, and so much more)
 - [Legacy LWJGL3](https://modrinth.com/mod/moehreag-legacy-lwjgl3) (upgraded from LWJGL2 to modern LWJGL3, performance boost and compatability)
-- [NettyFix](https://github.com/moehreag/nettyfix) (allow multiplayer connection with newest Java)
+- [NetFix](https://modrinth.com/mod/netfix) (modern Netty, allow multiplayer connection with newest Java)
 - [OldAnimations](https://modrinth.com/mod/oldanimations) (1.7 animations, now integrated into DolphinClient)
 - [Ornithe](https://ornithemc.net/) + [Ornithe Standard Libraries](https://modrinth.com/mod/osl) (required for Ornithe, which is backported Fabric for 1.8.9)
 - [SoundFix](https://modrinth.com/mod/soundfix) (brings new sound system to 1.8.9)
-- [Zirconium](https://github.com/Coccocoahelper/Zirconium-Ornithe) (brings modern optimizations to 1.8.9)
-
+- Variations of [Prism](https://modrinth.com/resourcepack/prism-rose) resource packs
 
 ---
 

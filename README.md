@@ -13,7 +13,8 @@ Open the client menu in-game with **Right Shift**.
 When I say **insanely optimized**, I mean it. Most "optimization" clients still use Forge and Optifine, which can't compete with modern optimizations afforded by Fabric.
 The combination of backporting modern optimizations + the relatively lightweight 1.8 Minecraft version means it **smokes** every other popular 1.8.9 client.
 
-<img width="600" alt="2026-08-26_18 26 41" src="https://github.com/user-attachments/assets/dca9b006-ef06-4f96-8f7d-8ea288e372dd" />
+<img width="600" alt="2026-11-12_20 55 13" src="https://github.com/user-attachments/assets/f271b932-3446-4c83-971e-9022d45f4008" />
+
 
 Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 - 800 FPS on Lunar Client => ~3000 fps in Housing (/visit DSNS)

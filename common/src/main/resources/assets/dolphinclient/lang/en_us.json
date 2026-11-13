@@ -65,6 +65,8 @@
 	"allocated": "Allocated",
 	"alwaysCrit": "Always Show",
 	"alwaysCrit.tooltip": "Whether to always emit these particles when hitting.",
+	"alwaysShowEntityNametags": "Always Show Entity Name Tags",
+	"alwaysShowEntityNametags.tooltip": "Renders name tags on named mobs without having to look at them, like in newer versions.",
 	"alwaysShowHeadLayer": "Always Show Hat Layer",
 	"anchorpoint": "Anchor Point",
 	"applyBlend": "Apply Blending",

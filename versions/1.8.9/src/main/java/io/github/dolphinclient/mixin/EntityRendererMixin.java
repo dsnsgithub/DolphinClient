@@ -23,8 +23,7 @@
 
 package io.github.dolphinclient.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -35,6 +34,7 @@ import io.github.dolphinclient.modules.hypixel.LevelHead;
 import io.github.dolphinclient.modules.hypixel.LevelHeadPlacement;
 import io.github.dolphinclient.modules.hypixel.bedwars.BedwarsMod;
 import io.github.dolphinclient.util.Util;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.living.player.ClientPlayerEntity;
 import net.minecraft.client.render.TextRenderer;
@@ -131,9 +131,21 @@ public abstract class EntityRendererMixin<T extends Entity> {
 	/**
 	 * Pixels to lift the level so it clears the below-name scoreboard row and holograms
 	 * parked just above the username. Vanilla only draws that scoreboard row inside 10 blocks.
+	 *
+	 * <p>The scan iterates every loaded entity in a box, so the result is cached per entity
+	 * per tick. The world's entity set can only change the outcome once per tick anyway.
+	 * Cache layout: {@code [tick, baseAbove, belowName, nameAnchor, tagAnchor...]}; the tag
+	 * anchors are the payload {@link LevelHeadPlacement#extraPixels} expects.</p>
 	 */
 	@Unique
 	private int dolphinclient$tagsAbove(Entity entity, int fontHeight, int baseAbove) {
+		int tick = entity.ticks;
+		double[] cached = dolphinclient$tagsAboveCache.get(entity.getNetworkId());
+		if (cached != null && (int) cached[0] == tick && cached[1] == baseAbove) {
+			double[] tags = Arrays.copyOfRange(cached, 4, cached.length);
+			return LevelHeadPlacement.extraPixels(fontHeight, cached[2] != 0, cached[3], tags, baseAbove);
+		}
+
 		boolean belowName = false;
 		if (entity instanceof PlayerEntity player && !player.isSneaking() && this.dispatcher.camera != null
 			&& player.squaredDistanceTo(this.dispatcher.camera) < 100.0) {
@@ -142,13 +154,12 @@ public abstract class EntityRendererMixin<T extends Entity> {
 		}
 
 		double nameAnchor = entity.y + entity.height + 0.5;
-		double[] tags = null;
+		double[] tags = new double[4];
 		if (entity.world != null) {
 			// A nametag floats up to a couple of blocks above its carrier's hitbox, so the
 			// query has to reach below the anchor to find tags parked right above the username.
 			Box box = new Box(entity.x - 1.0, nameAnchor - 3.0, entity.z - 1.0,
 				entity.x + 1.0, nameAnchor + 3.0, entity.z + 1.0);
-			List<Double> above = new ArrayList<>();
 			for (Entity other : entity.world.getEntities(entity, box)) {
 				if (other == entity || !other.hasCustomName() || !other.isCustomNameVisible()) {
 					continue;
@@ -165,18 +176,25 @@ public abstract class EntityRendererMixin<T extends Entity> {
 					anchor -= other.height / 2.0;
 				}
 				if (anchor > nameAnchor + 0.05) {
-					above.add(anchor);
-				}
-			}
-			if (!above.isEmpty()) {
-				tags = new double[above.size()];
-				for (int i = 0; i < above.size(); i++) {
-					tags[i] = above.get(i);
+					tags = Arrays.copyOf(tags, tags.length + 1);
+					tags[tags.length - 1] = anchor;
 				}
 			}
 		}
-		return LevelHeadPlacement.extraPixels(fontHeight, belowName, nameAnchor, tags, baseAbove);
+
+		tags[0] = tick;
+		tags[1] = baseAbove;
+		tags[2] = belowName ? 1 : 0;
+		tags[3] = nameAnchor;
+		if (dolphinclient$tagsAboveCache.size() > 1024) {
+			dolphinclient$tagsAboveCache.clear();
+		}
+		dolphinclient$tagsAboveCache.put(entity.getNetworkId(), tags);
+		return LevelHeadPlacement.extraPixels(fontHeight, belowName, nameAnchor, tags.length > 4 ? Arrays.copyOfRange(tags, 4, tags.length) : null, baseAbove);
 	}
+
+	@Unique
+	private static final Int2ObjectOpenHashMap<double[]> dolphinclient$tagsAboveCache = new Int2ObjectOpenHashMap<>();
 
 	@WrapWithCondition(method = "renderNameTag(Lnet/minecraft/entity/Entity;Ljava/lang/String;DDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/vertex/BufferBuilder;begin(ILnet/minecraft/client/render/vertex/VertexFormat;)V"))
 	private boolean disableNameTagBackground(BufferBuilder instance, int drawMode, VertexFormat format) {

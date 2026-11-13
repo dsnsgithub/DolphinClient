@@ -44,6 +44,7 @@
 		"LocalRemoteClientPlayerEntityMixin",
 		"MinecraftClientAccessor",
 		"MinecraftClientMixin",
+		"MobRendererMixin",
 		"ParticleAccessor",
 		"ParticleManagerMixin",
 		"PlayerEntityMixin",

@@ -34,7 +34,7 @@ For those nerdy and curious to care, Dolphin Optimized is built on:
 - [Cera](https://github.com/rhysdh540/argentum) (OptiFine compatability)
 - DolphinClient (Lunar Client HUD replacement: Hypixel mods, clean GUI, 1.7 Animations, and so much more)
 - [Legacy LWJGL3](https://modrinth.com/mod/moehreag-legacy-lwjgl3) (upgraded from LWJGL2 to modern LWJGL3, performance boost and compatability)
-- [NettyFix](https://github.com/moehreag/nettyfix) (allow multiplayer connection with newest Java)
+- [NetFix](https://modrinth.com/mod/netfix) (modern Netty, allow multiplayer connection with newest Java)
 - [OldAnimations](https://modrinth.com/mod/oldanimations) (1.7 animations, now integrated into DolphinClient)
 - [Ornithe](https://ornithemc.net/) + [Ornithe Standard Libraries](https://modrinth.com/mod/osl) (required for Ornithe, which is backported Fabric for 1.8.9)
 - [SoundFix](https://modrinth.com/mod/soundfix) (brings new sound system to 1.8.9)

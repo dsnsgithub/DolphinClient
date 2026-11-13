@@ -4,16 +4,16 @@ Dolphin Optimized is an **insanely** optimized Minecraft client/mod collection f
 
 Download [Dolphin Optimized.mrpack](https://github.com/dsnsgithub/DolphinClient/releases), then drag it into Prism Launcher to run.
 
-<img width="1000" src="https://github.com/user-attachments/assets/9fdb28fa-ba15-4cdb-a1b4-d3b5d75c6e5a" />
+<img width="1000" alt="main client picture" src="https://github.com/user-attachments/assets/9fdb28fa-ba15-4cdb-a1b4-d3b5d75c6e5a" />
 
 Open the client menu in-game with **Right Shift**.
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
+<img width="1000" alt="mod menu" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
 
 ### Performance
 When I say **insanely optimized**, I mean it. Most "optimization" clients still use Forge and Optifine, which can't compete with modern optimizations afforded by Fabric.
 The combination of backporting modern optimizations + the relatively lightweight 1.8 Minecraft version means it **smokes** every other popular 1.8.9 client.
 
-<img width="600" alt="2026-11-12_20 55 13" src="https://github.com/user-attachments/assets/f271b932-3446-4c83-971e-9022d45f4008" />
+<img width="600" alt="f3 screen" src="https://github.com/user-attachments/assets/f271b932-3446-4c83-971e-9022d45f4008" />
 
 
 Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:

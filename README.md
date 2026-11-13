@@ -6,8 +6,6 @@ Download [Dolphin Optimized.mrpack](https://github.com/dsnsgithub/DolphinClient/
 
 <img width="1000" src="https://github.com/user-attachments/assets/9fdb28fa-ba15-4cdb-a1b4-d3b5d75c6e5a" />
 
-
-
 Open the client menu in-game with **Right Shift**.
 <img width="1000" alt="image" src="https://github.com/user-attachments/assets/b525cfba-501c-45a5-9a09-98d920e68135" />
 

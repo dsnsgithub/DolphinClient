@@ -162,8 +162,6 @@ def build(output_path: Path, dolphin_jar: Path) -> str:
     files = modrinth_files()
     version_id = dolphin_version(dolphin_jar.name)
     entries = override_files({entry["path"] for entry in files})
-    if not any(relative.startswith("mods/") and relative.endswith(".jar") for relative, _ in entries):
-        raise SystemExit("pack/overrides has no mods to bundle")
     entries.append((f"mods/{dolphin_jar.name}", dolphin_jar.read_bytes()))
     entries.sort()
 
@@ -232,7 +230,7 @@ def check_pack(path: Path, dolphin_jar: Path) -> None:
             for name in bundled
             if not is_dolphin_mod(name.removeprefix("overrides/"))
         )
-        if third_party != ["Zirconium-0.2.0+mc1.8.9.jar"]:
+        if third_party:
             raise SystemExit(f"Unexpected bundled mods: {third_party}")
         dolphin_mods = [name for name in bundled if is_dolphin_mod(name.removeprefix("overrides/"))]
         if len(dolphin_mods) != 1:

@@ -31,7 +31,8 @@
       "nametagOptions": {
         "showOwnNametag": "false",
         "useShadows": "true",
-        "nametagBackground": "false"
+        "nametagBackground": "false",
+        "alwaysShowEntityNametags": "true"
       },
       "timeChanger": {
         "enabled": "false",

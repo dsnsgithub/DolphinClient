@@ -70,6 +70,7 @@ public abstract class DolphinClientConfigCommon {
 	public final BooleanOption showOwnNametag = new BooleanOption("showOwnNametag", false);
 	public final BooleanOption useShadows = new BooleanOption("useShadows", false);
 	public final BooleanOption nametagBackground = new BooleanOption("nametagBackground", true);
+	public final BooleanOption alwaysShowEntityNametags = new BooleanOption("alwaysShowEntityNametags", true);
 
 	public final ForceableBooleanOption timeChangerEnabled = new ForceableBooleanOption("enabled", false);
 	public final IntegerOption customTime = new IntegerOption("time", 0, 0, 24000);
@@ -128,6 +129,7 @@ public abstract class DolphinClientConfigCommon {
 		nametagOptions.add(showOwnNametag);
 		nametagOptions.add(useShadows);
 		nametagOptions.add(nametagBackground);
+		nametagOptions.add(alwaysShowEntityNametags);
 
 		general.add(customWindowTitle);
 		general.add(debugLogOutput);

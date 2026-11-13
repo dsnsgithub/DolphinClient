@@ -29,17 +29,17 @@ Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/A
 
 For those nerdy and curious to care, Dolphin Optimized is built on:
 
-- [Argentum](https://github.com/rhysdh540/argentum) (Sodium for 1.8.9)
-- [Argentum Extras](https://github.com/rhysdh540/argentum) (Sodium Tweaks for 1.8.9)
+- [Argentum](https://modrinth.com/mod/argentum) (Sodium for 1.8.9)
+- [Argentum Extras](https://modrinth.com/mod/argentum-extras) (Sodium Tweaks for 1.8.9)
 - [Async Logger](https://modrinth.com/mod/asynclogger) (improved Minecraft logging)
-- [Cera](https://github.com/rhysdh540/argentum) (OptiFine compatability)
+- [Cera](https://modrinth.com/mod/cera) (OptiFine compatability)
 - DolphinClient (Lunar Client HUD replacement: Hypixel mods, clean GUI, 1.7 Animations, and so much more)
 - [Legacy LWJGL3](https://modrinth.com/mod/moehreag-legacy-lwjgl3) (upgraded from LWJGL2 to modern LWJGL3, performance boost and compatability)
 - [NetFix](https://modrinth.com/mod/netfix) (modern Netty, allow multiplayer connection with newest Java)
 - [OldAnimations](https://modrinth.com/mod/oldanimations) (1.7 animations, now integrated into DolphinClient)
 - [Ornithe](https://ornithemc.net/) + [Ornithe Standard Libraries](https://modrinth.com/mod/osl) (required for Ornithe, which is backported Fabric for 1.8.9)
 - [SoundFix](https://modrinth.com/mod/soundfix) (brings new sound system to 1.8.9)
-
+- Variations of [Prism](https://modrinth.com/resourcepack/prism-rose) resource packs
 
 ---
 

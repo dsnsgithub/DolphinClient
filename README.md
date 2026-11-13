@@ -27,7 +27,7 @@ Tested Dolphin Optimized on a Ryzen 7 5800x, RTX 3070:
 
 Dolphin Client is a fork of [AxolotlClient](https://codeberg.org/AxolotlClient/AxolotlClient-mod) (with rewritten configuration + tweaks), while Dolphin Optimized also includes a potent combination of optimization mods.
 
-For those nerdy and curious to care, Dolphin Optimized is built on:
+For those nerdy and curious enough to care, Dolphin Optimized is built on:
 
 - [Argentum](https://modrinth.com/mod/argentum) (Sodium for 1.8.9)
 - [Argentum Extras](https://modrinth.com/mod/argentum-extras) (Sodium Tweaks for 1.8.9)

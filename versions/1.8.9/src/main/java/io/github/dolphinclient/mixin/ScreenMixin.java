@@ -23,8 +23,10 @@
 package io.github.dolphinclient.mixin;
 
 import io.github.dolphinclient.modules.blur.MenuBlur;
+import io.github.dolphinclient.modules.hud.HudManager;
 import io.github.dolphinclient.modules.screenshotUtils.ScreenshotUtils;
 import io.github.dolphinclient.modules.scrollableTooltips.ScrollableTooltips;
+import io.github.dolphinclient.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.menu.CreativeInventoryScreen;
@@ -43,6 +45,13 @@ public abstract class ScreenMixin {
 
 	@Shadow
 	public int height;
+
+	@Inject(method = "init(Lnet/minecraft/client/Minecraft;II)V", at = @At("HEAD"))
+	private void dolphinclient$onScreenInit(CallbackInfo ci) {
+		// GUI scale changes reinitialize the screen without resizing the window.
+		Util.window = null;
+		HudManager.getInstance().refreshAllBounds();
+	}
 
 	@ModifyArgs(method = "renderTooltip(Lnet/minecraft/item/ItemStack;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderTooltip(Ljava/util/List;II)V"))
 	public void dolphinclient$modifyTooltipPosition(Args args) {

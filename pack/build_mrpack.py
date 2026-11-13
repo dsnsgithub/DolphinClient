@@ -162,8 +162,6 @@ def build(output_path: Path, dolphin_jar: Path) -> str:
     files = modrinth_files()
     version_id = dolphin_version(dolphin_jar.name)
     entries = override_files({entry["path"] for entry in files})
-    if not any(relative.startswith("mods/") and relative.endswith(".jar") for relative, _ in entries):
-        raise SystemExit("pack/overrides has no mods to bundle")
     entries.append((f"mods/{dolphin_jar.name}", dolphin_jar.read_bytes()))
     entries.sort()
 

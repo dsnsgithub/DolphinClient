@@ -184,6 +184,9 @@ public class OldAnimationsConfig {
 	public final BooleanOption fastGrassItem = new BooleanOption("fastGrassItem", true);
 	public final BooleanOption framedItemRotationOffset = new BooleanOption("framedItemRotationOffset", true);
 
+	/** Off leaves vanilla 1.8.9 behavior. On applies each feature's own setting. */
+	private final BooleanOption enabled = new BooleanOption("enabled", true);
+
 	private final BooleanSupplier[] suppliers = new BooleanSupplier[]{
 		skullModel::get,
 		fastGrass::get,
@@ -201,7 +204,8 @@ public class OldAnimationsConfig {
 //		zombieVillagerHelmetOffset::get,
 		inventoryPressurePlateDimensions::get,
 		mipmapAllBlocks::get,
-		trapDoorItemPosition::get
+		trapDoorItemPosition::get,
+		enabled::get
 	};
 	private final boolean[] previousStates = {
 		skullModel.get(),
@@ -220,18 +224,20 @@ public class OldAnimationsConfig {
 //		zombieVillagerHelmetOffset.get(),
 		inventoryPressurePlateDimensions.get(),
 		mipmapAllBlocks.get(),
-		trapDoorItemPosition.get()
+		trapDoorItemPosition.get(),
+		enabled.get()
 	};
 
 	/**
-	 * The 1.7 features no longer have a master switch: every one of them is
-	 * individually configurable, which makes a global toggle redundant.
+	 * Master switch for every 1.7 feature. Off leaves vanilla 1.8.9 behavior;
+	 * on, each feature still follows its own setting.
 	 */
 	public static boolean isEnabled() {
-		return true;
+		return instance.enabled.get();
 	}
 
 	public void initConfig() {
+		category.add(enabled);
 		category.add(blockingItemUsing);
 		blockingItemUsing.add(
 			blockHitting,
@@ -444,6 +450,7 @@ public class OldAnimationsConfig {
 					} else if (i == 1 || i == 4 || i == 7 || i == 9) {
 						reloadWorld = true;
 					} else {
+						// Every other supplier, including the master switch at the end, rebakes resources.
 						needsReload = true;
 					}
 				}
